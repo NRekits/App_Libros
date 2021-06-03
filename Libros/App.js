@@ -1,21 +1,56 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+import * as Font from "expo-font";
+import { Root } from 'native-base';
+//Pantallas
+import LoginScreen from "./Views/LoginS";
+import RegisterScreen from "./Views/RegistroS";
+import PerfilScreen from "./Views/PerfilS";
+import HomeScreen from "./Views/HomeS";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+
+const Stack = createStackNavigator();
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      Loggin: '',
+      setLogged: '',
+      isLoading: true
+    };
+  }
+
+
+  async componentDidMount() {
+    await Font.loadAsync({
+      "Roboto": require('native-base/Fonts/Roboto.ttf'),
+      "Roboto_medium": require('native-base/Fonts/Roboto_medium.ttf'),
+
+    });
+  }
+
+  render() {
+
+
+      return (
+        <Root>
+          <NavigationContainer>
+            <Stack.Navigator screenOptions={{
+              headerShown: false
+            }}
+              initialRouteName='Login'>
+              <Stack.Screen name="Login" component={LoginScreen} />
+              <Stack.Screen name="Registro" component={RegisterScreen} />
+              <Stack.Screen name='Perfil' component={PerfilScreen} />
+              <Stack.Screen name='Home' component={HomeScreen} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </Root>
+      );
+    }
+  }
+
+
+export default App;
