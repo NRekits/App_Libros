@@ -2,21 +2,18 @@ import React from "react";
 import {
   Dimensions,
   StatusBar,
-  H1,
   Image,
   StyleSheet,
   TextInput,
   View,
   Text,
-  Label,
   Button,
 } from "react-native";
 
 import { LinearGradient } from "expo-linear-gradient";
 import { Formik, Field } from "formik";
 import * as Yup from "yup";
-import { NavigationContainer} from '@react-navigation/native';
-import { createStackNavigator} from '@react-navigation/stack';
+
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -117,21 +114,27 @@ const styles = StyleSheet.create({
     alignItems: "stretch",
     justifyContent: "center",
     padding: 20,
+    fontFamily: "Dosis",
   },
   Input: {
+    fontFamily: "Dosis",
     borderBottomColor:'white',
     borderBottomWidth :1,
     alignSelf: "flex-start",
     fontWeight: "400",
     width:300,
-    fontSize: 15,
+    fontSize: 20,
     margin:10,
   
   },
   Text2: {
+    fontFamily: "Dosis",
+    width:300,
+    fontSize: 20,
     marginTop:10
   },
   Text3: {
+    fontFamily: "Dosis",
     color: "#C0FFC0",
   },
   Item: {

@@ -8,7 +8,7 @@ var mongoose = require('mongoose');
 
 //Añadir usuario
 router.post("/Usuario/Registro", (req, res) => {
-  console.log("hola");
+ 
   const user = new usuario({
     Nombre: req.body.Nombre,
     Apellido: req.body.Apellido,

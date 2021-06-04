@@ -18,12 +18,10 @@ import {
 } from "native-base";
 import { LinearGradient } from "expo-linear-gradient";
 import * as SecureStore from "expo-secure-store";
-
+import IP_DB from "./../ip_address";
 import { NavigationContainer} from '@react-navigation/native';
 import { createStackNavigator} from '@react-navigation/stack';
-//En la línea  71 van a ir los errores con respecto a que las contraseñas no coincidan
-//En la línea 61 van a ir los errores en caso de que la bd no logre almacenar el registro (el correo no es válido)
-//El email ya esta registrado, hubo un problema con la codificación de la contraseña, no se pudo almacenar el registro
+
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
@@ -33,6 +31,7 @@ class RegisterScreen extends React.Component {
     this.state = {
       email: "",
       name: "",
+      apellido:"",
       password: "",
       confirmPassword: "",
       error: false
@@ -41,20 +40,26 @@ class RegisterScreen extends React.Component {
 
   Register = () => {
     if (this.state.password === this.state.confirmPassword) {
-      fetch(`http://${IP_DB}:3000/user/register`,
+      fetch(`http://${IP_DB}:3000/Usuario/Registro`,
         {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            name: this.state.name,
+            Nombre: this.state.name,
+            Apellido: this.state.apellido,
             email: this.state.email,
-            password: this.state.password
+            contra: this.state.password
           })
         }).then((res) => res.json())
         .then(() => {
           this.setState({error: false})
+          Toast.show({
+            text: 'Usuario Registrado',
+            buttonText: 'Entendido',
+            type:'danger'
+          })
         }).catch((e) => {
 
           this.setState({error: true}) // Dentro de esta función de manejan los errores
@@ -83,10 +88,10 @@ class RegisterScreen extends React.Component {
     return (
       <Container style={styles.Container}>
         <LinearGradient
-          colors={["#00B0E8", "#BB8FCE"]}
+          colors={["#C0FFC0", "#1ABC9C"]}
           style={styles.background}
         />
-        <Header transparent androidStatusBarColor="#00B0E8">
+        <Header transparent androidStatusBarColor="#C0FFC0">
           <Left />
           <Body>
             <Title style={styles.Header}>Registro</Title>
@@ -102,6 +107,15 @@ class RegisterScreen extends React.Component {
                 value={this.state.name}
                 onChangeText={(text) => {
                   this.setState({ name: text })
+                }}
+                style={styles.Input} />
+            </Item>
+            <Item floatingLabel style={styles.Item}>
+              <Label style={styles.Label}>Apellido</Label>
+              <Input
+                value={this.state.apellido}
+                onChangeText={(text) => {
+                  this.setState({ apellido: text })
                 }}
                 style={styles.Input} />
             </Item>
@@ -135,7 +149,6 @@ class RegisterScreen extends React.Component {
                 style={styles.Input} />
             </Item>
             <Button block
-              bordered
               rounded
               success
               style={styles.Button}
@@ -157,20 +170,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     fontFamily: "Dosis",
-    color: "white",
   },
   Text2: {
     marginTop: 5,
     fontWeight: "400",
     fontSize: 20,
-    color: "white",
     marginLeft: 5,
     fontFamily: "Dosis",
   },
   Text3: {
     marginTop: 10,
     fontSize: 15,
-    color: "#C4EFFF",
+    color: "#0D7C0D",
     marginLeft: 5,
     fontFamily: "Dosis",
   },
@@ -180,14 +191,13 @@ const styles = StyleSheet.create({
   },
   Input: {
     alignSelf: "flex-start",
-    color: "white",
     fontFamily: "Dosis",
     fontWeight: "400",
     fontSize: 20,
     marginRight: 5,
   },
   Label: {
-    color: "white",
+  
     fontFamily: "Dosis",
     fontWeight: "400",
     fontSize: 20,
@@ -205,7 +215,6 @@ const styles = StyleSheet.create({
   },
   H1: {
     alignSelf: "center",
-    color: "white",
     fontFamily: "Dosis",
     fontWeight: "400",
     fontSize: 30,
@@ -219,7 +228,7 @@ const styles = StyleSheet.create({
     height: windowHeight,
   },
   Header: {
-    color: "#C4EFFF",
+    color:'#0D7C0D',
     fontFamily: "Dosis",
     fontSize: 40,
     fontWeight: "600",

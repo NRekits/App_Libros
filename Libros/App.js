@@ -2,7 +2,7 @@ import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import * as Font from "expo-font";
-import { Root } from 'native-base';
+import { Root, Text } from 'native-base';
 //Pantallas
 import LoginScreen from "./Views/LoginS";
 import RegisterScreen from "./Views/RegistroS";
@@ -27,13 +27,16 @@ class App extends React.Component {
     await Font.loadAsync({
       "Roboto": require('native-base/Fonts/Roboto.ttf'),
       "Roboto_medium": require('native-base/Fonts/Roboto_medium.ttf'),
+      "Dosis": require('./assets/dosis.ttf'),
 
-    });
+    }).finally(() => { this.setState({ isLoading: false }) });
   }
 
   render() {
 
-
+    if (this.state.isLoading) {
+      return(<Text>Cargando</Text>);
+    }else{
       return (
         <Root>
           <NavigationContainer>
@@ -51,6 +54,6 @@ class App extends React.Component {
       );
     }
   }
-
+}
 
 export default App;
