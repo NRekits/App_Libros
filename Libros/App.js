@@ -6,8 +6,8 @@ import { Root } from 'native-base';
 //Pantallas
 import LoginScreen from "./Views/LoginS";
 import RegisterScreen from "./Views/RegistroS";
-import PerfilScreen from "./Views/PerfilS";
-import HomeScreen from "./Views/HomeS";
+import PerfilScreen from "./Views/Usuario/PerfilS";
+import HomeScreen from "./Views/Usuario/HomeS";
 
 
 
