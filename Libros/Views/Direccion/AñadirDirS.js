@@ -1,3 +1,4 @@
+/* El usuario aqui agrega una direccion */
 import React from "react";
 import { Text, Dimensions, Alert, Image, StyleSheet } from "react-native";
 import { Container, Header, Content, Form, Item, Input,
@@ -13,11 +14,4 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export default function HomeScreen (){
-
-    return(
-        <Container>
-            <Text>Hola</Text>
-        </Container>
-    );
-}
+export default function ADireccionScreen (){}

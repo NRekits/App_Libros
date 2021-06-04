@@ -30,6 +30,7 @@
     "react-native-safe-area-context": "3.2.0",
     "react-native-screens": "~3.0.0",
     "react-native-web": "~0.13.12",
+    "socket.io-client": "^4.1.2",
     "yup": "^0.32.9"
   },
   "devDependencies": {

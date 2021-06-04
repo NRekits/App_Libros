@@ -1,3 +1,6 @@
+/*cuando se confirme la compra del carrito, 
+se debe venir a esta pantalla donde se listaran 
+los detalles del envio para confirmar o cancelar*/
 import React from "react";
 import { Text, Dimensions, Alert, Image, StyleSheet } from "react-native";
 import { Container, Header, Content, Form, Item, Input,
@@ -13,4 +16,4 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export default function PerfilScreen (){}
+export default function APedidoScreen (){}
