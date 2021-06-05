@@ -143,6 +143,7 @@ const styles = StyleSheet.create({
   },
   H1: {
     alignSelf: "center",
+    fontFamily: "Dosis",
     fontWeight: "400",
     fontSize: 30,
     marginTop: 20,

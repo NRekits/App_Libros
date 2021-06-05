@@ -5,20 +5,93 @@ const pedido = require("../Models/Pedido");
 const editorial = require("../Models/Editorial");
 const Usuario = require("../Models/Usuario");
 var mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
+// constraseña
+const bcrypt = require('bcrypt');
+
+// validation
+const Joi = require('@hapi/joi');
+const schemaRegister = Joi.object({
+  Nombre: Joi.string().min(2).max(255).required(),
+  Apellido: Joi.string().min(2).max(255).required(),
+  email: Joi.string().max(255).required().email(),
+  contra: Joi.string().min(2).max(1024).required()
+})
+const schemaLogin = Joi.object({
+  email: Joi.string().min(6).max(255).required().email(),
+  contra: Joi.string().min(2).max(1024).required()
+})
 //Añadir usuario
-router.post("/Usuario/Registro", (req, res) => {
+router.post("/Usuario/Registro", async (req, res) => {
+  try{
+    // validate user
+    const { error } = schemaRegister.validate(req.body)
+    if (error) {
+        return res.status(400).json({error: error.details[0].message})
+    }
+    const isEmailExist = await Usuario.findOne({ Email: req.body.email });
  
-  const user = new usuario({
-    Nombre: req.body.Nombre,
-    Apellido: req.body.Apellido,
-    Contrasena: req.body.contra,
-    Email: req.body.email,
-  });
+    if (isEmailExist) {
+        return res.status(400).json({error: 'Email ya registrado'})
+    }
+    // hash contraseña
+    const salt = await bcrypt.genSalt(10);
+    const password = await bcrypt.hash(req.body.contra, salt);
 
-  const savedUser = user.save();
-  res.json({ response: "Añadido" });
+    const user = new usuario({
+      Nombre: req.body.Nombre,
+      Apellido: req.body.Apellido,
+      Contrasena: password,
+      Email: req.body.email,
+    });
+  
+    const savedUser = user.save();
+    res.json({
+      error: {error},
+      response: "Añadido",
+      data: savedUser
+  })
+   
+
+} catch (error) {
+    res.status(400).json({error})
+}
+ 
 });
+router.post('/Usuario/login', async (req, res) => {
+  // validaciones
+  const { error } = schemaLogin.validate(req.body);
+  if (error) return res.status(400).json({ error: error.details[0].message })
+  
+  const user = await Usuario.findOne({ Email: req.body.email });
+  if (!user) return res.status(400).json({ error: 'Usuario no encontrado' });
+
+  const validPassword = await bcrypt.compare(req.body.contra, user.Contrasena);
+  if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
+  
+  try {
+      // create token
+      const token = jwt.sign({
+          name: user.name,
+          id: user._id
+      }, "secret");
+
+      res.json({
+          error: null,
+          data: 'exito bienvenido',
+          token: token,
+          id: user._id
+          
+      });
+
+  }catch(e){
+      return status(400).json({error: "Hubo un error en el login, por favor intenta de nuevo"})
+  }
+
+
+
+})
 
 //Modificar usuario
 router.put("/Usuario/Modificar/:id", (req, res) => {

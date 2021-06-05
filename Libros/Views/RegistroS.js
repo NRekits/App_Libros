@@ -19,8 +19,8 @@ import {
 import { LinearGradient } from "expo-linear-gradient";
 import * as SecureStore from "expo-secure-store";
 import IP_DB from "./../ip_address";
-import { NavigationContainer} from '@react-navigation/native';
-import { createStackNavigator} from '@react-navigation/stack';
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -31,58 +31,130 @@ class RegisterScreen extends React.Component {
     this.state = {
       email: "",
       name: "",
-      apellido:"",
+      apellido: "",
       password: "",
       confirmPassword: "",
-      error: false
+      claseE: "",
+      error: false,
     };
   }
 
   Register = () => {
     if (this.state.password === this.state.confirmPassword) {
-      fetch(`http://${IP_DB}:3000/Usuario/Registro`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            Nombre: this.state.name,
-            Apellido: this.state.apellido,
-            email: this.state.email,
-            contra: this.state.password
-          })
-        }).then((res) => res.json())
-        .then(() => {
-          this.setState({error: false})
-          Toast.show({
-            text: 'Usuario Registrado',
-            buttonText: 'Entendido',
-            type:'danger'
-          })
-        }).catch((e) => {
-
-          this.setState({error: true}) // Dentro de esta función de manejan los errores
-          //Aquí van los errores que tengan que ver con algún problema de la base de datos no pueda almacenar el registro
-          //Porfa, no borrar el this.setState({error: true})
-
+      fetch(`http://${IP_DB}:3000/Usuario/Registro`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          Nombre: this.state.name,
+          Apellido: this.state.apellido,
+          email: this.state.email.toLowerCase().trimEnd(),
+          contra: this.state.password,
+        }),
+      })
+        .then((res) => res.json())
+        .then((error) => {
+          console.log(error.error);
+          if (error.error) {
+            this.setState({ error: true });
+            this.setState({ claseE: error.error });
+          }
         })
         .finally(() => {
-          if(!this.state.error){
+          console.log(this.state.claseE);
+          if(this.state.error == false){
+            this.props.navigation.navigate('Login');
+          }
+          if (this.state.claseE == '"Nombre" is not allowed to be empty') {
+            Toast.show({
+              text: "Nombre es un campo requerido",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          } else if (
+            this.state.claseE == '"Apellido" is not allowed to be empty'
+          ) {
+            Toast.show({
+              text: "Apellido es un campo requerido",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          } else if (
+            this.state.claseE == '"email" is not allowed to be empty'
+          ) {
+            Toast.show({
+              text: "Correo es un campo requerido",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          } else if (
+            this.state.claseE == '"contra" is not allowed to be empty'
+          ) {
+            Toast.show({
+              text: "Contraseña es un campo requerido",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          } else if (
+            this.state.claseE ==
+            '"Nombre" length must be at least 2 characters long'
+          ) {
+            Toast.show({
+              text: "Nombre debe tener minimo 2 caracteres",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          } else if (
+            this.state.claseE ==
+            '"Apellido" length must be at least 2 characters long'
+          ) {
+            Toast.show({
+              text: "Apellido debe tener minimo 2 caracteres",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          } else if (this.state.claseE == '"email" must be a valid email') {
+            Toast.show({
+              text: "Email invalido",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          } else if (
+            this.state.claseE ==
+            '"contra" length must be at least 2 characters long'
+          ) {
+            Toast.show({
+              text: "Contraseña debe tener minimo 2 caracteres",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          }else if (
+            this.state.claseE ==
+            'Email ya registrado'
+          ) {
+            Toast.show({
+              text: "Email ya registrado",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          }else{
+            Toast.show({
+              text: "Usuario registrado",
+              buttonText: "Okay",
+              type: "sucess",
+            });
             this.props.navigation.navigate('Login');
           }
         });
-
-    }else{
-      //En esta parte van los errores donde las contraseñas no coincidan
+    } else {
       Toast.show({
-        text: 'Las contraseñas no coinciden',
-        buttonText: 'Entendido',
-        type:'danger'
-      })
+        text: "Las contraseñas no coinciden",
+        buttonText: "Entendido",
+        type: "danger",
+      });
     }
-
-  }
+  };
 
   render() {
     return (
@@ -106,27 +178,30 @@ class RegisterScreen extends React.Component {
               <Input
                 value={this.state.name}
                 onChangeText={(text) => {
-                  this.setState({ name: text })
+                  this.setState({ name: text });
                 }}
-                style={styles.Input} />
+                style={styles.Input}
+              />
             </Item>
             <Item floatingLabel style={styles.Item}>
               <Label style={styles.Label}>Apellido</Label>
               <Input
                 value={this.state.apellido}
                 onChangeText={(text) => {
-                  this.setState({ apellido: text })
+                  this.setState({ apellido: text });
                 }}
-                style={styles.Input} />
+                style={styles.Input}
+              />
             </Item>
             <Item floatingLabel style={styles.Item}>
               <Label style={styles.Label}>Correo electrónico</Label>
               <Input
                 value={this.state.email}
                 onChangeText={(text) => {
-                  this.setState({ email: text })
+                  this.setState({ email: text });
                 }}
-                style={styles.Input} />
+                style={styles.Input}
+              />
             </Item>
             <Item floatingLabel style={styles.Item}>
               <Label style={styles.Label}>Contraseña</Label>
@@ -134,9 +209,10 @@ class RegisterScreen extends React.Component {
                 value={this.state.password}
                 secureTextEntry={true}
                 onChangeText={(text) => {
-                  this.setState({ password: text })
+                  this.setState({ password: text });
                 }}
-                style={styles.Input} />
+                style={styles.Input}
+              />
             </Item>
             <Item floatingLabel style={styles.Item}>
               <Label style={styles.Label}>Confirmar contraseña</Label>
@@ -144,11 +220,13 @@ class RegisterScreen extends React.Component {
                 value={this.state.confirmPassword}
                 secureTextEntry={true}
                 onChangeText={(text) => {
-                  this.setState({ confirmPassword: text })
+                  this.setState({ confirmPassword: text });
                 }}
-                style={styles.Input} />
+                style={styles.Input}
+              />
             </Item>
-            <Button block
+            <Button
+              block
               rounded
               success
               style={styles.Button}
@@ -197,7 +275,6 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   Label: {
-  
     fontFamily: "Dosis",
     fontWeight: "400",
     fontSize: 20,
@@ -207,7 +284,7 @@ const styles = StyleSheet.create({
   Button: {
     alignSelf: "center",
     marginTop: 20,
-    borderColor: '#9BFFA3'
+    borderColor: "#9BFFA3",
   },
   Item: {
     marginTop: 30,
@@ -228,7 +305,7 @@ const styles = StyleSheet.create({
     height: windowHeight,
   },
   Header: {
-    color:'#0D7C0D',
+    color: "#0D7C0D",
     fontFamily: "Dosis",
     fontSize: 40,
     fontWeight: "600",
