@@ -15,11 +15,27 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-export default function HomeScreen (){
+export default class HomeScreen extends React.Component{
+    //Constructor
+    constructor(props) {
+        super(props);
+        this.state = {
+          id: "",
+        };
+        
+      }
+    //Montar
+    componentDidMount() {
+        this.setState({ id: this.props.route.params.id})
+    }
 
+    render(){
     return(
         <Container>
-            <Text>Hola</Text>
+
+            <Text style={{marginTop:30}}>{this.state.id}</Text>
+           
         </Container>
     );
+ }
 }

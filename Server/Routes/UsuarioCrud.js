@@ -22,6 +22,7 @@ const schemaLogin = Joi.object({
   email: Joi.string().min(6).max(255).required().email(),
   contra: Joi.string().min(2).max(1024).required()
 })
+
 //Añadir usuario
 router.post("/Usuario/Registro", async (req, res) => {
   try{
@@ -48,7 +49,7 @@ router.post("/Usuario/Registro", async (req, res) => {
   
     const savedUser = user.save();
     res.json({
-      error: {error},
+      error: null,
       response: "Añadido",
       data: savedUser
   })
@@ -59,6 +60,8 @@ router.post("/Usuario/Registro", async (req, res) => {
 }
  
 });
+
+//Login
 router.post('/Usuario/login', async (req, res) => {
   // validaciones
   const { error } = schemaLogin.validate(req.body);
@@ -69,11 +72,12 @@ router.post('/Usuario/login', async (req, res) => {
 
   const validPassword = await bcrypt.compare(req.body.contra, user.Contrasena);
   if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
-  
+ 
   try {
       // create token
+      console.log(user)
       const token = jwt.sign({
-          name: user.name,
+          name: user.Nombre,
           id: user._id
       }, "secret");
 
@@ -81,11 +85,13 @@ router.post('/Usuario/login', async (req, res) => {
           error: null,
           data: 'exito bienvenido',
           token: token,
-          id: user._id
+          id: user._id,
+          admi:user.Admi
           
       });
 
   }catch(e){
+    
       return status(400).json({error: "Hubo un error en el login, por favor intenta de nuevo"})
   }
 

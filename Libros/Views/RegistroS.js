@@ -54,11 +54,11 @@ class RegisterScreen extends React.Component {
         }),
       })
         .then((res) => res.json())
-        .then((error) => {
-          console.log(error.error);
-          if (error.error) {
+        .then((data) => {
+          console.log(data.error);
+          if (data.error != null) {
             this.setState({ error: true });
-            this.setState({ claseE: error.error });
+            this.setState({ claseE: data.error });
           }
         })
         .finally(() => {
