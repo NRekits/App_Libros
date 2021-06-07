@@ -41,7 +41,7 @@ export default function DireccionScreen ({route,navigation}){
       <LinearGradient colors={["#FFFFFF", "#C0FFC0", "#FFFFFF"]} style={styles.background}/>
       <Header transparent androidStatusBarColor="#C0FFC0">
         <Body style={{alignItems:"center"}}>
-          <Title style={styles.Header}>{id}</Title>
+          <Title style={styles.Header}>Aplicacion</Title>
         </Body>
       </Header>
       <H3 style={{alignSelf:"center"}}>Detalles</H3>
@@ -58,16 +58,15 @@ export default function DireccionScreen ({route,navigation}){
         </Row>
         <Row>
           <Col>
-            <Button info block rounded onPress={()=>{
-              //navigation.navigate("ModificarDir",{dirId:direccion.id});
-              Toast.show({ text: 'Modificar', buttonText: 'Okay'})
-            }}>
-              <Text>Modificar</Text>
+            <Button danger block rounded onPress={showAlert}>
+              <Text>Eliminar</Text>
             </Button>
           </Col>
           <Col>
-            <Button danger block rounded onPress={showAlert}>
-              <Text>Eliminar</Text>
+            <Button info block rounded onPress={()=>{
+              navigation.navigate("ModificarDir",{dirId:direccion.id});
+            }}>
+              <Text>Modificar</Text>
             </Button>
           </Col>
         </Row>
