@@ -1,8 +1,8 @@
 /* El usuario aqui agrega una direccion */
-import React, { useEffect, useState } from "react";
-import { Text, Dimensions, Alert, Image, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import { Text, Dimensions, StyleSheet } from "react-native";
 import { Container, Header, Content, Form, Toast,
-        Item, Input,Label,Button, Body, Title, H3} from "native-base";
+        Item, Input,Label,Button, Body, Title, H3, Row, Col} from "native-base";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -122,18 +122,24 @@ export default function ADireccionScreen (){
               onChangeText={(calle)=>setCalle(calle)}
             />
           </Item>
-          <Item floatingLabel style={styles.Item}>
-            <Label style={styles.Label}>Numero</Label> 
-            <Input keyboardType="numeric" style={styles.Input}
-              onChangeText={(num)=>setNumeroInt(num)}
-            />
-          </Item>
-          <Item floatingLabel style={styles.Item}>
-            <Label style={styles.Label}>Codigo Postal</Label> 
-            <Input keyboardType="numeric" style={styles.Input}
-              onChangeText={(cp)=>setCP(cp)}
-            />
-          </Item>
+          <Row>
+            <Col>
+              <Item floatingLabel style={styles.Item}>
+                <Label style={styles.Label}>Numero</Label> 
+                <Input keyboardType="numeric" style={styles.Input}
+                  onChangeText={(num)=>setNumeroInt(num)}
+                />
+              </Item>
+            </Col>
+            <Col>
+              <Item floatingLabel style={styles.Item}>
+                <Label style={styles.Label}>Codigo Postal</Label> 
+                <Input keyboardType="numeric" style={styles.Input}
+                  onChangeText={(cp)=>setCP(cp)}
+                />
+              </Item>
+            </Col>
+          </Row>
           <Button block rounded success
             style={styles.Button} onPress={Check}
           >
@@ -154,24 +160,6 @@ const styles = StyleSheet.create({
     padding: 20,
     fontFamily: "Dosis",
   },
-  Text2: {
-    marginTop: 5,
-    fontWeight: "400",
-    fontSize: 20,
-    marginLeft: 5,
-    fontFamily: "Dosis",
-  },
-  Text3: {
-    marginTop: 10,
-    fontSize: 15,
-    color: "#0D7C0D",
-    marginLeft: 5,
-    fontFamily: "Dosis",
-  },
-  Image: {
-    alignSelf: "center",
-    marginBottom: 10,
-  },
   Input: {
     alignSelf: "flex-start",
     fontFamily: "Dosis",
@@ -182,24 +170,16 @@ const styles = StyleSheet.create({
   Label: {
     fontWeight: "400",
     fontSize: 18,
-    padding: 10,
     marginBottom: 10,
   },
   Button: {
     alignSelf: "center",
-    marginTop: 20,
+    marginTop: 40,
     borderColor: "#9BFFA3",
   },
   Item: {
-    marginTop: 10,
+    marginTop: 15,
     padding: 5,
-  },
-  H1: {
-    alignSelf: "center",
-    fontFamily: "Dosis",
-    fontWeight: "400",
-    fontSize: 30,
-    marginTop: 20,
   },
   background: {
     position: "absolute",
