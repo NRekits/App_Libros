@@ -152,7 +152,7 @@ export default class LoginScreen extends React.Component {
           <Text
             style={styles.Text3}
             onPress={() => {
-              navigation.navigate("Registro");
+              this.props.navigation.navigate("Registro");
             }}
           >
             {" "}
