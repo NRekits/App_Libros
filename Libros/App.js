@@ -9,6 +9,8 @@ import LoginScreen from "./Views/LoginS";
 import RegisterScreen from "./Views/RegistroS";
 import PerfilScreen from "./Views/Usuario/PerfilS";
 import HomeScreen from "./Views/Usuario/HomeS";
+import DirDetalles from "./Views/Direccion/DireccionS";
+import ModificarDir from "./Views/Direccion/ModificarDirS";
 
 
 
@@ -49,6 +51,8 @@ class App extends React.Component {
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
               <Stack.Screen name='Home' component={HomeScreen} />
+              <Stack.Screen name='DirDetalles' component={DirDetalles} />
+              <Stack.Screen name='ModificarDir' component={ModificarDir} />
             </Stack.Navigator>
           </NavigationContainer>
         </Root>
