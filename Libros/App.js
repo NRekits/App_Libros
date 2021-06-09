@@ -17,7 +17,7 @@ import ADireccionScreen from "./Views/Direccion/AñadirDirS";
 import DireccionesScreen from './Views/Direccion/DireccionesS' 
 import DirDetalles from "./Views/Direccion/DireccionS";
 import ModificarDir from "./Views/Direccion/ModificarDirS";
-
+import AddLibro from "./Views/CRUD/Libro/AñadirL";
 
 
 const Stack = createStackNavigator();
@@ -56,7 +56,7 @@ class App extends React.Component {
             <Stack.Navigator screenOptions={{
               headerShown: false
             }}
-              initialRouteName='Login'>
+              initialRouteName='CrudAddLibro'>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
@@ -65,6 +65,7 @@ class App extends React.Component {
               <Stack.Screen name='Direcciones' component={DireccionesScreen} />
               <Stack.Screen name='DirDetalles' component={DirDetalles} />
               <Stack.Screen name='ModificarDir' component={ModificarDir} />
+              <Stack.Screen name='CrudAddLibro' component={AddLibro} />
               <Stack.Screen name='Carrito' component={CarritoScreen} />
             </Stack.Navigator>
           </NavigationContainer>

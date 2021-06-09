@@ -109,9 +109,7 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "white",
   },
-
   Text2: {
-
     fontWeight: "300",
     fontSize: 15,
     color: "white",
@@ -124,15 +122,15 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: "Dosis",
   },
-
-
   Button: {
     alignSelf: "center",
     backgroundColor: '#BB8FCE',
     fontFamily: 'Dosis',
     fontWeight: "400",
   },
-
+  Item: {
+    padding: 5,
+  },
   background: {
     position: "absolute",
     left: 0,
