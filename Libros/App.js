@@ -11,6 +11,8 @@ import RegisterScreen from "./Views/RegistroS";
 import PerfilScreen from "./Views/Usuario/PerfilS";
 import HomeScreen from "./Views/Usuario/HomeS";
 import CarritoScreen from "./Views/Usuario/CarritoS";
+import LibroGenero from './Views/Libro/LibrosGenero';
+
 
 //Direccion
 import ADireccionScreen from "./Views/Direccion/AñadirDirS";
@@ -18,6 +20,7 @@ import DireccionesScreen from './Views/Direccion/DireccionesS'
 import DirDetalles from "./Views/Direccion/DireccionS";
 import ModificarDir from "./Views/Direccion/ModificarDirS";
 import AddLibro from "./Views/CRUD/Libro/AñadirL";
+
 
 
 const Stack = createStackNavigator();
@@ -67,6 +70,7 @@ class App extends React.Component {
               <Stack.Screen name='ModificarDir' component={ModificarDir} />
               <Stack.Screen name='AddLibro' component={AddLibro} />
               <Stack.Screen name='Carrito' component={CarritoScreen} />
+              <Stack.Screen name='Generos' component={LibroGenero} />
             </Stack.Navigator>
           </NavigationContainer>
         </Root>

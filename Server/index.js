@@ -37,9 +37,6 @@ app.use(BookRoutes);
 app.use(EditRoutes);
 app.use(DeliRoutes);
 
-
-
-
 app.listen(port, function() {
   console.log(`Servidor web escuchando en el puerto ${port}`);
 });
