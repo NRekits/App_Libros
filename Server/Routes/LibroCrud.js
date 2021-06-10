@@ -16,7 +16,7 @@ router.post("/Insertar", async (req, res) => {
     const book = new libro({
         Titulo: req.body.titulo,
         Autor: req.body.autor,
-        Id_editorial:req.body.editorial,
+        Id_editorial: mongoose.Types.ObjectId(req.body.editorial),
         Precio: req.body.precio,
         Cantidad_dis: req.body.cantidad,
         Fecha_adquision: req.body.fecha,
@@ -32,10 +32,13 @@ router.post("/Insertar", async (req, res) => {
       error: null,
       response: "Añadido",
       data: savedBook
+      
   })
+  console.log(savedBook)
    
 
 } catch (error) {
+  console.log(error.message)
     res.status(400).json({error})
 }
  
