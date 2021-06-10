@@ -6,10 +6,15 @@ const Schema = mongoose.Schema;
 const libroSchema = new Schema({
     Titulo: { type: String },
     Autor: { type: String },
+    Sinopsis:{type: String},
+    Genero: {type:String},
     Id_editorial: { type: Schema.Types.ObjectId, ref: "Editorial", default: undefined },
     Precio: { type: Number },
     Cantidad_dis: { type:Number },
-    Fecha_adquision: { type: Date }
+    Imagen: { type:String },
+    Vendidos: { type:Number, default:0 },
+    Fecha_adquision: { type: Date },
+    Formato:{type:String}
 });
 
 module.exports = mongoose.model('Libro', libroSchema,'Libro');
