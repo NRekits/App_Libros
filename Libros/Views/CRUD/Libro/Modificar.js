@@ -41,8 +41,8 @@ export default class ModLibro extends React.Component {
 	}
 
 	componentDidMount() {
-		const { id, libro, imageFile } = this.props.route.params;
-		this.setState({ libro: libro, imageFile: imageFile, id: id });
+		// const { id, libro, imageFile } = this.props.route.params;
+		// this.setState({ libro: libro, imageFile: imageFile, id: id });
 	}
 
 	uploadImage = async () => {
@@ -156,15 +156,17 @@ export default class ModLibro extends React.Component {
 		//     .finally(() => { });
 
 		// send the libro
-		fetch('', {
-			method: 'POST',
-			body: JSON.stringify({
-				libro: libro
-			}),
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		})
+
+		// fetch('', {
+		// 	method: 'POST',
+		// 	body: JSON.stringify({
+		// 		libro: libro
+		// 	}),
+		// 	headers: {
+		// 		'Content-Type': 'application/json'
+		// 	}
+		// })
+
 	}
 
 	deleteBook(){
@@ -336,10 +338,17 @@ export default class ModLibro extends React.Component {
 								}}
 							/>
 						)}
+
 						<Button full block rounded success style={styles.Button} onPress={() => {
 							this.Check();
 						}}>
 							<Text>Guardar</Text>
+						</Button>
+
+						<Button full block rounded danger style={styles.Button} onPress={() => {
+							this.deleteBook();
+						}}>
+							<Text>Borrar</Text>
 						</Button>
 					</Form>
 				</Content>

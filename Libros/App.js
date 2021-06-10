@@ -60,7 +60,7 @@ class App extends React.Component {
             <Stack.Navigator screenOptions={{
               headerShown: false
             }}
-              initialRouteName='AddLibro'>
+              initialRouteName='ModLibro'>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
