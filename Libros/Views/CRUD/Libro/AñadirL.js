@@ -66,6 +66,7 @@ export default class AddLibro extends React.Component {
         let msg = "";
         let error = false;
         const { libro } = this.state;
+        console.log(Number(libro.precio));
 
         if (libro.titulo === "") {
             msg = "Titulo es un campo requerido";
@@ -83,23 +84,15 @@ export default class AddLibro extends React.Component {
             msg = "Precio es un campo requerido";
             error = true;
         }
-        else if (!libro.precio.match("\\d*\\.\\d*$")) {
-            msg = "No se permiten letras en el precio";
-            error = true;
-        }
-        else if(libro.precio.includes(',')){
-            msg = "No se permiten comas en el precio";
+        else if (libro.precio.includes('.') || libro.precio.includes(',') || libro.precio.includes(' ') || libro.precio.includes('-')) {
+            msg = "No se permiten caracteres especiales en la cantidad";
             error = true;
         }
         else if (libro.cantidad === "") {
             msg = "Cantidad es un campo requerido";
             error = true;
         }
-        else if (!libro.cantidad.match("\\d*$")) {
-            msg = "No se permiten letras en la cantidad";
-            error = true;
-        }
-        else if(libro.cantidad.includes('.') || libro.cantidad.includes(',')){
+        else if(libro.cantidad.includes('.') || libro.cantidad.includes(',') || libro.cantidad.includes(" ") || libro.cantidad.includes('-')){
             msg = "No se permiten valores decimales en la cantidad";
             error = true;
         }
@@ -126,10 +119,7 @@ export default class AddLibro extends React.Component {
         if (error) {
             Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
         } else {
-            const testNumero = Number(libro.precio);
-            console.log(testNumero);
-            Toast.show({text: "Funciona", buttonText: "Entendido", type: "success"});
-            // this.saveBook();
+             this.saveBook();
         }
     }
 
@@ -169,7 +159,7 @@ export default class AddLibro extends React.Component {
                 editorial: libro.idEditorial,
                 precio: libro.precio,
                 cantidad: libro.cantidad,
-                fecha: libro.fecha,
+                fecha: libro.fecha.toISOString(),
                 sinopsis: libro.sinopsis,
                 genero: libro.genero,
                 // pendiente Imagen: { type:String },
@@ -221,6 +211,7 @@ export default class AddLibro extends React.Component {
                             <Label style={styles.Label}>Titulo</Label>
                             <Input
                                 value={libro.titulo}
+                                style={styles.Input}
                                 onChangeText={(text) => {
                                     libro.titulo = text;
                                     this.setState({ libro: libro });
@@ -230,6 +221,7 @@ export default class AddLibro extends React.Component {
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Autor</Label>
                             <Input
+                             style={styles.Input}
                                 value={libro.autor}
                                 onChangeText={(text) => {
                                     libro.autor = text;
@@ -250,8 +242,8 @@ export default class AddLibro extends React.Component {
                                 }}
                             >
                                 <Picker.Item label="Selecciona una editorial" value="" />
-                                <Picker.Item label="Yo" value="id0" />
-                                <Picker.Item label="Otro yo" value="id1" />
+                                <Picker.Item label="Yo" value="60bac6ae620ddd2f94994780" />
+                                <Picker.Item label="Otro yo" value="60bac6ae620ddd2f94994780" />
                             </Picker>
                         </Item>
 
@@ -259,6 +251,7 @@ export default class AddLibro extends React.Component {
                             <Label style={styles.Label}>Precio</Label>
                             <Input
                                 keyboardType="numeric"
+                                style={styles.Input}
                                 value={libro.precio}
                                 onChangeText={(value) => {
                                     libro.precio = value;
@@ -272,6 +265,7 @@ export default class AddLibro extends React.Component {
                             <Input
                                 keyboardType="numeric"
                                 style ={styles.Input}
+                                value={libro.cantidad}
                                 onChangeText={(value) => {
                                     libro.cantidad = value;
                                     this.setState({ libro: libro });
@@ -370,7 +364,7 @@ const styles = StyleSheet.create({
     },
     Input: {
         alignSelf: "flex-start",
-       
+        fontFamily: "Dosis",
         fontWeight: "400",
         fontSize: 20,
         marginRight: 5,
