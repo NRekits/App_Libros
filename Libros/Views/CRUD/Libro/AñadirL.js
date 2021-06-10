@@ -1,17 +1,22 @@
 import {
     Container, Left, Header, Form,
-    Item, Input, Icon, Content, Picker,
-    Button, Text, Toast
+    Item, Input, Content, Picker,
+    Button, Text, Toast, Body, Right,
+    Title, H3, Textarea, Label
 } from 'native-base';
 import {
-    Platform,
     StyleSheet,
     Image,
-    View
-} from 'react-native'
+    Dimensions
+} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import React from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome'
+import IP_DB from '../../../ip_address';
+
+
+const windowHeight = Dimensions.get('window').height;
 
 export default class AddLibro extends React.Component {
 
@@ -21,10 +26,13 @@ export default class AddLibro extends React.Component {
             libro: {
                 titulo: '',
                 autor: '',
-                idEditorial: undefined,
+                idEditorial: '',
                 precio: '',
                 cantidad: '',
                 fecha: new Date(),
+                sinopsis: '',
+                genero: '',
+                formato: ''
             },
             imageFile: null,
             show: false
@@ -46,8 +54,7 @@ export default class AddLibro extends React.Component {
         let result = null;
         if (status === 'granted') {
             result = await ImagePicker.launchImageLibraryAsync({
-                allowsEditing: false,
-                aspect: [4, 3],
+                allowsEditing: false, aspect: [4, 3],
                 quality: 1
             });
             if (result !== null)
@@ -55,8 +62,71 @@ export default class AddLibro extends React.Component {
         }
     }
 
-    saveBook(){
-        const {libro} = this.state;
+    Check = () => {
+        let msg = "";
+        let error = false;
+        const { libro } = this.state;
+
+        if (libro.titulo === "") {
+            msg = "Titulo es un campo requerido";
+            error = true;
+        }
+        else if (libro.autor === "") {
+            msg = "Autor es un campo requerido";
+            error = true;
+        }
+        else if (libro.fecha === undefined || libro.fecha === null) {
+            msg = "Se debe asignar una fecha";
+            error = true;
+        }
+        else if (libro.precio === "") {
+            msg = "Precio es un campo requerido";
+            error = true;
+        }
+        else if (libro.cantidad === "") {
+            msg = "Cantidad es un campo requerido";
+            error = true;
+        }
+        else if (libro.idEditorial === "") {
+            msg = "Editorial es un campo requerido";
+            error = true;
+        }
+        else if (libro.genero === "") {
+            msg = "Genero es un campo requerido";
+            error = true;
+        }
+        else if (libro.sinopsis === "") {
+            msg = "Sinopsis es un campo requerido";
+            error = true;
+        }
+        else if (libro.formato === "") {
+            msg = "Formato es un campo requerido";
+            error = true;
+        }
+        else if (libro.precio.toLowerCase().includes(/[^a-z]/g)) {
+            msg = "No se permiten letras en el precio";
+            error = true;
+        }
+        else if (libro.cantidad.toLowerCase().includes(/[^a-z]/g)) {
+            msg = "No se permiten letras en el precio";
+            error = true;
+        }
+        else if (this.state.imageFile === undefined || this.state.imageFile === null) {
+            msg = "Carga una imagen para el libro";
+            error = true;
+        }
+
+        if (error) {
+            Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
+        } else {
+            this.saveBook();
+        }
+    }
+
+    saveBook() {
+        let { libro } = this.state;
+        libro.cantidad = Number(libro.cantidad.toLowerCase().replace(" ", ""));
+        libro.precio = Number(libro.precio.toLowerCase().replace(" ", ""));
         const uri = this.state.imageFile;
         let uriParts = uri.split('.');
         let fileType = uriParts[uriParts.length - 1];
@@ -66,17 +136,20 @@ export default class AddLibro extends React.Component {
             name: `${libro.titulo}.${fileType}`,
             type: `image/${fileType}`
         });
-        fetch('', {
-            method: 'POST',
-            body: formData,
-            headers: {
-                Accept: 'application/json',
-                'Content-Type': 'multipart/form-data'
-            }
-        }).then((res) => res.json())
-        .then((res) => {console.log(res)})
-        .catch(e => {console.log(e)})
-        .finally(() => {});
+
+        // fetch('', {
+        //     method: 'POST',
+        //     body: formData,
+        //     headers: {
+        //         Accept: 'application/json',
+        //         'Content-Type': 'multipart/form-data'
+        //     }
+        // }).then((res) => res.json())
+        //     .then((res) => { console.log(res) })
+        //     .catch(e => { console.log(e) })
+        //     .finally(() => { });
+
+        // send the libro
         fetch('', {
             method: 'POST',
             body: JSON.stringify({
@@ -91,24 +164,33 @@ export default class AddLibro extends React.Component {
     render() {
         let { libro } = this.state;
         return (
-            <Container>
+            <Container style={styles.Container}>
                 <Header transparent
                     androidStatusBarColor="#C0FFC0"
                     style={styles.Header}
                 >
                     <Left>
-                        <Icon name="home" style={{ color: "white" }}></Icon>
+                        <Button transparent style={styles.Button}
+                            onPress={() => {
+                                this.props.navigation.navigate.goBack();
+                            }}>
+                            <Icon name="chevron-left" size={30} />
+                        </Button>
                     </Left>
+                    <Body>
+                        <Title style={styles.Header}>LIBROS</Title>
+                    </Body>
+                    <Right></Right>
                 </Header>
-                <Content>
-                    {this.state.imageFile && (
-                        <Image source={{ uri: this.state.imageFile }} style={{width: 200, height: 200}} />
-                    )}
-                    <Button block onPress={() => { this.selectFile() }}>
+                <H3 style={{ alignSelf: 'center', fontSize: 20 }}>Añadir Libro</H3>
+                <Content style={styles.Content}>
+                    <Image source={{ uri: this.state.imageFile }} style={{ alignSelf: 'center', width: 200, height: 200, backgroundColor: "#666666" }} />
+                    <Button style={{ ...styles.Button }} rounded success block onPress={() => { this.selectFile() }}>
                         <Text>Cargar archivo</Text>
                     </Button>
                     <Form>
-                        <Item regular>
+                        <Item floatingLabel style={styles.Item}>
+                            <Label style={styles.Label}>Titulo</Label>
                             <Input
                                 placeholder="Titulo del libro"
                                 value={libro.titulo}
@@ -118,7 +200,8 @@ export default class AddLibro extends React.Component {
                                 }}
                             />
                         </Item>
-                        <Item regular>
+                        <Item floatingLabel style={styles.Item}>
+                            <Label style={styles.Label}>Autor</Label>
                             <Input
                                 placeholder="Autor del libro"
                                 value={libro.autor}
@@ -128,7 +211,8 @@ export default class AddLibro extends React.Component {
                                 }}
                             />
                         </Item>
-                        <Item picker>
+
+                        <Item picker style={styles.Item}>
                             <Picker
                                 mode="dropdown"
                                 placeholder="Editorial"
@@ -143,7 +227,8 @@ export default class AddLibro extends React.Component {
                             </Picker>
                         </Item>
 
-                        <Item stackedLabel>
+                        <Item floatingLabel style={styles.Item}>
+                            <Label style={styles.Label}>Precio</Label>
                             <Input
                                 placeholder="Precio"
                                 value={`${libro.precio}`}
@@ -154,7 +239,8 @@ export default class AddLibro extends React.Component {
                                 keyboardType="decimal-pad"
                             />
                         </Item>
-                        <Item stackedLabel>
+                        <Item floatingLabel style={styles.Item}>
+                            <Label style={styles.Label}>Cantidad</Label>
                             <Input
                                 placeholder="Cantidad"
                                 value={`${libro.cantidad}`}
@@ -165,10 +251,56 @@ export default class AddLibro extends React.Component {
                                 keyboardType="number-pad"
                             />
                         </Item>
-                        <Button full block onPress={() => {
+                        <Item>
+                            <Textarea
+                                style={{ width: '100%' }}
+                                rowSpan={5}
+                                bordered
+                                placeholder="Sinopsis"
+                                value={libro.sinopsis}
+                                onChangeText={(text) => {
+                                    libro.sinopsis = text;
+                                    this.setState({libro: libro});
+                                }}
+                                />
+                        </Item>
+
+                        <Item picker style={styles.Item}>
+                            <Picker
+                                mode="dropdown"
+                                placeholder="Genero"
+                                selectedValue={libro.genero}
+                                style={{ width: undefined, height: 50 }}
+                                onValueChange={(value) => {
+                                    libro.genero = value;
+                                    this.setState({ libro: libro });
+                                }}
+                            >
+                                <Picker.Item label="Yo" value="aqui va un id" />
+                            </Picker>
+                        </Item>
+
+                        <Item picker style={styles.Item}>
+                            <Picker
+                                mode="dropdown"
+                                placeholder="Formato"
+                                selectedValue={libro.formato}
+                                style={{ width: undefined, height: 50 }}
+                                onValueChange={(value) => {
+                                    libro.formato = value;
+                                    this.setState({ libro: libro });
+                                }}
+                            >
+                                <Picker.Item label="EPub" value="EPub" />
+                                <Picker.Item label="Físico" value="Físico" />
+                                <Picker.Item label="Ambos" value="Ambos" />
+                            </Picker>
+                        </Item>
+
+                        <Button full block rounded success style={styles.Button} onPress={() => {
                             this.setState({ show: true });
                         }}>
-                            <Text>Seleccionar fecha: {libro.fecha.toDateString()}</Text>
+                            <Text style={styles.Text2}>Seleccionar fecha: {libro.fecha.toDateString()}</Text>
                         </Button>
                         {this.state.show && (
                             <DateTimePicker
@@ -180,7 +312,8 @@ export default class AddLibro extends React.Component {
                                 }}
                             />
                         )}
-                        <Button full bolck onPress={() => {
+                        <Button full block rounded success style={styles.Button} onPress={() => {
+                            this.Check();
                         }}>
                             <Text>Guardar</Text>
                         </Button>
@@ -194,32 +327,31 @@ export default class AddLibro extends React.Component {
 const styles = StyleSheet.create({
     Container: {
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: "column",
         alignItems: "stretch",
         justifyContent: "center",
-        fontFamily: "Dosis",
-        color: "white",
-    },
-    Text2: {
-        fontWeight: "300",
-        fontSize: 15,
-        color: "white",
+        padding: 20,
         fontFamily: "Dosis",
     },
-    Text3: {
-        marginTop: 10,
-        fontSize: 15,
-        color: "#C4EFFF",
-        marginLeft: 5,
+    Input: {
+        alignSelf: "flex-start",
         fontFamily: "Dosis",
+        fontWeight: "400",
+        fontSize: 20,
+        marginRight: 5,
+    },
+    Label: {
+        fontWeight: "400",
+        fontSize: 18,
+        marginBottom: 10,
     },
     Button: {
         alignSelf: "center",
-        backgroundColor: '#BB8FCE',
-        fontFamily: 'Dosis',
-        fontWeight: "400",
+        marginTop: 40,
+        borderColor: "#9BFFA3",
     },
     Item: {
+        marginTop: 15,
         padding: 5,
     },
     background: {
@@ -227,13 +359,12 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         top: 0,
-        height: 100,
+        height: windowHeight,
     },
     Header: {
-        color: "#C4EFFF",
+        color: "#0D7C0D",
         fontFamily: "Dosis",
-        fontSize: 40,
-        fontWeight: "600",
-        alignSelf: "center",
+        fontSize: 20,
+        fontWeight: "600"
     },
 });
