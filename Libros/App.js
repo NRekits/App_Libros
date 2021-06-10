@@ -20,6 +20,7 @@ import DireccionesScreen from './Views/Direccion/DireccionesS'
 import DirDetalles from "./Views/Direccion/DireccionS";
 import ModificarDir from "./Views/Direccion/ModificarDirS";
 import AddLibro from "./Views/CRUD/Libro/AñadirL";
+import ModLibro from "./Views/CRUD/Libro/Modificar";
 
 
 
@@ -59,7 +60,7 @@ class App extends React.Component {
             <Stack.Navigator screenOptions={{
               headerShown: false
             }}
-              initialRouteName='AddLibro'>
+              initialRouteName='ModLibro'>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
@@ -69,6 +70,7 @@ class App extends React.Component {
               <Stack.Screen name='DirDetalles' component={DirDetalles} />
               <Stack.Screen name='ModificarDir' component={ModificarDir} />
               <Stack.Screen name='AddLibro' component={AddLibro} />
+              <Stack.Screen name='ModLibro' component={ModLibro} />
               <Stack.Screen name='Carrito' component={CarritoScreen} />
               <Stack.Screen name='Generos' component={LibroGenero} />
             </Stack.Navigator>
