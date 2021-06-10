@@ -11,16 +11,20 @@ import {
   Left,
   Right,
   Body,
-  Icon,
   Text,
   Item,
   Toast,
   Footer,
   FooterTab,
 } from "native-base";
-import * as SecureStore from "expo-secure-store";
+
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/FontAwesome";
+import IP_DB from "../../ip_address";
+
 import { LinearGradient } from 'expo-linear-gradient';
-import TabNav from '../../Components/tabNavigator'
+
+
 
 
 
@@ -37,8 +41,9 @@ export default class HomeScreen extends React.Component{
         
       }
     //Montar
-    componentDidMount() {
+ componentDidMount() {
         this.setState({ id: this.props.route.params.id})
+        console.log(this.state.id)
     }
 
     render(){
@@ -51,7 +56,9 @@ export default class HomeScreen extends React.Component{
             style={styles.Header}
           >
             <Left>
-              <Icon name="home" style={{ color: "white" }} />
+            <Button transparent style={styles.Button} onPress={this.goLista}>
+              <Icon name="search" size={30} />
+            </Button>
             </Left>
             <Body>
               <Title style={styles.Header}> HOME </Title>
@@ -62,7 +69,32 @@ export default class HomeScreen extends React.Component{
               
             </Right>
           </Header>
-          <TabNav/>
+          <Content/>
+          <Footer>
+          <FooterTab style={{ backgroundColor: "#FFF" }}>
+            <Button style={styles.Button} onPress={()=>{
+                  this.props.navigation.navigate("Perfil",{id:this.state.id});
+            }}>
+              <Icon name="user-circle-o" size={30} />
+            </Button>
+            <Button  style={styles.Button} onPress={ ()=>{
+              this.props.navigation.navigate("Carrito",{id:this.state.id})}
+              }>
+              <Ionicons name="cart" size={30} />
+            </Button>
+            <Button active style={styles.Button} onPress={this.goPerfil}>
+              <Icon name="home" size={30} />
+            </Button>
+            <Button  style={styles.Button} onPress={this.goPerfil}>
+              <Icon name="list-ul" size={30} />
+            </Button>
+            <Button style={styles.Button} onPress={this.goLista}>
+              <Icon name="heart" size={30} />
+            </Button>
+
+          </FooterTab>
+        </Footer>
+         
         </Container>
     );
  }
@@ -101,9 +133,6 @@ const styles = StyleSheet.create({
     fontWeight: "400",
   },
 
-  Item: {
-    padding: 5,
-  },
   background: {
     position: "absolute",
     left: 0,
@@ -111,9 +140,15 @@ const styles = StyleSheet.create({
     top: 0,
     height: 100,
   },
-  Header: {
-    color: "#C4EFFF",
+  Button: {
+    alignSelf: "center",
     fontFamily: "Dosis",
+    backgroundColor: "white",
+    fontWeight: "400",
+  },
+  Header: {
+    fontFamily: "Dosis",
+    color:'black',
     fontSize: 40,
     fontWeight: "600",
     alignSelf: "center",

@@ -2,14 +2,14 @@
 import React, { useState } from "react";
 import { Text, Dimensions, StyleSheet } from "react-native";
 import { Container, Header, Content, Form, Toast,
-        Item, Input,Label,Button, Body, Title, H3, Row, Col} from "native-base";
-import * as SecureStore from "expo-secure-store";
-import { LinearGradient } from 'expo-linear-gradient';
+        Item, Input,Label,Button, Body, Title, H3, Row, Col, Left,Right} from "native-base";
+        import Icon from "react-native-vector-icons/FontAwesome";
+        import IP_DB from "../../ip_address";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default function ADireccionScreen (){
+export default function ADireccionScreen ({route,navigation}){
   const [pais, setPais] = useState("");
   const [estado, setEstado] = useState("");
   const [ciudad, setCiudad] = useState("");
@@ -18,7 +18,7 @@ export default function ADireccionScreen (){
   const [numeroInt, setNumeroInt] = useState("");
   const [cp, setCP] = useState("");
 
-  Check = ()=>{ 
+  const Check = ()=>{ 
     var msg = "";
     var error = false;
 
@@ -66,8 +66,8 @@ export default function ADireccionScreen (){
       msg="No se permiten espacios en Codigo Postal"; 
       error = true;
     }
-    else if(cp.length != 7){
-      msg="Codigo Postal debe ser de 7 digitos"; 
+    else if(cp.length !=5){
+      msg="Codigo Postal debe ser de 5 digitos"; 
       error = true;
     }
 
@@ -75,20 +75,56 @@ export default function ADireccionScreen (){
       Toast.show({ text: msg, buttonText: 'Okay',type: 'warning'});
     }
     else{
-      Toast.show({ text: 'Todo correcto', buttonText: 'Okay',type: 'success'});
+      fetch(`http://${IP_DB}:3000/Usuario/InsertarDireccion/${route.params.id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },  
+         body: JSON.stringify({
+          pais: pais,
+          estado: estado,
+          ciudad: ciudad,
+          colonia: colonia,
+          calle: calle,
+          num:numeroInt,
+          cod:cp,
+       
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          Toast.show({ text: 'Dirección añadida', buttonText: 'Okay',type: 'success'});
+
+          navigation.navigate("Perfil", {
+            id: route.params.id,
+          });
+        })
+        .catch((error) => console.error(error));
+    
     }
   }
 
   return(
     <Container style={styles.Container}>
-      <LinearGradient colors={["#FFFFFF", "#C0FFC0", "#FFFFFF"]} style={styles.background}/>
-      <Header transparent androidStatusBarColor="#C0FFC0">
-        <Body style={{alignItems:"center"}}>
-          <Title style={styles.Header}>Aplicacion</Title>
+      <Header transparent androidStatusBarColor="#C0FFC0" style={styles.Header}>
+        <Left>
+          <Button
+            transparent
+            style={styles.Button}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Icon name="chevron-left" size={30} />
+          </Button>
+        </Left>
+        <Body>
+          <Title style={styles.Header}> DIRECCIONES </Title>
         </Body>
+        <Right></Right>
       </Header>
-
-      <H3 style={{alignSelf:"center"}}>Añadir direccion</H3>
+      
+      <H3 style={{alignSelf:"center", fontSize:20}}>Añadir dirección</H3>
 
       <Content style={styles.Content}>
         <Form>
@@ -191,7 +227,7 @@ const styles = StyleSheet.create({
   Header: {
     color: "#0D7C0D",
     fontFamily: "Dosis",
-    fontSize: 40,
+    fontSize: 20,
     fontWeight: "600"
   },
 });

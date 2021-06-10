@@ -2,50 +2,27 @@
 import React, { useState } from "react";
 import { Text, Dimensions, StyleSheet, Alert } from "react-native";
 import { Container, Header, Content, Form, Toast,
-        Item, Input,Label,Button, Body, Title, H3, Row, Col} from "native-base";
-import * as SecureStore from "expo-secure-store";
-import { LinearGradient } from 'expo-linear-gradient';
+        Item, Input,Label,Button, Body, Title, H3, Row, Col, Left, Right} from "native-base";
+
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
-const direcciones = [
-  {id:'abc', pais:'Mexico', estado:'Aguascalientes',ciudad:'Ags', colonia:'Col 1', calle:'Calle 4', numero:123, cp:1234567},
-  {id:'def', pais:'Colombia', estado:'Cordoba',ciudad:'Monteria', colonia:'Col 2', calle:'Calle 8', numero:456, cp:7891234},
-  {id:'ghi', pais:'Canada', estado:'Toronto',ciudad:'Thornhill', colonia:'Col 3', calle:'Calle 12', numero:789, cp:4567891},
-]
 
-const showAlert = ()=>{
-  Alert.alert('Alerta', '¿Confirmar cambios en la direccion?',
-    [
-      {
-        text:'Cancelar',
-        style: "cancel"
-      },
-      {
-        text:'Confirmar',
-        onPress:()=>Toast.show({ text: 'Cambios Efectuados', buttonText: 'Okay', type:'success'}),
-        style:"default"
-      },
-    ],
-    {
-      cancelable: true
-    }
-  );
-};
-
-export default function MDireccionScreen ({route,navigation}){
+import Icon from "react-native-vector-icons/FontAwesome";
+import IP_DB from "../../ip_address";
+export default function MDireccionScreen ({route, navigation}){
   const dirId = route.params.dirId
-  var data = direcciones.find(dir => dir.id == dirId);
+  var data = route.params.dirs
 
-  const [pais, setPais] = useState(data.pais);
-  const [estado, setEstado] = useState(data.estado);
-  const [ciudad, setCiudad] = useState(data.ciudad);
-  const [colonia, setColonia] = useState(data.colonia);
-  const [calle, setCalle] = useState(data.calle);
-  const [numeroInt, setNumeroInt] = useState(data.numero.toString());
-  const [cp, setCP] = useState(data.cp.toString());
+  const [pais, setPais] = useState(data.Pais);
+  const [estado, setEstado] = useState(data.Estado);
+  const [ciudad, setCiudad] = useState(data.Ciudad);
+  const [colonia, setColonia] = useState(data.Colonia);
+  const [calle, setCalle] = useState(data.Calle);
+  const [numeroInt, setNumeroInt] = useState(data.Numero_int.toString());
+  const [cp, setCP] = useState(data.Codigo_postal.toString());
 
-  Check = ()=>{ 
+  let Check = () => { 
     var msg = "";
     var error = false;
 
@@ -93,8 +70,8 @@ export default function MDireccionScreen ({route,navigation}){
       msg="No se permiten espacios en Codigo Postal"; 
       error = true;
     }
-    else if(cp.length != 7){
-      msg="Codigo Postal debe ser de 7 digitos"; 
+    else if(cp.length < 4){
+      msg="Codigo Postal debe ser de 4 digitos"; 
       error = true;
     }
 
@@ -102,20 +79,72 @@ export default function MDireccionScreen ({route,navigation}){
       Toast.show({ text: msg, buttonText: 'Okay',type: 'warning'});
     }
     else{
-      showAlert();
+      Alert.alert('Alerta', '¿Confirmar cambios en la direccion?',
+    [
+      {
+        text:'Cancelar',
+        style: "cancel"
+      },
+      {
+        text:'Confirmar',
+        onPress:()=>{
+          fetch(`http://${IP_DB}:3000/Usuario/ModificarDireccion/${route.params.id}/${dirId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },  
+             body: JSON.stringify({
+              pais: pais,
+              estado: estado,
+              ciudad: ciudad,
+              colonia: colonia,
+              calle: calle,
+              num:numeroInt,
+              cod:cp,
+           
+            }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              Toast.show({ text: 'Cambios Efectuados', buttonText: 'Okay', type:'success'})
+    
+              navigation.navigate("Perfil", {
+                id: dirId,
+              });
+            })
+            .catch((error) => console.error(error));
+        },
+        style:"default"
+      },
+    ],
+    {
+      cancelable: true
+    }
+  );
     }
   }
 
   return(
     <Container style={styles.Container}>
-      <LinearGradient colors={["#FFFFFF", "#C0FFC0", "#FFFFFF"]} style={styles.background}/>
       <Header transparent androidStatusBarColor="#C0FFC0">
+      <Left>
+              <Button
+                transparent
+                style={styles.Button}
+                onPress={() => {
+                  navigation.goBack();
+                }}
+              >
+                <Icon name="chevron-left" size={30} />
+              </Button>
+            </Left>
         <Body style={{alignItems:"center"}}>
-          <Title style={styles.Header}>Aplicacion</Title>
+          <Title style={styles.Header}>Detalles</Title>
         </Body>
+        <Right/>
       </Header>
 
-      <H3 style={{alignSelf:"center"}}>Añadir direccion</H3>
+      <H3 style={{alignSelf:"center"}}>Modificar direccion</H3>
 
       <Content style={styles.Content}>
         <Form>

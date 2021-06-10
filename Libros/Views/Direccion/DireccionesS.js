@@ -1,40 +1,89 @@
 /* El usuario aqui ve todas sus direcciones */
-import React from "react";
-import { Text, Dimensions, StyleSheet, SafeAreaView } from "react-native";
-import { Container, Header, Body, Title, H3, List, ListItem} from "native-base";
-import * as SecureStore from "expo-secure-store";
-import { LinearGradient } from 'expo-linear-gradient';
+import React, { useState, useEffect } from "react";
+import { Dimensions, StyleSheet, SafeAreaView } from "react-native";
+import {
+  Container,
+  Header,
+  Body,
+  Title,
+  H3,
+  List,
+  ListItem,
+  Left,
+  Right,
+  Button,
+  Text
+} from "native-base";
+import IP_DB from "../../ip_address";
+import Icon from "react-native-vector-icons/FontAwesome";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-const direcciones = [
-  {id:'abc', ciudad:'Aguascalientes', calle:'Calle 4', numero:123},
-  {id:'def', ciudad:'Monteria', calle:'Calle 8', numero:456},
-  {id:'ghi', ciudad:'Thornhill', calle:'Calle 12', numero:789},
-]
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
-export default function DireccionesScreen ({navigation}){
-  return(
+export default function DireccionesScreen({ route, navigation }) {
+  const [direcciones, setDirecciones] = useState([]);
+  const [idus, setIdus]=useState('');
+
+  useEffect(() => {
+    setIdus(route.params.id)
+    fetch(`http://${IP_DB}:3000/Usuario/Ver/${route.params.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setDirecciones(data.Direccion);
+      })
+      .catch((error) => console.error(error));
+  }, []);
+
+  return (
     <Container style={styles.Container}>
-      <LinearGradient colors={["#FFFFFF", "#C0FFC0", "#FFFFFF"]} style={styles.background}/>
-      <Header transparent androidStatusBarColor="#C0FFC0">
-        <Body style={{alignItems:"center"}}>
-          <Title style={styles.Header}>Aplicacion</Title>
+      <Header transparent androidStatusBarColor="#C0FFC0" style={styles.Header}>
+        <Left>
+          <Button
+            transparent
+            style={styles.Button}
+            onPress={() => {
+              navigation.goBack();
+            }}
+          >
+            <Icon name="chevron-left" size={30} />
+          </Button>
+        </Left>
+        <Body>
+          <Title style={styles.Header}> DIRECCIONES </Title>
         </Body>
+        <Right></Right>
       </Header>
+      
+      <Button
+            transparent
+            style={styles.Button}
+            onPress={() => {
+              navigation.navigate("ADireccion", { id:idus});
+            }}
+          >
+          <Text styles={styles.Text3}>Añadir Dirección</Text>
+          </Button>
+      <H3 style={styles.H3}>Presiona cualquiera para ver mas detalles</H3>
 
-      <H3 style={{alignSelf:"center"}}>Direcciones</H3>
-      <Text style={styles.Text3}>Presiona cualquiera para ver mas detalles</Text>
-
-      <SafeAreaView style={{flex:1}}>
-        <List 
-          dataArray={direcciones} 
-          keyExtractor={(item,index)=>index.toString()}
-          renderRow={(item)=>(
-            <ListItem button onPress={()=>{
-              navigation.navigate("DirDetalles",{dirId:item.id});
-            }}> 
-              <Text style={styles.Text2}>{item.ciudad}: {item.calle} #{item.numero}</Text>
+      <SafeAreaView style={{ flex: 1 }}>
+        <List
+          dataArray={direcciones}
+          keyExtractor={(item, index) => index.toString()}
+          renderRow={(item) => (
+            <ListItem
+              button
+              onPress={() => {
+                navigation.navigate("DirDetalles", { usid:idus, dirId: item._id, dirs: direcciones.find((dir) => dir._id == item._id)});
+              }}
+            >
+              <Text style={styles.Text2}>
+                {item.Ciudad}: {item.Calle} #{item.Numero_int}
+              </Text>
             </ListItem>
           )}
         />
@@ -63,8 +112,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 15,
     color: "black",
-    alignSelf:'center',
+    alignSelf: "center",
     fontFamily: "Dosis",
+  },
+  Button: {
+    alignSelf: "flex-start",
+    fontFamily: "Dosis",
+    backgroundColor: "white",
+    fontWeight: "400",
   },
   background: {
     position: "absolute",
@@ -74,9 +129,16 @@ const styles = StyleSheet.create({
     height: windowHeight,
   },
   Header: {
-    color: "#0D7C0D",
     fontFamily: "Dosis",
-    fontSize: 40,
-    fontWeight: "600"
+    fontSize: 20,
+    fontWeight: "600",
+    alignSelf: "center",
+    color: "#0D7C0D",
+  },
+  H3: {
+    fontFamily: "Dosis",
+    fontSize: 20,
+    fontWeight: "600",
+    alignSelf: "center",
   },
 });

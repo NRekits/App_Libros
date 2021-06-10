@@ -1,78 +1,157 @@
 /*El usuario puede ver los detalles de la direccion y tiene la opcion de modificar o eliminar */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Text, Dimensions, StyleSheet, Alert } from "react-native";
-import { Container, Header, Body, Content, Title, H3, Toast, Row, Col, Button} from "native-base";
-import * as SecureStore from "expo-secure-store";
-import { LinearGradient } from 'expo-linear-gradient';
+import {
+  Container,
+  Header,
+  Body,
+  Content,
+  Title,
+  H3,
+  Toast,
+  Row,
+  Col,
+  Left,
+  Right,
+  Button,
+  Spinner,
+} from "native-base";
+import Icon from "react-native-vector-icons/FontAwesome";
+import IP_DB from "../../ip_address";
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
-const direcciones = [
-  {id:'abc', pais:'Mexico', estado:'Aguascalientes',ciudad:'Ags', colonia:'Col 1', calle:'Calle 4', numero:123, cp:1234567},
-  {id:'def', pais:'Colombia', estado:'Cordoba',ciudad:'Monteria', colonia:'Col 2', calle:'Calle 8', numero:456, cp:7891234},
-  {id:'ghi', pais:'Canada', estado:'Toronto',ciudad:'Thornhill', colonia:'Col 3', calle:'Calle 12', numero:789, cp:4567891},
-]
 
-const showAlert = ()=>{
-  Alert.alert('Precaucion', '¿Estas seguro de eliminar esta direccion?',
-    [
+
+export default class DireccionScreen extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      id: "",
+      direccion: {},
+      cargar: false,
+      dirId:"",
+    };
+  }
+  //Montar
+  componentDidMount() {
+  
+    console.log(this.props.route.params.dirs);
+    this.setState({direccion: this.props.route.params.dirs, 
+      cargar:true, id:this.props.route.params.usid,
+      dirId : this.props.route.params.dirId});
+  }
+
+ showAlert = () => {
+    Alert.alert(
+      "Precaucion",
+      "¿Estas seguro de eliminar esta direccion?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Confirmar",
+          onPress: () =>{
+            fetch(`http://${IP_DB}:3000/Usuario/EliminarDireccion/${this.state.id}/${this.state.dirId}`, {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            })
+              .then((res) => res.json())
+              .then((data) => {
+                Toast.show({
+                  text: "Direccion eliminada",
+                  buttonText: "Okay",
+                  type: "danger",
+                })
+
+                this.props.navigation.navigate("Perfil", {
+                  id: this.state.id,
+                });
+              })
+              .catch((error) => console.error(error));
+          
+          },
+          style: "default",
+        },
+      ],
       {
-        text:'Cancelar',
-        style: "cancel"
-      },
-      {
-        text:'Confirmar',
-        onPress:()=>Toast.show({ text: 'Direccion eliminada', buttonText: 'Okay',type: 'danger'}),
-        style:"default"
-      },
-    ],
-    {
-      cancelable: true
+        cancelable: true,
+      }
+    );
+  };
+
+  render() {
+    if (this.state.cargar == false) {
+      return (
+        <Container>
+          <Spinner color="green" />
+        </Container>
+      );
+    } else {
+      return (
+        <Container style={styles.Container}>
+          <Header transparent androidStatusBarColor="#C0FFC0">
+            <Left>
+              <Button
+                transparent
+                style={styles.Button}
+                onPress={() => {
+                 this.props.navigation.goBack();
+                }}
+              >
+                <Icon name="chevron-left" size={30} />
+              </Button>
+            </Left>
+            <Body>
+              <Title style={styles.Header}> DETALLES </Title>
+            </Body>
+            <Right></Right>
+          </Header>
+
+          <Content>
+            <Text style={styles.Text2}>Pais: {this.state.direccion.Pais}</Text>
+            <Text style={styles.Text2}>Estado: {this.state.direccion.Estado}</Text>
+            <Text style={styles.Text2}>Ciudad: {this.state.direccion.Ciudad}</Text>
+            <Text style={styles.Text2}>Colonia: {this.state.direccion.Colonia}</Text>
+            <Text style={styles.Text2}>Calle: {this.state.direccion.Calle}</Text>
+            <Row>
+              <Col>
+                <Text style={styles.Text2}>Numero: {this.state.direccion.Numero_int}</Text>
+              </Col>
+              <Col>
+                <Text style={styles.Text2}>CP: {this.state.direccion.Codigo_postal}</Text>
+              </Col>
+              </Row>
+            <Row>
+              <Col>
+                <Button danger block rounded onPress={this.showAlert}>
+                  <Text>Eliminar</Text>
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  info
+                  block
+                  rounded
+                  onPress={() => {
+                    this.props.navigation.navigate("ModificarDir", {
+                      dirId: this.state.direccion._id, dirs:this.state.direccion, id:this.state.id
+                    });
+                  }}
+                >
+                  <Text>Modificar</Text>
+                </Button>
+              </Col>
+            </Row>
+          </Content>
+        </Container>
+      );
     }
-  );
-};
-
-export default function DireccionScreen ({route,navigation}){
-  const dirId = route.params.dirId
-  var direccion = direcciones.find(dir => dir.id == dirId);
-
-  return(
-    <Container style={styles.Container}>
-      <LinearGradient colors={["#FFFFFF", "#C0FFC0", "#FFFFFF"]} style={styles.background}/>
-      <Header transparent androidStatusBarColor="#C0FFC0">
-        <Body style={{alignItems:"center"}}>
-          <Title style={styles.Header}>Aplicacion</Title>
-        </Body>
-      </Header>
-      <H3 style={{alignSelf:"center"}}>Detalles</H3>
-
-      <Content>
-        <Text style={styles.Text2}>Pais: {direccion.pais}</Text>
-        <Text style={styles.Text2}>Estado: {direccion.estado}</Text>
-        <Text style={styles.Text2}>Ciudad: {direccion.ciudad}</Text>
-        <Text style={styles.Text2}>Colonia: {direccion.colonia}</Text>
-        <Text style={styles.Text2}>Calle: {direccion.calle}</Text>
-        <Row>
-          <Col><Text style={styles.Text2}>Numero: {direccion.numero}</Text></Col>
-          <Col><Text style={styles.Text2}>CP: {direccion.cp}</Text></Col>
-        </Row>
-        <Row>
-          <Col>
-            <Button danger block rounded onPress={showAlert}>
-              <Text>Eliminar</Text>
-            </Button>
-          </Col>
-          <Col>
-            <Button info block rounded onPress={()=>{
-              navigation.navigate("ModificarDir",{dirId:direccion.id});
-            }}>
-              <Text>Modificar</Text>
-            </Button>
-          </Col>
-        </Row>
-      </Content>
-    </Container>
-  )
+  }
 }
 const styles = StyleSheet.create({
   Container: {
@@ -94,7 +173,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 15,
     color: "black",
-    alignSelf:'center',
+    alignSelf: "center",
     fontFamily: "Dosis",
   },
   background: {
@@ -107,7 +186,7 @@ const styles = StyleSheet.create({
   Header: {
     color: "#0D7C0D",
     fontFamily: "Dosis",
-    fontSize: 40,
-    fontWeight: "600"
+    fontSize: 25,
+    fontWeight: "600",
   },
 });

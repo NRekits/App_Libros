@@ -100,6 +100,33 @@ router.post('/Usuario/login', async (req, res) => {
 })
 
 //Modificar usuario
+router.get("/Usuario/Ver/:id", async (req, res) => {
+  const id = req.params.id;
+  const user = await Usuario.findById({ _id: id })
+   
+  try {
+    // create token
+
+    res.json({
+      error:null,
+      Id:user._id,
+      Nombre: user.Nombre,
+      Apellido: user.Apellido,
+      Contrasena: user.Contrasena,
+      Email: user.Email,
+      Deseos: user.Deseos,
+      Carrito: user.Carrito,
+      Direccion: user.Direccion
+        
+    });
+
+}catch(e){
+  
+    return status(400).json({error: "Hubo un error, por favor intenta de nuevo"})
+}
+});
+
+//Modificar usuario
 router.put("/Usuario/Modificar/:id", (req, res) => {
   const id = req.params.id;
   const Nom = req.body.Nombre;

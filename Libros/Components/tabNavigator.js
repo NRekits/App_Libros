@@ -12,57 +12,51 @@ import {
   Content,
   Form,
   Footer,
-  FooterTab,
-  Icon,
-  Input,
-  Item,
-  Label,
-  Text,
-  Title,
-  Left,
-  Right,
-  Body,
+  FooterTab
 } from "native-base"; //Estos son los elementos que habrá en la pantalla
 
 import Ionicons from "react-native-vector-icons/Ionicons";
-//Fuente
-import * as Font from "expo-font";
+import Icon from "react-native-vector-icons/FontAwesome";
+
 //pantallas
-import PerfilScreen from "../Views/Usuario/PerfilS";
 
-const Tab = createBottomTabNavigator();
-
-class TabNav extends React.Component {
+export default class TabNav extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: true,
+      id:''
     };
   }
 
-  async componentDidMount() {
-    await Font.loadAsync({
-      Roboto: require("native-base/Fonts/Roboto.ttf"),
-      Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf"),
-    }).finally(() => {
-      this.setState({ isLoading: false });
-    });
+  componentDidMount() {
+    /*console.log(this.props.Id)
+    this.setState({ id: this.props.Id });*/
+  }
+
+  goPerfil = () => {
+    this.props.navigation.navigate("Perfil");
   }
 
   render() {
     return (
-      <Container>
-    
+      <Container style={styles.Container}>
+
         <Footer>
-          <FooterTab>
-            <Button style={styles.Button} onPress={this.goEstado}>
-            <Ionicons name='person'/>
+          <FooterTab style={{ backgroundColor: "#FFF" }}>
+            <Button style={styles.Button} onPress={()=>{
+                  this.props.navigation.navigate("Perfil");
+            }}>
+              <Ionicons name="person" size={30} />
             </Button>
             <Button active style={styles.Button} onPress={this.goPerfil}>
-              <Icon name="person" />
+              <Ionicons name="cart" size={30} />
             </Button>
             <Button style={styles.Button} onPress={this.goLista}>
-              <Icon name="flame" />
+              <Icon name="heart" size={30} />
+            </Button>
+            <Button style={styles.Button} onPress={this.goLista}>
+              <Icon name="heart-o" size={30} />
             </Button>
           </FooterTab>
         </Footer>
@@ -71,11 +65,10 @@ class TabNav extends React.Component {
   }
 }
 
-export default TabNav;
 const styles = StyleSheet.create({
   Container: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
     alignItems: "stretch",
     justifyContent: "center",
     fontFamily: "Dosis",
@@ -83,7 +76,6 @@ const styles = StyleSheet.create({
   },
 
   Text2: {
-
     fontWeight: "300",
     fontSize: 15,
     color: "white",
@@ -97,10 +89,10 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
   },
 
-
   Button: {
     alignSelf: "center",
-    fontFamily: 'Dosis',
+    fontFamily: "Dosis",
+    backgroundColor: "white",
     fontWeight: "400",
   },
 
@@ -113,12 +105,5 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: 100,
-  },
-  Header: {
-    color: "#C4EFFF",
-    fontFamily: "Dosis",
-    fontSize: 40,
-    fontWeight: "600",
-    alignSelf: "center",
   },
 });
