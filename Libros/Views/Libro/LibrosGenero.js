@@ -47,8 +47,8 @@ export default class LibroGenero extends React.Component{
 				<Right />
 			</Header>
 
-			<Tabs style={styles.Header} renderTabBar={() => <ScrollableTab />}>
-        <Tab heading="Aventura">
+			<Tabs renderTabBar={() => <ScrollableTab />}>
+        <Tab tabStyle={{backgroundColor: "#FFF"}} heading="Aventura">
           <Container>
             <Text>Aventura</Text>
           </Container>
