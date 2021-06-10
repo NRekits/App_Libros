@@ -47,38 +47,81 @@ export default class LibroGenero extends React.Component{
 				<Right />
 			</Header>
 
-			<Tabs renderTabBar={() => <ScrollableTab />}>
-        <Tab tabStyle={{backgroundColor: "#FFF"}} heading="Aventura">
+			<Tabs tabBarUnderlineStyle={{backgroundColor: '#0D7C0D'}} initialPage={0} renderTabBar={() => <ScrollableTab />}>
+        <Tab
+
+          activeTabStyle={{backgroundColor: 'white'}}
+          activeTextStyle={styles.Header}
+          textStyle={styles.Header}
+          tabStyle={{backgroundColor: 'white'}}
+
+          heading="Aventura">
           <Container>
             <Text>Aventura</Text>
           </Container>
         </Tab>
-        <Tab heading="Ciencia ficción">
+        <Tab
+
+          activeTabStyle={{backgroundColor: 'white'}}
+          activeTextStyle={styles.Header}
+          textStyle={styles.Header}
+          tabStyle={{backgroundColor: 'white'}}
+        heading="Ciencia ficción">
           <Container>
             <Text>Ciencia ficción</Text>
           </Container>
         </Tab>
-        <Tab heading="Terror">
+        <Tab
+
+          activeTabStyle={{backgroundColor: 'white'}}
+          activeTextStyle={styles.Header}
+          textStyle={styles.Header}
+          tabStyle={{backgroundColor: 'white'}}
+        heading="Terror">
           <Container>
             <Text>Terror</Text>
           </Container>
         </Tab>
-        <Tab heading="Romance">
+        <Tab
+
+          activeTabStyle={{backgroundColor: 'white'}}
+          activeTextStyle={styles.Header}
+          textStyle={styles.Header}
+          tabStyle={{backgroundColor: 'white'}}
+        heading="Romance">
           <Container>
             <Text>Romance</Text>
           </Container>
         </Tab>
-        <Tab heading="Humor">
+        <Tab
+
+          activeTabStyle={{backgroundColor: 'white'}}
+          activeTextStyle={styles.Header}
+          textStyle={styles.Header}
+          tabStyle={{backgroundColor: 'white'}}
+        heading="Humor">
           <Container>
             <Text>Humor</Text>
           </Container>
         </Tab>
-        <Tab heading="Poesía">
+        <Tab
+
+          activeTabStyle={{backgroundColor: 'white'}}
+          activeTextStyle={styles.Header}
+          textStyle={styles.Header}
+          tabStyle={{backgroundColor: 'white'}}
+        heading="Poesía">
           <Container>
             <Text>Poesía</Text>
           </Container>
         </Tab>
-        <Tab heading="Clásicos">
+        <Tab
+
+          activeTabStyle={{backgroundColor: 'white'}}
+          activeTextStyle={styles.Header}
+          textStyle={styles.Header}
+          tabStyle={{backgroundColor: 'white'}}
+        heading="Clásicos">
           <Container>
             <Text>Clásicos</Text>
           </Container>

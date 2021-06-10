@@ -66,6 +66,7 @@ export default class AddLibro extends React.Component {
         let msg = "";
         let error = false;
         const { libro } = this.state;
+        console.log(Number(libro.precio));
 
         if (libro.titulo === "") {
             msg = "Titulo es un campo requerido";
@@ -83,23 +84,15 @@ export default class AddLibro extends React.Component {
             msg = "Precio es un campo requerido";
             error = true;
         }
-        else if (!libro.precio.match("\\d*\\.\\d*$")) {
-            msg = "No se permiten letras en el precio";
-            error = true;
-        }
-        else if(libro.precio.includes(',')){
-            msg = "No se permiten comas en el precio";
+        else if (libro.precio.includes('.') || libro.precio.includes(',') || libro.precio.includes(' ') || libro.precio.includes('-')) {
+            msg = "No se permiten caracteres especiales en la cantidad";
             error = true;
         }
         else if (libro.cantidad === "") {
             msg = "Cantidad es un campo requerido";
             error = true;
         }
-        else if (!libro.cantidad.match("\\d*$")) {
-            msg = "No se permiten letras en la cantidad";
-            error = true;
-        }
-        else if(libro.cantidad.includes('.') || libro.cantidad.includes(',')){
+        else if(libro.cantidad.includes('.') || libro.cantidad.includes(',') || libro.cantidad.includes(" ") || libro.cantidad.includes('-')){
             msg = "No se permiten valores decimales en la cantidad";
             error = true;
         }
@@ -126,8 +119,6 @@ export default class AddLibro extends React.Component {
         if (error) {
             Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
         } else {
-            const testNumero = Number(libro.precio);
-            console.log(testNumero);
             Toast.show({text: "Funciona", buttonText: "Entendido", type: "success"});
             // this.saveBook();
         }
@@ -202,7 +193,6 @@ export default class AddLibro extends React.Component {
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Titulo</Label>
                             <Input
-                                placeholder="Titulo del libro"
                                 value={libro.titulo}
                                 onChangeText={(text) => {
                                     libro.titulo = text;
@@ -213,7 +203,6 @@ export default class AddLibro extends React.Component {
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Autor</Label>
                             <Input
-                                placeholder="Autor del libro"
                                 value={libro.autor}
                                 onChangeText={(text) => {
                                     libro.autor = text;
@@ -242,8 +231,7 @@ export default class AddLibro extends React.Component {
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Precio</Label>
                             <Input
-                                placeholder="Precio"
-                                value={`${libro.precio}`}
+                                value={libro.precio}
                                 onChangeText={(value) => {
                                     libro.precio = value;
                                     this.setState({ libro: libro });
@@ -254,8 +242,7 @@ export default class AddLibro extends React.Component {
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Cantidad</Label>
                             <Input
-                                placeholder="Cantidad"
-                                value={`${libro.cantidad}`}
+                                value={libro.cantidad}
                                 onChangeText={(value) => {
                                     libro.cantidad = value;
                                     this.setState({ libro: libro });
