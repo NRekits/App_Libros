@@ -4,16 +4,13 @@ const pedido = require("../Models/Pedido");
 const editorial = require("../Models/Editorial");
 const Usuario = require("../Models/Usuario");
 var mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
 
-// constraseña
-const bcrypt = require('bcrypt');
 
 // validation
 const Joi = require('@hapi/joi');
 
 //Añadir Libro
-router.post("/Libro/Añadir", async (req, res) => {
+router.post("/Libro/Insertar", async (req, res) => {
   try{
 
     const book = new libro({
