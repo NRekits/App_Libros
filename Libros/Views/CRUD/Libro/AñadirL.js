@@ -26,7 +26,7 @@ export default class AddLibro extends React.Component {
             libro: {
                 titulo: '',
                 autor: '',
-                idEditorial: '',
+                idEditorial: undefined,
                 precio: '',
                 cantidad: '',
                 fecha: new Date(),
@@ -75,51 +75,61 @@ export default class AddLibro extends React.Component {
             msg = "Autor es un campo requerido";
             error = true;
         }
-        else if (libro.fecha === undefined || libro.fecha === null) {
-            msg = "Se debe asignar una fecha";
+        else if (libro.idEditorial === "" || libro.idEditorial === undefined || libro.idEditorial === null) {
+            msg = "Editorial es un campo requerido";
             error = true;
         }
         else if (libro.precio === "") {
             msg = "Precio es un campo requerido";
             error = true;
         }
+        else if (!libro.precio.match("\\d*\\.\\d*$")) {
+            msg = "No se permiten letras en el precio";
+            error = true;
+        }
+        else if(libro.precio.includes(',')){
+            msg = "No se permiten comas en el precio";
+            error = true;
+        }
         else if (libro.cantidad === "") {
             msg = "Cantidad es un campo requerido";
             error = true;
         }
-        else if (libro.idEditorial === "") {
-            msg = "Editorial es un campo requerido";
+        else if (!libro.cantidad.match("\\d*$")) {
+            msg = "No se permiten letras en la cantidad";
             error = true;
         }
-        else if (libro.genero === "") {
-            msg = "Genero es un campo requerido";
+        else if(libro.cantidad.includes('.') || libro.cantidad.includes(',')){
+            msg = "No se permiten valores decimales en la cantidad";
+            error = true;
+        }
+        else if (libro.fecha === undefined || libro.fecha === null) {
+            msg = "Se debe asignar una fecha";
             error = true;
         }
         else if (libro.sinopsis === "") {
             msg = "Sinopsis es un campo requerido";
             error = true;
         }
+        else if (libro.genero === "") {
+            msg = "Genero es un campo requerido";
+            error = true;
+        }
         else if (libro.formato === "") {
             msg = "Formato es un campo requerido";
-            error = true;
-        }
-        else if (libro.precio.toLowerCase().includes(/[^a-z]/g)) {
-            msg = "No se permiten letras en el precio";
-            error = true;
-        }
-        else if (libro.cantidad.toLowerCase().includes(/[^a-z]/g)) {
-            msg = "No se permiten letras en el precio";
             error = true;
         }
         else if (this.state.imageFile === undefined || this.state.imageFile === null) {
             msg = "Carga una imagen para el libro";
             error = true;
         }
-
         if (error) {
             Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
         } else {
-            this.saveBook();
+            const testNumero = Number(libro.precio);
+            console.log(testNumero);
+            Toast.show({text: "Funciona", buttonText: "Entendido", type: "success"});
+            // this.saveBook();
         }
     }
 
@@ -241,8 +251,9 @@ export default class AddLibro extends React.Component {
                                     this.setState({ libro: libro });
                                 }}
                             >
-                                <Picker.Item label="Yo" value="aqui va un id" />
-                                <Picker.Item label="Yo" value="aqui va un id" />
+                                <Picker.Item label="Selecciona una editorial" value="" />
+                                <Picker.Item label="Yo" value="id0" />
+                                <Picker.Item label="Otro yo" value="id1" />
                             </Picker>
                         </Item>
 
@@ -256,7 +267,7 @@ export default class AddLibro extends React.Component {
                                     libro.precio = value;
                                     this.setState({ libro: libro });
                                 }}
-                                keyboardType="decimal-pad"
+                                keyboardType="numeric"
                             />
                         </Item>
                         <Item floatingLabel style={styles.Item}>
@@ -269,7 +280,7 @@ export default class AddLibro extends React.Component {
                                     libro.cantidad = value;
                                     this.setState({ libro: libro });
                                 }}
-                                keyboardType="number-pad"
+                                keyboardType="numeric"
                             />
                         </Item>
                         <Item>
@@ -297,6 +308,7 @@ export default class AddLibro extends React.Component {
                                     this.setState({ libro: libro });
                                 }}
                             >
+                                <Picker.Item label="Selecciona un género" value="" />
                                 <Picker.Item label="Aventura" value="Aventura" />
                                 <Picker.Item label="Ciencia Ficción" value="Ciencia Ficción" />
                                 <Picker.Item label="Terror" value="Terror" />
@@ -318,6 +330,7 @@ export default class AddLibro extends React.Component {
                                     this.setState({ libro: libro });
                                 }}
                             >
+                                <Picker.Item label="Selecciona un formato" value=""/> 
                                 <Picker.Item label="EPub" value="EPub" />
                                 <Picker.Item label="Físico" value="Físico" />
                                 <Picker.Item label="Ambos" value="Ambos" />
