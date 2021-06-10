@@ -37,9 +37,6 @@ app.use('/Libro', BookRoutes);
 app.use('/Editorial',EditRoutes);
 //app.use('/Pedido', DeliRoutes);
 
-
-
-
 app.listen(port, function() {
   console.log(`Servidor web escuchando en el puerto ${port}`);
 });

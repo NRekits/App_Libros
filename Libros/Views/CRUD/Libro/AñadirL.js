@@ -297,7 +297,13 @@ export default class AddLibro extends React.Component {
                                     this.setState({ libro: libro });
                                 }}
                             >
-                                <Picker.Item label="Yo" value="aqui va un id" />
+                                <Picker.Item label="Aventura" value="Aventura" />
+                                <Picker.Item label="Ciencia Ficción" value="Ciencia Ficción" />
+                                <Picker.Item label="Terror" value="Terror" />
+                                <Picker.Item label="Romance" value="Romance" />
+                                <Picker.Item label="Humor" value="Humor" />
+                                <Picker.Item label="Poesía" value="Poesía" />
+                                <Picker.Item label="Clásicos" value="Clásicos" />
                             </Picker>
                         </Item>
 
