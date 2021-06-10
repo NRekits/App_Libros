@@ -7,7 +7,7 @@ var mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
 //Añadir editorial
-router.post("/Editorial/Insertar", async (req, res) => {
+router.post("/Insertar", async (req, res) => {
   try{
     const edit = new editorial({
         Nombre_encargado: req.body.nomencargado,
@@ -33,7 +33,7 @@ router.post("/Editorial/Insertar", async (req, res) => {
 });
 
 //Ver editorial
-router.get("/Editorial/Ver/:id",  (req, res) => {
+router.get("/Ver/:id",  (req, res) => {
   const id = req.params.id;
   editorial.findById({ _id: id }).then((doc) => {
     res.json({ data: doc, error:null });
@@ -42,7 +42,7 @@ router.get("/Editorial/Ver/:id",  (req, res) => {
 });
 
 //Ver todas las editoriales
-router.get("/Editorial/VerTodos",  (req, res) => {
+router.get("/VerTodos",  (req, res) => {
     editorial.find({}).then((doc) => {
         res.json({ data: doc, error:null });
       })
@@ -50,7 +50,7 @@ router.get("/Editorial/VerTodos",  (req, res) => {
   });
 
 //Modificar editorial
-router.put("/Editorial/Modificar/:id", (req, res) => {
+router.put("/Modificar/:id", (req, res) => {
 
   const id = req.params.id;
   const nome = req.body.nomencargado;
@@ -72,7 +72,7 @@ router.put("/Editorial/Modificar/:id", (req, res) => {
 });
 
 //Eliminar editorial
-router.get("/Editorial/Eliminar/:id", (req, res) => {
+router.get("/Eliminar/:id", (req, res) => {
   const id = req.params.id;
   editorial.findByIdAndDelete({ _id: id })
     .then((doc) => {

@@ -23,7 +23,7 @@ const schemaLogin = Joi.object({
 })
 
 //Añadir usuario
-router.post("/Usuario/Registro", async (req, res) => {
+router.post("/Registro", async (req, res) => {
   try{
     // validate user
     const { error } = schemaRegister.validate(req.body)
@@ -61,7 +61,7 @@ router.post("/Usuario/Registro", async (req, res) => {
 });
 
 //Login
-router.post('/Usuario/login', async (req, res) => {
+router.post('/login', async (req, res) => {
   // validaciones
   const { error } = schemaLogin.validate(req.body);
   if (error) return res.status(400).json({ error: error.details[0].message })
@@ -99,7 +99,7 @@ router.post('/Usuario/login', async (req, res) => {
 })
 
 //Ver usuario
-router.get("/Usuario/Ver/:id", async (req, res) => {
+router.get("/Ver/:id", async (req, res) => {
   const id = req.params.id;
   const user = await Usuario.findById({ _id: id })
    
@@ -126,7 +126,7 @@ router.get("/Usuario/Ver/:id", async (req, res) => {
 });
 
 //Modificar usuario
-router.put("/Usuario/Modificar/:id", (req, res) => {
+router.put("/Modificar/:id", (req, res) => {
   const id = req.params.id;
   const Nom = req.body.Nombre;
   const ape = req.body.Apellido;
@@ -145,7 +145,7 @@ router.put("/Usuario/Modificar/:id", (req, res) => {
 });
 
 //Eliminar usuario
-router.get("/Usuario/Eliminar/:id", (req, res) => {
+router.get("/Eliminar/:id", (req, res) => {
   const id = req.params.id;
   Usuario.findByIdAndDelete({ _id: id })
     .then((doc) => {
@@ -157,7 +157,7 @@ router.get("/Usuario/Eliminar/:id", (req, res) => {
 });
 
 //Añadir dirección
-router.put("/Usuario/InsertarDireccion/:id", (req, res) => {
+router.put("/InsertarDireccion/:id", (req, res) => {
   const id = req.params.id;
   const pais = req.body.pais;
   const estado = req.body.estado;
@@ -192,7 +192,7 @@ router.put("/Usuario/InsertarDireccion/:id", (req, res) => {
 });
 
 //Modificar dirección
-router.put("/Usuario/ModificarDireccion/:id_us/:id_dir", (req, res) => {
+router.put("/ModificarDireccion/:id_us/:id_dir", (req, res) => {
 
   const id = req.params.id_us;
   const id_dir = mongoose.Types.ObjectId(req.params.id_dir);
@@ -231,7 +231,7 @@ router.put("/Usuario/ModificarDireccion/:id_us/:id_dir", (req, res) => {
 });
 
 //Eliminar dirección
-router.get("/Usuario/EliminarDireccion/:id_us/:id_dir", (req, res) => {
+router.get("/EliminarDireccion/:id_us/:id_dir", (req, res) => {
   const id = req.params.id_us;
   const id_dir = req.params.id_dir;
   Usuario.updateOne(
@@ -247,7 +247,7 @@ router.get("/Usuario/EliminarDireccion/:id_us/:id_dir", (req, res) => {
 });
 
 //Ver todos los usuarios
-router.post("/Usuario/MostrarTodos", (req, res) => {
+router.post("/MostrarTodos", (req, res) => {
 
   Usuario.find({}).then((doc) => {
     res.json({ data: doc, error:null });

@@ -10,7 +10,7 @@ var mongoose = require('mongoose');
 const Joi = require('@hapi/joi');
 
 //Añadir Libro
-router.post("/Libro/Insertar", async (req, res) => {
+router.post("/Insertar", async (req, res) => {
   try{
 
     const book = new libro({
@@ -42,7 +42,7 @@ router.post("/Libro/Insertar", async (req, res) => {
 });
 
 //Ver libro
-router.get("/Libro/Ver/:id", async (req, res) => {
+router.get("/Ver/:id", async (req, res) => {
   const id = req.params.id;
   libro.findById({ _id: id }).then((doc) => {
     res.json({ data: doc, error:null });
@@ -51,7 +51,7 @@ router.get("/Libro/Ver/:id", async (req, res) => {
 });
 
 //Ver libros por generos
-router.get("/Libro/VerGenero/:genero", async (req, res) => {
+router.get("/VerGenero/:genero", async (req, res) => {
     const genero = req.params.genero;
     libro.find({Genero:genero}).then((doc) => {
         res.json({ data: doc, error:null });
@@ -60,7 +60,7 @@ router.get("/Libro/VerGenero/:genero", async (req, res) => {
   });
 
 //Ver todos los libros
-router.get("/Libro/VerTodos", async (req, res) => {
+router.get("/VerTodos", async (req, res) => {
     libro.find({}).then((doc) => {
         res.json({ data: doc, error:null });
       })
@@ -68,7 +68,7 @@ router.get("/Libro/VerTodos", async (req, res) => {
   });
 
 //Ver libros por precio
-router.get("/Libro/Ver/:id", async (req, res) => {
+router.get("/VerPrecio/:id", async (req, res) => {
     const id = req.params.id;
     libro.find({}).then((doc) => {
         res.json({ data: doc, error:null });
@@ -77,7 +77,7 @@ router.get("/Libro/Ver/:id", async (req, res) => {
   });
 
 //Modificar libro
-router.put("/Libro/Modificar/:id", (req, res) => {
+router.put("/Modificar/:id", (req, res) => {
 
   const id = req.params.id;
   const titu = req.body.titulo;
@@ -108,7 +108,7 @@ router.put("/Libro/Modificar/:id", (req, res) => {
 });
 
 //Eliminar libro
-router.get("/Libro/Eliminar/:id", (req, res) => {
+router.get("/Eliminar/:id", (req, res) => {
   const id = req.params.id;
   libro.findByIdAndDelete({ _id: id })
     .then((doc) => {

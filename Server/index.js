@@ -32,10 +32,10 @@ const BookRoutes = require('./Routes/LibroCrud.js');
 const EditRoutes = require('./Routes/ProveedorCrud.js');
 const DeliRoutes = require('./Routes/PedidoCrud.js');
 
-app.use(UserRoutes);
-app.use(BookRoutes);
-app.use(EditRoutes);
-app.use(DeliRoutes);
+app.use('/Usuario',UserRoutes);
+app.use('/Libro', BookRoutes);
+app.use('/Editorial',EditRoutes);
+//app.use('/Pedido', DeliRoutes);
 
 
 

@@ -150,14 +150,32 @@ export default class AddLibro extends React.Component {
         //     .finally(() => { });
 
         // send the libro
-        fetch('', {
+        fetch(`http://${IP_DB}:3000/Libro/Insertar`, {
             method: 'POST',
             body: JSON.stringify({
-                libro: libro
+  
+                titulo: libro.titulo,
+                autor: libro.autor,
+                editorial: libro.idEditorial,
+                precio: libro.precio,
+                cantidad: libro.cantidad,
+                fecha: libro.fecha,
+                sinopsis: libro.sinopsis,
+                genero: libro.genero,
+                // pendiente Imagen: { type:String },
+                formato: libro.formato,
             }),
             headers: {
                 'Content-Type': 'application/json'
             }
+        }) .then((res) => res.json())
+        .then((data) => {
+          Toast.show({ text: 'Libro añadido', buttonText: 'Okay',type: 'success'});
+
+          /* navegacion pendiente
+          this.props.navigation.navigate("Perfil", {
+            id: route.params.id,
+          });*/
         })
     }
 
@@ -224,12 +242,14 @@ export default class AddLibro extends React.Component {
                                 }}
                             >
                                 <Picker.Item label="Yo" value="aqui va un id" />
+                                <Picker.Item label="Yo" value="aqui va un id" />
                             </Picker>
                         </Item>
 
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Precio</Label>
                             <Input
+                                keyboardType="numeric"
                                 placeholder="Precio"
                                 value={`${libro.precio}`}
                                 onChangeText={(value) => {
@@ -242,6 +262,7 @@ export default class AddLibro extends React.Component {
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Cantidad</Label>
                             <Input
+                                keyboardType="numeric"
                                 placeholder="Cantidad"
                                 value={`${libro.cantidad}`}
                                 onChangeText={(value) => {
