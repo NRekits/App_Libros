@@ -3,8 +3,8 @@ import React, { useState } from "react";
 import { Text, Dimensions, StyleSheet } from "react-native";
 import { Container, Header, Content, Form, Toast,
         Item, Input,Label,Button, Body, Title, H3, Row, Col, Left,Right} from "native-base";
-        import Icon from "react-native-vector-icons/FontAwesome";
-        import IP_DB from "../../ip_address";
+import Icon from "react-native-vector-icons/FontAwesome";
+import IP_DB from "../../ip_address";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;

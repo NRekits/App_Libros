@@ -213,14 +213,13 @@ export default class AddLibro extends React.Component {
                 <H3 style={{ alignSelf: 'center', fontSize: 20 }}>Añadir Libro</H3>
                 <Content style={styles.Content}>
                     <Image source={{ uri: this.state.imageFile }} style={{ alignSelf: 'center', width: 200, height: 200, backgroundColor: "#666666" }} />
-                    <Button style={{ ...styles.Button }} rounded success block onPress={() => { this.selectFile() }}>
+                    <Button style={styles.Button } rounded success block onPress={() => { this.selectFile() }}>
                         <Text>Cargar archivo</Text>
                     </Button>
                     <Form>
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Titulo</Label>
                             <Input
-                                placeholder="Titulo del libro"
                                 value={libro.titulo}
                                 onChangeText={(text) => {
                                     libro.titulo = text;
@@ -231,7 +230,6 @@ export default class AddLibro extends React.Component {
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Autor</Label>
                             <Input
-                                placeholder="Autor del libro"
                                 value={libro.autor}
                                 onChangeText={(text) => {
                                     libro.autor = text;
@@ -261,31 +259,29 @@ export default class AddLibro extends React.Component {
                             <Label style={styles.Label}>Precio</Label>
                             <Input
                                 keyboardType="numeric"
-                                placeholder="Precio"
-                                value={`${libro.precio}`}
+                                value={libro.precio}
                                 onChangeText={(value) => {
                                     libro.precio = value;
                                     this.setState({ libro: libro });
                                 }}
-                                keyboardType="numeric"
+                             
                             />
                         </Item>
                         <Item floatingLabel style={styles.Item}>
                             <Label style={styles.Label}>Cantidad</Label>
                             <Input
                                 keyboardType="numeric"
-                                placeholder="Cantidad"
-                                value={`${libro.cantidad}`}
+                                style ={styles.Input}
                                 onChangeText={(value) => {
                                     libro.cantidad = value;
                                     this.setState({ libro: libro });
                                 }}
-                                keyboardType="numeric"
                             />
                         </Item>
                         <Item>
                             <Textarea
-                                style={{ width: '100%' }}
+
+                                style={{ width: '100%',  fontFamily: "Dosis"}}
                                 rowSpan={5}
                                 bordered
                                 placeholder="Sinopsis"
@@ -322,7 +318,6 @@ export default class AddLibro extends React.Component {
                         <Item picker style={styles.Item}>
                             <Picker
                                 mode="dropdown"
-                                placeholder="Formato"
                                 selectedValue={libro.formato}
                                 style={{ width: undefined, height: 50 }}
                                 onValueChange={(value) => {
@@ -375,7 +370,7 @@ const styles = StyleSheet.create({
     },
     Input: {
         alignSelf: "flex-start",
-        fontFamily: "Dosis",
+       
         fontWeight: "400",
         fontSize: 20,
         marginRight: 5,
@@ -383,6 +378,7 @@ const styles = StyleSheet.create({
     Label: {
         fontWeight: "400",
         fontSize: 18,
+        fontFamily: "Dosis",
         marginBottom: 10,
     },
     Button: {
