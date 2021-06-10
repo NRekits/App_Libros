@@ -2,7 +2,6 @@ const router = require("express").Router();
 const usuario = require("../Models/Usuario");
 const libro = require("../Models/Libro");
 const pedido = require("../Models/Pedido");
-const editorial = require("../Models/Editorial");
 const Usuario = require("../Models/Usuario");
 var mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');

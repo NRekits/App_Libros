@@ -41,7 +41,7 @@ router.get("/Editorial/Ver/:id",  (req, res) => {
    
 });
 
-//Ver todos las editoriales
+//Ver todas las editoriales
 router.get("/Editorial/VerTodos",  (req, res) => {
     editorial.find({}).then((doc) => {
         res.json({ data: doc, error:null });
