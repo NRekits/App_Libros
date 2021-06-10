@@ -2,7 +2,6 @@ const router = require("express").Router();
 const usuario = require("../Models/Usuario");
 const libro = require("../Models/Libro");
 const pedido = require("../Models/Pedido");
-const editorial = require("../Models/Editorial");
 const Usuario = require("../Models/Usuario");
 var mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
@@ -99,7 +98,7 @@ router.post('/Usuario/login', async (req, res) => {
 
 })
 
-//Modificar usuario
+//Ver usuario
 router.get("/Usuario/Ver/:id", async (req, res) => {
   const id = req.params.id;
   const user = await Usuario.findById({ _id: id })
@@ -247,6 +246,13 @@ router.get("/Usuario/EliminarDireccion/:id_us/:id_dir", (req, res) => {
     });
 });
 
-router.post("/Usuario/MostrarTodos", (req, res) => {});
+//Ver todos los usuarios
+router.post("/Usuario/MostrarTodos", (req, res) => {
+
+  Usuario.find({}).then((doc) => {
+    res.json({ data: doc, error:null });
+  })
+
+});
 
 module.exports = router;

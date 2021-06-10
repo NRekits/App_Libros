@@ -56,7 +56,7 @@ class App extends React.Component {
             <Stack.Navigator screenOptions={{
               headerShown: false
             }}
-              initialRouteName='CrudAddLibro'>
+              initialRouteName='AddLibro'>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
@@ -65,7 +65,7 @@ class App extends React.Component {
               <Stack.Screen name='Direcciones' component={DireccionesScreen} />
               <Stack.Screen name='DirDetalles' component={DirDetalles} />
               <Stack.Screen name='ModificarDir' component={ModificarDir} />
-              <Stack.Screen name='CrudAddLibro' component={AddLibro} />
+              <Stack.Screen name='AddLibro' component={AddLibro} />
               <Stack.Screen name='Carrito' component={CarritoScreen} />
             </Stack.Navigator>
           </NavigationContainer>

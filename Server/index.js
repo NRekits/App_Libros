@@ -27,9 +27,16 @@ conexion.once('open',()=>{
 })
 
 
-const Routes = require('./Routes/UsuarioCrud.js')
+const UserRoutes = require('./Routes/UsuarioCrud.js');
+const BookRoutes = require('./Routes/LibroCrud.js');
+const EditRoutes = require('./Routes/ProveedorCrud.js');
+const DeliRoutes = require('./Routes/PedidoCrud.js');
 
-app.use(Routes);
+app.use(UserRoutes);
+app.use(BookRoutes);
+app.use(EditRoutes);
+app.use(DeliRoutes);
+
 
 
 
