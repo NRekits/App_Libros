@@ -42,7 +42,7 @@ export default class ModLibro extends React.Component {
 
 	componentDidMount() {
 		// const { id, libro, imageFile } = this.props.route.params;
-		// this.setState({ libro: libro, imageFile: imageFile, id: id });
+		// this.setState({ libro: libro, imageFile: `http://${IP_DB}:3000//Libro/Imagen/${imageFile}`, id: id });
 	}
 
 	selectFile = async () => {

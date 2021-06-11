@@ -15,7 +15,6 @@ import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome'
 import IP_DB from '../../../ip_address';
 
-
 const windowHeight = Dimensions.get('window').height;
 
 export default class AddLibro extends React.Component {
@@ -46,16 +45,16 @@ export default class AddLibro extends React.Component {
 
 	getEditoriales() {
 		fetch(`http://${IP_DB}:3000/Editorial/VerTodos`)
-		.then((res) => res.json())
-		.then((res) => res.edit)
-		.then((data) => {console.log(data); return data;})
-		.then((data) => {
-			this.setState({editoriales: [...data]});
-		})
-		.catch((error) => {console.error(error)})
-		.finally(() => {
-			Toast.show({text: "Editoriales cargados", buttonText: "Entendido", type: "success"});
-		});
+			.then((res) => res.json())
+			.then((res) => res.edit)
+			.then((data) => { console.log(data); return data; })
+			.then((data) => {
+				this.setState({ editoriales: [...data] });
+			})
+			.catch((error) => { console.error(error) })
+			.finally(() => {
+				Toast.show({ text: "Editoriales cargados", buttonText: "Entendido", type: "success" });
+			});
 	}
 
 	showEditoriales() {
@@ -87,7 +86,7 @@ export default class AddLibro extends React.Component {
 	Check = () => {
 		let msg = "";
 		let error = false;
-		const libro  = Object.assign({},this.state.libro);
+		const libro = Object.assign({}, this.state.libro);
 
 		if (libro.titulo === "") {
 			msg = "Titulo es un campo requerido";
@@ -147,7 +146,7 @@ export default class AddLibro extends React.Component {
 
 	saveBook() {
 
-		const libro  = Object.assign({},this.state.libro);
+		const libro = Object.assign({}, this.state.libro);
 		console.log(typeof libro.cantidad);
 		console.log(typeof libro.precio);
 		libro.cantidad = Number(libro.cantidad);
@@ -159,40 +158,57 @@ export default class AddLibro extends React.Component {
 		let fileType = uriParts[uriParts.length - 1];
 		let formData = new FormData();
 		formData.append('photo', {
-			uri,
+			uri: uri,
 			name: `${libro.titulo}.${fileType}`,
 			type: `image/${fileType}`
 		});
 
-        // send the libro
-        fetch(`http://${IP_DB}:3000/Libro/Insertar`, {
-            method: 'POST',
-            body: JSON.stringify({
-  
-                titulo: libro.titulo,
-                autor: libro.autor,
-                editorial: libro.idEditorial,
-                precio: libro.precio,
-                cantidad: libro.cantidad,
-                fecha: libro.fecha.toISOString(),
-                sinopsis: libro.sinopsis,
-                genero: libro.genero,
-                // pendiente Imagen: { type:String },
-                formato: libro.formato,
-            }),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        }) .then((res) => res.json())
-        .then((data) => {
-          Toast.show({ text: 'Libro añadido', buttonText: 'Okay',type: 'success'});
+		//send imagen
+		fetch(`http://${IP_DB}:3000/Libro/SubirImagen`, {
+			method: 'POST',
+			body: formData,
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		})
+			.then((res) => res.json())
+			.then((res) => { console.log(res); return res })
+			.then((res) => {
+				//el nombre del archivo se llama res.filename cuando agregues la propiedad al modelo del libro
+				// seria algo como propiedadImagen: res.filename
+				// send the libro
+				fetch(`http://${IP_DB}:3000/Libro/Insertar`, {
+					method: 'POST',
+					body: JSON.stringify({
+						titulo: libro.titulo,
+						autor: libro.autor,
+						editorial: libro.idEditorial,
+						precio: libro.precio,
+						cantidad: libro.cantidad,
+						fecha: libro.fecha.toISOString(),
+						sinopsis: libro.sinopsis,
+						genero: libro.genero,
+						// pendiente Imagen: { type:String },
+						formato: libro.formato,
+					}),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}).then((res) => res.json())
+					.then((data) => {
+						Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
+						/* navegacion pendiente
+						this.props.navigation.navigate("Perfil", {
+						  id: route.params.id,
+						});*/
+					})
+			})
+			.catch((error) => {
+				Toast.show({ text: error.error, buttonText: 'Okay', type: 'danger' });
+			})
 
-          /* navegacion pendiente
-          this.props.navigation.navigate("Perfil", {
-            id: route.params.id,
-          });*/
-        })
-    }
+
+	}
 
 
 	render() {
@@ -216,7 +232,7 @@ export default class AddLibro extends React.Component {
 					</Body>
 					<Right></Right>
 				</Header>
-				<H3 style={{alignSelf:'center', fontFamily:'Dosis'}}>Añadir Libro</H3>
+				<H3 style={{ alignSelf: 'center', fontFamily: 'Dosis' }}>Añadir Libro</H3>
 				<Content style={styles.Content}>
 					<Image source={{ uri: this.state.imageFile }} style={{ alignSelf: 'center', width: 200, height: 200, backgroundColor: "#666666" }} />
 					<Button style={styles.Button} rounded success block onPress={() => { this.selectFile() }}>
@@ -246,7 +262,7 @@ export default class AddLibro extends React.Component {
 							/>
 						</Item>
 
-            
+
 						<Item picker style={styles.Item}>
 							<Picker
 								mode="dropdown"
@@ -289,7 +305,7 @@ export default class AddLibro extends React.Component {
 						</Item>
 						<Item>
 							<Textarea
-								style={{ width: '100%' , fontFamily: "Dosis"}}
+								style={{ width: '100%', fontFamily: "Dosis" }}
 								rowSpan={5}
 								bordered
 								placeholder="Sinopsis"
@@ -369,54 +385,54 @@ export default class AddLibro extends React.Component {
 }
 
 const styles = StyleSheet.create({
-    Container: {
-        flex: 1,
-        flexDirection: "column",
-        alignItems: "stretch",
-        justifyContent: "center",
-        padding: 20,
-        fontFamily: "Dosis",
-    },
-    Input: {
-        alignSelf: "flex-start",
-        fontFamily: "Dosis",
-        fontWeight: "400",
-        fontSize: 20,
-        marginRight: 5,
-    },
-    Label: {
-        fontWeight: "400",
-        fontSize: 18,
-        fontFamily: "Dosis",
-        marginBottom: 10,
-    },
-    Button: {
-        alignSelf: "center",
-        marginTop: 40,
-        borderColor: "#9BFFA3",
-    },
-    Item: {
-        marginTop: 15,
-        padding: 5,
-    },
-    background: {
-        position: "absolute",
-        left: 0,
-        right: 0,
-        top: 0,
-        height: windowHeight,
-    },
+	Container: {
+		flex: 1,
+		flexDirection: "column",
+		alignItems: "stretch",
+		justifyContent: "center",
+		padding: 20,
+		fontFamily: "Dosis",
+	},
+	Input: {
+		alignSelf: "flex-start",
+		fontFamily: "Dosis",
+		fontWeight: "400",
+		fontSize: 20,
+		marginRight: 5,
+	},
+	Label: {
+		fontWeight: "400",
+		fontSize: 18,
+		fontFamily: "Dosis",
+		marginBottom: 10,
+	},
+	Button: {
+		alignSelf: "center",
+		marginTop: 40,
+		borderColor: "#9BFFA3",
+	},
+	Item: {
+		marginTop: 15,
+		padding: 5,
+	},
+	background: {
+		position: "absolute",
+		left: 0,
+		right: 0,
+		top: 0,
+		height: windowHeight,
+	},
 	Text2: {
 		marginTop: 5,
 		fontWeight: "400",
-		alignSelf:'center',
+		alignSelf: 'center',
 		marginLeft: 5,
 		fontFamily: "Dosis",
-	  },
-    Header: {
-        color: "#0D7C0D",
-        fontFamily: "Dosis",
-        fontSize: 20,
-        fontWeight: "600"
-    },
+	},
+	Header: {
+		color: "#0D7C0D",
+		fontFamily: "Dosis",
+		fontSize: 20,
+		fontWeight: "600"
+	},
 });

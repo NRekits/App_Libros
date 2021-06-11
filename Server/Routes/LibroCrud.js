@@ -1,9 +1,12 @@
-const router = require("express").Router();
+const express = require('express');
+const router = express.Router();
 const libro = require("../Models/Libro");
 const pedido = require("../Models/Pedido");
 const editorial = require("../Models/Editorial");
 const Usuario = require("../Models/Usuario");
 var mongoose = require('mongoose');
+const multer = require('multer');
+const upload = multer({dest: process.cwd() + '/uploads/images'});
 
 
 // validation
@@ -122,5 +125,18 @@ router.get("/Eliminar/:id", (req, res) => {
     });
 });
 
+//Es una función a parte
+//Esta es la función para subir imagenes al servidor
+// la función upload.single('photo') se encarga de subir la foto, de la variable llamada photo
+router.post('/SubirImagen', upload.single('photo'), (req, res) => {
+	if(req.file){ // Si se mando el archivo
+		res.json(req.file); // se regresa una respuesta de verificación con la ruta o nombre del archivo
+	}
+	else { // si no se regresa una respuesta con error al cliente
+		res.status(400).json({error: "No se pudo subir el archivo"});
+	}
+});
+// esta es la ruta para mostrar las imagenes
+router.use('/Imagen', express.static(process.cwd() + '/uploads/images'));
 
 module.exports = router;
