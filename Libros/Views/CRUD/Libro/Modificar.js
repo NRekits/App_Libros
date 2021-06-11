@@ -8,7 +8,8 @@ import {
 import {
 	StyleSheet,
 	Image,
-	Dimensions
+	Dimensions,
+	ToastAndroid
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -58,12 +59,11 @@ export default class ModLibro extends React.Component {
 		}
 	}
 
+
 	Check = () => {
 		let msg = "";
 		let error = false;
-		const libro = Objetc.assign(this.state);
-		console.log(Number(libro.precio));
-
+		const libro = Object.assign({}, this.state.libro);
 		if (libro.titulo === "") {
 			msg = "Titulo es un campo requerido";
 			error = true;
@@ -116,51 +116,90 @@ export default class ModLibro extends React.Component {
 			Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
 		} else {
 			Toast.show({ text: "Funciona", buttonText: "Entendido", type: "success" });
-			// this.saveBook();
+			this.saveBook();
 		}
 	}
 
 	saveBook() {
-		let libro = Object.assign({}, this.state);
-		libro.cantidad = Number(libro.cantidad.toLowerCase().replace(" ", ""));
-		libro.precio = Number(libro.precio.toLowerCase().replace(" ", ""));
+		const libro = Object.assign({}, this.state.libro);
+		console.log(typeof libro.cantidad);
+		console.log(typeof libro.precio);
+		libro.cantidad = Number(libro.cantidad);
+		libro.precio = Number(libro.precio);
+		console.log(typeof libro.cantidad);
+		console.log(typeof libro.precio);
 		const uri = this.state.imageFile;
 		let uriParts = uri.split('.');
 		let fileType = uriParts[uriParts.length - 1];
 		let formData = new FormData();
 		formData.append('photo', {
-			uri,
+			uri: uri,
 			name: `${libro.titulo}.${fileType}`,
 			type: `image/${fileType}`
 		});
 
-		// fetch('', {
-		//     method: 'POST',
-		//     body: formData,
-		//     headers: {
-		//         Accept: 'application/json',
-		//         'Content-Type': 'multipart/form-data'
-		//     }
-		// }).then((res) => res.json())
-		//     .then((res) => { console.log(res) })
-		//     .catch(e => { console.log(e) })
-		//     .finally(() => { });
+		//send imagen
+		fetch(`http://${IP_DB}:3000/Libro/SubirImagen`, {
+			method: 'POST',
+			body: formData,
+			headers: {
+				'Content-Type': 'multipart/form-data'
+			}
+		})
+			.then((res) => res.json())
+			.then((res) => { console.log(res); return res })
+			.then((res) => {
+				//el nombre del archivo se llama res.filename cuando agregues la propiedad al modelo del libro
+				// seria algo como propiedadImagen: res.filename
+				// send the libro
+				fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
+					method: 'POST',
+					body: JSON.stringify({
+						titulo: libro.titulo,
+						autor: libro.autor,
+						editorial: libro.idEditorial,
+						precio: libro.precio,
+						cantidad: libro.cantidad,
+						fecha: libro.fecha.toISOString(),
+						sinopsis: libro.sinopsis,
+						genero: libro.genero,
+						imagen: res.filename,
+						formato: libro.formato,
+					}),
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				}).then((res) => res.json())
+					.then((data) => {
+						Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
 
-		// send the libro
+						/* navegacion pendiente
+						this.props.navigation.navigate("Perfil", {
+						  id: route.params.id,
+						});*/
 
-		// fetch('', {
-		// 	method: 'POST',
-		// 	body: JSON.stringify({
-		// 		libro: libro
-		// 	}),
-		// 	headers: {
-		// 		'Content-Type': 'application/json'
-		// 	}
-		// })
+					})
+			})
+			.catch((error) => {
+				Toast.show({ text: error.error, buttonText: 'Okay', type: 'danger' });
+			})
+
+
 
 	}
 
-	deleteBook(){
+	deleteBook() {
+
+		fetch(`http://${IP_DB}:3000/Libro/Eliminar/${this.state.id}`)
+		.then((res) => res.json())
+		.then((data) => {
+			Toast.show({text: "Se elimino el registro", buttonText: "Okay", type:"success"});
+						/* navegacion pendiente
+						this.props.navigation.navigate("Perfil", {
+						  id: route.params.id,
+						});*/
+		})
+		.then((data) => {console.log(data)});
 
 	}
 
@@ -187,7 +226,7 @@ export default class ModLibro extends React.Component {
 						<Button
 							transparent
 							style={styles.Button}
-							onPress={() => {this.deleteBook()}}
+							onPress={() => { this.deleteBook() }}
 						>
 							<Icon />
 						</Button>

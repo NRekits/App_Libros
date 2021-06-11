@@ -87,7 +87,6 @@ export default class AddLibro extends React.Component {
 		let msg = "";
 		let error = false;
 		const libro = Object.assign({}, this.state.libro);
-
 		if (libro.titulo === "") {
 			msg = "Titulo es un campo requerido";
 			error = true;
@@ -188,7 +187,7 @@ export default class AddLibro extends React.Component {
 						fecha: libro.fecha.toISOString(),
 						sinopsis: libro.sinopsis,
 						genero: libro.genero,
-						// pendiente Imagen: { type:String },
+						imagen: res.filename,
 						formato: libro.formato,
 					}),
 					headers: {
