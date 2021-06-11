@@ -49,9 +49,17 @@ export default class HomeAdmiScreen extends React.Component {
           <Body>
             <Title style={styles.Header}> HOME </Title>
           </Body>
-          <Right
-          //Poner ruta a log-out
-          ></Right>
+          <Right>
+            <Button
+              transparent
+              style={styles.Button}
+              onPress={() => {
+                this.props.navigation.navigate("Login");
+              }}
+            >
+              <Icon name="sign-in-alt" size={30} />
+            </Button>
+          </Right>
         </Header>
         <Content />
         <Footer>
@@ -59,7 +67,7 @@ export default class HomeAdmiScreen extends React.Component {
             <Button
               style={styles.Button}
               onPress={() => {
-                //this.props.navigation.navigate("Perfil");
+                this.props.navigation.navigate("ListUsuario");
               }}
             >
               <Icon name="user" size={30} />

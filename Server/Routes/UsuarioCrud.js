@@ -60,10 +60,10 @@ router.post("/Registro", async (req, res) => {
  
 });
 
-//Añadir usuario por registro
-router.post("/Registro", async (req, res) => {
+//Añadir usuario por admi
+router.post("/Insertar", async (req, res) => {
   try{
-   
+   console.log('hola')
     const isEmailExist = await Usuario.findOne({ Email: req.body.email });
  
     if (isEmailExist) {
@@ -74,11 +74,13 @@ router.post("/Registro", async (req, res) => {
     const user = new usuario({
       Nombre: req.body.Nombre,
       Apellido: req.body.Apellido,
-      Contrasena: password,
+      Contrasena: req.body.contra,
       Email: req.body.email,
+      Admi: req.body.admi
     });
   
     const savedUser = user.save();
+    console.log(savedUser)
     res.json({
       error: null,
       response: "Añadido",
@@ -91,6 +93,7 @@ router.post("/Registro", async (req, res) => {
 }
  
 });
+
 //Login
 router.post('/login', async (req, res) => {
   // validaciones
@@ -163,9 +166,11 @@ router.put("/Modificar/:id", (req, res) => {
   const ape = req.body.Apellido;
   const Contra = req.body.contra;
   const Ema = req.body.email;
+  const ad = req.body.admi;
+
   Usuario.findByIdAndUpdate(
     { _id: id },
-    { $set: { Nombre: Nom, Apellido: ape, Contrasena: Contra, Email: Ema } }
+    { $set: { Nombre: Nom, Apellido: ape, Contrasena: Contra, Email: Ema, Admi:ad } }
   )
     .then((doc) => {
       res.json({ response: "Usuario Modificado" });
@@ -278,10 +283,10 @@ router.get("/EliminarDireccion/:id_us/:id_dir", (req, res) => {
 });
 
 //Ver todos los usuarios
-router.post("/MostrarTodos", (req, res) => {
+router.get("/MostrarTodos", (req, res) => {
 
   Usuario.find({}).then((doc) => {
-    res.json({ data: doc, error:null });
+    res.json({ users: doc, error:null });
   })
 
 });

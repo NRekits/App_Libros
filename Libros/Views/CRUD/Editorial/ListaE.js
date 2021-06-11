@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Dimensions, StyleSheet, SafeAreaView } from "react-native";
-import {
-  Container,
-  Header,
-  Body,
-  Title,
-  H3,
-  List,
-  ListItem,
-  Left,
-  Right,
-  Button,
-  Text
+import { Container, Header, Body, Title, H3, List, ListItem, Left, Right,
+  Button, Text,
 } from "native-base";
 import IP_DB from "../../../ip_address";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -23,7 +13,6 @@ export default function LEditorialScreen({ route, navigation }) {
   const [editoriales, setEditoriales] = useState([]);
 
   useEffect(() => {
-    
     fetch(`http://${IP_DB}:3000/Editorial/VerTodos`, {
       method: "GET",
       headers: {
@@ -56,16 +45,16 @@ export default function LEditorialScreen({ route, navigation }) {
         </Body>
         <Right></Right>
       </Header>
-      
+
       <Button
-            transparent
-            style={styles.Button}
-            onPress={() => {
-              navigation.navigate("AddEditorial");
-            }}
-          >
-          <Text styles={styles.Text3}>Añadir Editorial</Text>
-          </Button>
+        transparent
+        style={styles.Button}
+        onPress={() => {
+          navigation.navigate("AddEditorial");
+        }}
+      >
+        <Text styles={styles.Text3}>Añadir Editorial</Text>
+      </Button>
       <H3 style={styles.H3}>Presiona cualquiera para ver mas detalles</H3>
 
       <SafeAreaView style={{ flex: 1 }}>
@@ -76,12 +65,13 @@ export default function LEditorialScreen({ route, navigation }) {
             <ListItem
               button
               onPress={() => {
-               navigation.navigate("VerEditorial", { editId: item._id, edit: editoriales.find((edit) => edit._id == item._id)});
+                navigation.navigate("VerEditorial", {
+                  editId: item._id,
+                  edit: editoriales.find((edit) => edit._id == item._id),
+                });
               }}
             >
-              <Text style={styles.Text2}>
-                {item.Nombre_editorial}
-              </Text>
+              <Text style={styles.Text2}>{item.Nombre_editorial}</Text>
             </ListItem>
           )}
         />

@@ -1,91 +1,84 @@
-/* El usuario aqui agrega una direccion */
 import React, { useState } from "react";
 import { Text, Dimensions, StyleSheet } from "react-native";
-import { Container, Header, Content, Form, Toast,
-        Item, Input,Label,Button, Body, Title, H3, Row, Col, Left,Right} from "native-base";
+import {Container, Header,Content,Form,Toast,Item,Input,
+  Label,Button,Body,Title,H3,Left,Right,
+} from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from "../../../ip_address";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
-export default function AEditorialScreen ({route,navigation}){
+export default function AEditorialScreen({ route, navigation }) {
   const [nome, setNome] = useState("");
   const [apee, setApee] = useState("");
   const [nombreE, setNombreE] = useState("");
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
-  
 
-  const Check = ()=>{ 
-	const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  const Check = () => {
+    const emailRegex =
+      /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     var msg = "";
     var error = false;
 
-    if(nome === ""){
-      msg="Nombre de encargado es un campo requerido"; 
+    if (nome === "") {
+      msg = "Nombre de encargado es un campo requerido";
       error = true;
-    } 
-    else if(apee == ""){
-      msg="Apellido de encargado es un campo requerido"; 
+    } else if (apee == "") {
+      msg = "Apellido de encargado es un campo requerido";
       error = true;
-    } 
-    else if(nombreE == ""){
-      msg="Nombre de editorial es un campo requerido"; 
+    } else if (nombreE == "") {
+      msg = "Nombre de editorial es un campo requerido";
       error = true;
-    }
-    else if(email == ""){
-      msg="Correo es un campo requerido"; 
+    } else if (email == "") {
+      msg = "Correo es un campo requerido";
       error = true;
-    } 
-
-	else if (!emailRegex.test(email)){
-		msg ="No es un correo válido";
-		error = true;
-	}
-
-    else if(tel.includes('.') || tel.includes('-') || tel.includes(',')){
-      msg="No se permiten caracteres especiales en Telefono"; 
+    } else if (!emailRegex.test(email)) {
+      msg = "No es un correo válido";
       error = true;
-    }
-    else if(tel.includes(' ')){
-      msg="No se permiten espacios en Telefono"; 
+    } else if (tel.includes(".") || tel.includes("-") || tel.includes(",")) {
+      msg = "No se permiten caracteres especiales en Telefono";
       error = true;
-    }
-    else if(tel.length != 9){
-      msg="El teléfono debe ser de 5 digitos"; 
+    } else if (tel.includes(" ")) {
+      msg = "No se permiten espacios en Telefono";
+      error = true;
+    } else if (tel.length != 9) {
+      msg = "El teléfono debe ser de 5 digitos";
       error = true;
     }
 
-    if(error){
-      Toast.show({ text: msg, buttonText: 'Okay',type: 'warning'});
-    }
-    else{
+    if (error) {
+      Toast.show({ text: msg, buttonText: "Okay", type: "warning" });
+    } else {
       fetch(`http://${IP_DB}:3000/Editorial/Insertar`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-        },  
-         body: JSON.stringify({
-            nomencargado:nome,
-            apeencargado:apee,
-            nomedit:nombreE,
-            email:email.toLowerCase().trimEnd(),
-            tel:tel,
+        },
+        body: JSON.stringify({
+          nomencargado: nome,
+          apeencargado: apee,
+          nomedit: nombreE,
+          email: email.toLowerCase().trimEnd(),
+          tel: tel,
         }),
       })
         .then((res) => res.json())
         .then((data) => {
-          Toast.show({ text: 'Editorial añadida', buttonText: 'Okay',type: 'success'});
+          Toast.show({
+            text: "Editorial añadida",
+            buttonText: "Okay",
+            type: "success",
+          });
 
-         navigation.navigate("HomeAdmi");
+          navigation.navigate("HomeAdmi");
         })
         .catch((error) => console.error(error));
-    
     }
-  }
+  };
 
-  return(
+  return (
     <Container style={styles.Container}>
       <Header transparent androidStatusBarColor="#C0FFC0" style={styles.Header}>
         <Left>
@@ -104,45 +97,51 @@ export default function AEditorialScreen ({route,navigation}){
         </Body>
         <Right></Right>
       </Header>
-      
-      <H3 style={{alignSelf:"center", fontSize:20, fontFamily:'Dosis'}}>Añadir editorial</H3>
+
+      <H3 style={{ alignSelf: "center", fontSize: 20, fontFamily: "Dosis" }}>
+        Añadir editorial
+      </H3>
 
       <Content style={styles.Content}>
         <Form>
           <Item floatingLabel style={styles.Item}>
-            <Label style={styles.Label}>Nombre encargado</Label> 
-            <Input style={styles.Input}
-              onChangeText={(nome)=>setNome(nome)}
+            <Label style={styles.Label}>Nombre encargado</Label>
+            <Input
+              style={styles.Input}
+              onChangeText={(nome) => setNome(nome)}
             />
           </Item>
           <Item floatingLabel style={styles.Item}>
-            <Label style={styles.Label}>Apellido encargado</Label> 
-            <Input style={styles.Input}
-              onChangeText={(apee)=>setApee(apee)}
+            <Label style={styles.Label}>Apellido encargado</Label>
+            <Input
+              style={styles.Input}
+              onChangeText={(apee) => setApee(apee)}
             />
           </Item>
           <Item floatingLabel style={styles.Item}>
-            <Label style={styles.Label}>Nombre editorial</Label> 
-            <Input style={styles.Input}
-              onChangeText={(nombreE)=>setNombreE(nombreE)}
+            <Label style={styles.Label}>Nombre editorial</Label>
+            <Input
+              style={styles.Input}
+              onChangeText={(nombreE) => setNombreE(nombreE)}
             />
           </Item>
           <Item floatingLabel style={styles.Item}>
-            <Label style={styles.Label}>Correo</Label> 
-            <Input style={styles.Input}
-              onChangeText={(email)=>setEmail(email)}
+            <Label style={styles.Label}>Correo</Label>
+            <Input
+              style={styles.Input}
+              onChangeText={(email) => setEmail(email)}
             />
           </Item>
           <Item floatingLabel style={styles.Item}>
-                <Label style={styles.Label}>Numero teléfonico</Label> 
-                <Input keyboardType="numeric" style={styles.Input}
-                  onChangeText={(tel)=>setTel(tel)}
-                />
-              </Item>
-        
-         <Button block rounded success
-            style={styles.Button} onPress={Check}
-          >
+            <Label style={styles.Label}>Numero teléfonico</Label>
+            <Input
+              keyboardType="numeric"
+              style={styles.Input}
+              onChangeText={(tel) => setTel(tel)}
+            />
+          </Item>
+
+          <Button block rounded success style={styles.Button} onPress={Check}>
             <Text style={styles.Text2}>Añadir</Text>
           </Button>
         </Form>
@@ -159,12 +158,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
     fontFamily: "Dosis",
-  },	
+  },
   Text2: {
     marginTop: 5,
     fontWeight: "400",
-    alignSelf:'center',
-    fontSize:20,
+    alignSelf: "center",
+    fontSize: 20,
     marginLeft: 5,
     fontFamily: "Dosis",
   },
@@ -178,7 +177,7 @@ const styles = StyleSheet.create({
   Label: {
     fontWeight: "400",
     fontSize: 18,
-    fontFamily:'Dosis',
+    fontFamily: "Dosis",
     marginBottom: 10,
   },
   Button: {
@@ -201,6 +200,6 @@ const styles = StyleSheet.create({
     color: "#0D7C0D",
     fontFamily: "Dosis",
     fontSize: 20,
-    fontWeight: "600"
+    fontWeight: "600",
   },
 });

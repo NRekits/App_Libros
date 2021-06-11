@@ -1,23 +1,7 @@
-/* El usuario aqui agrega una direccion */
 import React, { useState } from "react";
 import { Text, Dimensions, StyleSheet } from "react-native";
-import {
-  Container,
-  Header,
-  Content,
-  Form,
-  Toast,
-  Item,
-  Input,
-  Label,
-  Button,
-  Body,
-  Title,
-  H3,
-  Row,
-  Col,
-  Left,
-  Right,
+import { Container,Header,Content,Form,Toast,Item,Input,
+  Label,Button,Body,Title,H3,Picker,Left,Right,
 } from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from "../../../ip_address";
@@ -45,7 +29,7 @@ export default function AUsuarioScreen({ route, navigation }) {
       msg = "Apellido es un campo requerido";
       error = true;
     } else if (contra == "") {
-      msg = "Nombre de editorial es un campo requerido";
+      msg = "Contraseña es un campo requerido";
       error = true;
     } else if (email == "") {
       msg = "Correo es un campo requerido";
@@ -58,28 +42,36 @@ export default function AUsuarioScreen({ route, navigation }) {
     if (error) {
       Toast.show({ text: msg, buttonText: "Okay", type: "warning" });
     } else {
-      fetch(`http://${IP_DB}:3000/Editorial/Insertar`, {
+      fetch(`http://${IP_DB}:3000/Usuario/Insertar`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-            Nombre: nombre,
-            Apellido: apellido,
-            email: email.toLowerCase().trimEnd(),
-            contra: contra,
-            admi:admi
+          Nombre: nombre,
+          Apellido: apellido,
+          email: email.toLowerCase().trimEnd(),
+          contra: contra,
+          admi: admi,
         }),
       })
         .then((res) => res.json())
         .then((data) => {
-          Toast.show({
-            text: "Usuario añadido",
-            buttonText: "Okay",
-            type: "success",
-          });
+          if (data.error == null) {
+            Toast.show({
+              text: "Usuario añadido",
+              buttonText: "Okay",
+              type: "success",
+            });
 
-          navigation.navigate("HomeAdmi");
+            navigation.navigate("HomeAdmi");
+          } else if (data.error == "Email ya registrado") {
+            Toast.show({
+              text: "Email ya registrado",
+              buttonText: "Okay",
+              type: "warning",
+            });
+          }
         })
         .catch((error) => console.error(error));
     }
@@ -140,20 +132,19 @@ export default function AUsuarioScreen({ route, navigation }) {
               onChangeText={(contra) => setContra(contra)}
             />
           </Item>
-          
-						<Item picker style={styles.Item}>
-							<Picker
-								mode="dropdown"
-								selectedValue={admi}
-								style={{ width: undefined, height: 50 }}
-								onValueChange={(admi) => setAdmi(admi)}
-							>
-								<Picker.Item label="Selecciona un tipo" value={false} />
-								<Picker.Item label="Administrador" value={true} />
-                                <Picker.Item label="Regular" value={false} />
-								
-							</Picker>
-						</Item>
+
+          <Item picker style={styles.Item}>
+            <Picker
+              mode="dropdown"
+              selectedValue={admi}
+              style={{ width: undefined, height: 50 }}
+              onValueChange={(admi) => setAdmi(admi)}
+            >
+              <Picker.Item label="Selecciona un tipo" value={false} />
+              <Picker.Item label="Administrador" value={true} />
+              <Picker.Item label="Regular" value={false} />
+            </Picker>
+          </Item>
           <Button block rounded success style={styles.Button} onPress={Check}>
             <Text style={styles.Text2}>Añadir</Text>
           </Button>

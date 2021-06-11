@@ -37,6 +37,9 @@ import MEditorialScreen from "./Views/CRUD/Editorial/ModificarE";
 
 //Usuario CRUD
 import AUsuarioScreen from "./Views/CRUD/Usuario/AñadirU";
+import LUsuarioScreen from "./Views/CRUD/Usuario/ListaU";
+import UsuarioScreen from "./Views/CRUD/Usuario/VerU";
+import MUsuarioScreen from "./Views/CRUD/Usuario/ModificarU";
 
 
 
@@ -77,7 +80,7 @@ class App extends React.Component {
             <Stack.Navigator screenOptions={{
               headerShown: false
             }}
-              initialRouteName='AddLibro'>
+              initialRouteName='HomeAdmi'>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
@@ -90,18 +93,22 @@ class App extends React.Component {
 
               {/*Crud*/}
               <Stack.Screen name='HomeAdmi' component={HomeAdmiScreen} />
+              {/*Libro*/}
               <Stack.Screen name='AddLibro' component={AddLibro} />
               <Stack.Screen name='ModLibro' component={ModLibro} />
               <Stack.Screen name='ListLibro' component={LLibrosScreen} />
               <Stack.Screen name='VerLibro' component={LibroScreen} />
-
+              {/*Editorial*/}
               <Stack.Screen name='AddEditorial' component={AEditorialScreen} />
               <Stack.Screen name='ModEditorial' component={MEditorialScreen} />
               <Stack.Screen name='ListEditorial' component={LEditorialScreen} />
               <Stack.Screen name='VerEditorial' component={EditorialScreen} />
-
+              {/*Usuario*/}  
               <Stack.Screen name='AddUsuario' component={AUsuarioScreen} />
-             
+              <Stack.Screen name='ModUsuario' component={MUsuarioScreen} />
+              <Stack.Screen name='ListUsuario' component={LUsuarioScreen} />
+              <Stack.Screen name='VerUsuario' component={UsuarioScreen} />
+
               <Stack.Screen name='Generos' component={LibroGenero} />
             </Stack.Navigator>
           </NavigationContainer>
