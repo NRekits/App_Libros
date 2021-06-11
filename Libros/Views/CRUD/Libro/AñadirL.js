@@ -172,113 +172,6 @@ export default class AddLibro extends React.Component {
         })
     }
 
-    render() {
-        let { libro } = this.state;
-        return (
-            <Container style={styles.Container}>
-                <Header transparent
-                    androidStatusBarColor="#C0FFC0"
-                    style={styles.Header}
-                >
-                    <Left>
-                        <Button transparent style={styles.Button}
-                            onPress={() => {
-                                this.props.navigation.navigate.goBack();
-                            }}>
-                            <Icon name="chevron-left" size={30} />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title style={styles.Header}>LIBROS</Title>
-                    </Body>
-                    <Right></Right>
-                </Header>
-                <H3 style={{ alignSelf: 'center', fontSize: 20 }}>Añadir Libro</H3>
-                <Content style={styles.Content}>
-                    <Image source={{ uri: this.state.imageFile }} style={{ alignSelf: 'center', width: 200, height: 200, backgroundColor: "#666666" }} />
-                    <Button style={styles.Button } rounded success block onPress={() => { this.selectFile() }}>
-                        <Text>Cargar archivo</Text>
-                    </Button>
-                    <Form>
-                        <Item floatingLabel style={styles.Item}>
-                            <Label style={styles.Label}>Titulo</Label>
-                            <Input
-                                value={libro.titulo}
-                                style={styles.Input}
-                                onChangeText={(text) => {
-                                    libro.titulo = text;
-                                    this.setState({ libro: libro });
-                                }}
-                            />
-                        </Item>
-                        <Item floatingLabel style={styles.Item}>
-                            <Label style={styles.Label}>Autor</Label>
-                            <Input
-                             style={styles.Input}
-                                value={libro.autor}
-                                onChangeText={(text) => {
-                                    libro.autor = text;
-                                    this.setState({ libro: libro });
-                                }}
-                            />
-                        </Item>
-
-                        <Item picker style={styles.Item}>
-                            <Picker
-                                mode="dropdown"
-                                placeholder="Editorial"
-                                selectedValue={libro.idEditorial}
-                                style={{ width: undefined, height: 50 }}
-                                onValueChange={(value) => {
-                                    libro.idEditorial = value;
-                                    this.setState({ libro: libro });
-                                }}
-                            >
-                                <Picker.Item label="Selecciona una editorial" value="" />
-                                <Picker.Item label="Yo" value="60bac6ae620ddd2f94994780" />
-                                <Picker.Item label="Otro yo" value="60bac6ae620ddd2f94994780" />
-                            </Picker>
-                        </Item>
-
-                        <Item floatingLabel style={styles.Item}>
-                            <Label style={styles.Label}>Precio</Label>
-                            <Input
-                                keyboardType="numeric"
-                                style={styles.Input}
-                                value={libro.precio}
-                                onChangeText={(value) => {
-                                    libro.precio = value;
-                                    this.setState({ libro: libro });
-                                }}
-                             
-                            />
-                        </Item>
-                        <Item floatingLabel style={styles.Item}>
-                            <Label style={styles.Label}>Cantidad</Label>
-                            <Input
-                                keyboardType="numeric"
-                                style ={styles.Input}
-                                value={libro.cantidad}
-                                onChangeText={(value) => {
-                                    libro.cantidad = value;
-                                    this.setState({ libro: libro });
-                                }}
-                            />
-                        </Item>
-                        <Item>
-                            <Textarea
-
-                                style={{ width: '100%',  fontFamily: "Dosis"}}
-                                rowSpan={5}
-                                bordered
-                                placeholder="Sinopsis"
-                                value={libro.sinopsis}
-                                onChangeText={(text) => {
-                                    libro.sinopsis = text;
-                                    this.setState({libro: libro});
-                                }}
-                                />
-                        </Item>
 
 	render() {
 		let { libro } = this.state;
@@ -301,16 +194,17 @@ export default class AddLibro extends React.Component {
 					</Body>
 					<Right></Right>
 				</Header>
-				<H3 style={{ alignSelf: 'center', fontSize: 20 }}>Añadir Libro</H3>
+				<H3 style={{alignSelf:'center', fontFamily:'Dosis'}}>Añadir Libro</H3>
 				<Content style={styles.Content}>
 					<Image source={{ uri: this.state.imageFile }} style={{ alignSelf: 'center', width: 200, height: 200, backgroundColor: "#666666" }} />
-					<Button style={{ ...styles.Button }} rounded success block onPress={() => { this.selectFile() }}>
+					<Button style={styles.Button} rounded success block onPress={() => { this.selectFile() }}>
 						<Text>Cargar archivo</Text>
 					</Button>
 					<Form>
 						<Item floatingLabel style={styles.Item}>
 							<Label style={styles.Label}>Titulo</Label>
 							<Input
+								style={styles.Input}
 								value={libro.titulo}
 								onChangeText={(text) => {
 									libro.titulo = text;
@@ -321,6 +215,7 @@ export default class AddLibro extends React.Component {
 						<Item floatingLabel style={styles.Item}>
 							<Label style={styles.Label}>Autor</Label>
 							<Input
+								style={styles.Input}
 								value={libro.autor}
 								onChangeText={(text) => {
 									libro.autor = text;
@@ -329,22 +224,7 @@ export default class AddLibro extends React.Component {
 							/>
 						</Item>
 
-                        <Item picker style={styles.Item}>
-                            <Picker
-                                mode="dropdown"
-                                selectedValue={libro.formato}
-                                style={{ width: undefined, height: 50 }}
-                                onValueChange={(value) => {
-                                    libro.formato = value;
-                                    this.setState({ libro: libro });
-                                }}
-                            >
-                                <Picker.Item label="Selecciona un formato" value=""/> 
-                                <Picker.Item label="EPub" value="EPub" />
-                                <Picker.Item label="Físico" value="Físico" />
-                                <Picker.Item label="Ambos" value="Ambos" />
-                            </Picker>
-                        </Item>
+            
 						<Item picker style={styles.Item}>
 							<Picker
 								mode="dropdown"
@@ -365,6 +245,7 @@ export default class AddLibro extends React.Component {
 						<Item floatingLabel style={styles.Item}>
 							<Label style={styles.Label}>Precio</Label>
 							<Input
+								style={styles.Input}
 								value={libro.precio}
 								onChangeText={(value) => {
 									libro.precio = value;
@@ -376,6 +257,7 @@ export default class AddLibro extends React.Component {
 						<Item floatingLabel style={styles.Item}>
 							<Label style={styles.Label}>Cantidad</Label>
 							<Input
+								style={styles.Input}
 								value={libro.cantidad}
 								onChangeText={(value) => {
 									libro.cantidad = value;
@@ -386,7 +268,7 @@ export default class AddLibro extends React.Component {
 						</Item>
 						<Item>
 							<Textarea
-								style={{ width: '100%' }}
+								style={{ width: '100%' , fontFamily: "Dosis"}}
 								rowSpan={5}
 								bordered
 								placeholder="Sinopsis"
@@ -456,7 +338,7 @@ export default class AddLibro extends React.Component {
 						<Button full block rounded success style={styles.Button} onPress={() => {
 							this.Check();
 						}}>
-							<Text>Guardar</Text>
+							<Text style={styles.Text2}>Guardar</Text>
 						</Button>
 					</Form>
 				</Content>
@@ -503,6 +385,13 @@ const styles = StyleSheet.create({
         top: 0,
         height: windowHeight,
     },
+	Text2: {
+		marginTop: 5,
+		fontWeight: "400",
+		alignSelf:'center',
+		marginLeft: 5,
+		fontFamily: "Dosis",
+	  },
     Header: {
         color: "#0D7C0D",
         fontFamily: "Dosis",

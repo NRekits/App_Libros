@@ -10,6 +10,7 @@ const windowHeight = Dimensions.get('window').height;
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from "../../ip_address";
+
 export default function MDireccionScreen ({route, navigation}){
   const dirId = route.params.dirId
   var data = route.params.dirs

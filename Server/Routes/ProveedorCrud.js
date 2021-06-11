@@ -44,7 +44,7 @@ router.get("/Ver/:id",  (req, res) => {
 //Ver todas las editoriales
 router.get("/VerTodos",  (req, res) => {
     editorial.find({}).then((doc) => {
-        res.json({ data: doc, error:null });
+        res.json({ edit: doc, error:null });
       })
 
   });
@@ -59,7 +59,7 @@ router.put("/Modificar/:id", (req, res) => {
   const ema = req.body.email;
   const tel = req.body.tel;
 
-  libro.findByIdAndUpdate(
+  editorial.findByIdAndUpdate(
     { _id: id },
     { $set: {   Nombre_encargado: nome, Ape_encargado:apee,
         Nombre_editorial: nom, Email: ema, Tel: tel}})

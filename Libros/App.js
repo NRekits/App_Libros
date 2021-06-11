@@ -19,8 +19,19 @@ import ADireccionScreen from "./Views/Direccion/AñadirDirS";
 import DireccionesScreen from './Views/Direccion/DireccionesS' 
 import DirDetalles from "./Views/Direccion/DireccionS";
 import ModificarDir from "./Views/Direccion/ModificarDirS";
+
+//CRUD Home
+import HomeAdmiScreen from "./Views/CRUD/Home_admi";
+
+//Libro CRUD
 import AddLibro from "./Views/CRUD/Libro/AñadirL";
 import ModLibro from "./Views/CRUD/Libro/Modificar";
+
+//Editorial CRUD
+import AEditorialScreen from "./Views/CRUD/Editorial/AñadirE";
+import LEditorialScreen from "./Views/CRUD/Editorial/ListaE";
+import EditorialScreen from "./Views/CRUD/Editorial/VerE";
+import MEditorialScreen from "./Views/CRUD/Editorial/ModificarE";
 
 
 
@@ -60,18 +71,28 @@ class App extends React.Component {
             <Stack.Navigator screenOptions={{
               headerShown: false
             }}
-              initialRouteName='ModLibro'>
+              initialRouteName='HomeAdmi'>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
               <Stack.Screen name='Home' component={HomeScreen} />
+              <Stack.Screen name='Carrito' component={CarritoScreen} />
               <Stack.Screen name='ADireccion' component={ADireccionScreen} />
               <Stack.Screen name='Direcciones' component={DireccionesScreen} />
               <Stack.Screen name='DirDetalles' component={DirDetalles} />
               <Stack.Screen name='ModificarDir' component={ModificarDir} />
+
+              {//Crud
+              }
+              <Stack.Screen name='HomeAdmi' component={HomeAdmiScreen} />
               <Stack.Screen name='AddLibro' component={AddLibro} />
               <Stack.Screen name='ModLibro' component={ModLibro} />
-              <Stack.Screen name='Carrito' component={CarritoScreen} />
+              
+              <Stack.Screen name='AddEditorial' component={AEditorialScreen} />
+              <Stack.Screen name='ModEditorial' component={MEditorialScreen} />
+              <Stack.Screen name='ListEditorial' component={LEditorialScreen} />
+              <Stack.Screen name='VerEditorial' component={EditorialScreen} />
+             
               <Stack.Screen name='Generos' component={LibroGenero} />
             </Stack.Navigator>
           </NavigationContainer>
