@@ -45,15 +45,6 @@ export default class ModLibro extends React.Component {
 		// this.setState({ libro: libro, imageFile: imageFile, id: id });
 	}
 
-	uploadImage = async () => {
-		if (this.imageFile != null) {
-			const fileToUpload = this.imageFile;
-			const data = new FormData();
-			data.append('name', 'Image Upload');
-			data.append('file_attachment', fileToUpload);
-		}
-	}
-
 	selectFile = async () => {
 		const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 		let result = null;
