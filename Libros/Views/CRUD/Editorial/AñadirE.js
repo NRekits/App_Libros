@@ -18,6 +18,7 @@ export default function AEditorialScreen ({route,navigation}){
   
 
   const Check = ()=>{ 
+	const emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     var msg = "";
     var error = false;
 
@@ -37,6 +38,10 @@ export default function AEditorialScreen ({route,navigation}){
       msg="Correo es un campo requerido"; 
       error = true;
     } 
+	else if (!emailRegex.test(email)){
+		msg ="Ese no es un correo válido";
+		error = true;
+	}
     else if(tel.includes('.') || tel.includes('-') || tel.includes(',')){
       msg="No se permiten caracteres especiales en Telefono"; 
       error = true;
