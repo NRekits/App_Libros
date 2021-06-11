@@ -40,7 +40,7 @@ export default function AEditorialScreen ({route,navigation}){
     } 
 
 	else if (!emailRegex.test(email)){
-		msg ="Ese no es un correo válido";
+		msg ="No es un correo válido";
 		error = true;
 	}
 

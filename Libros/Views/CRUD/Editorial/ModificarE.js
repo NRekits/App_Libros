@@ -53,7 +53,7 @@ export default function MEditorialScreen({ route, navigation }) {
       msg = "Correo es un campo requerido";
       error = true;
     } else if (!emailRegex.test(email)){
-		msg ="Ese no es un correo válido";
+		msg ="No es un correo válido";
 		error = true;
 	} else if (tel.includes(".") || tel.includes("-") || tel.includes(",")) {
       msg = "No se permiten caracteres especiales en Telefono";

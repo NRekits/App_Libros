@@ -65,7 +65,7 @@ router.get("/VerGenero/:genero", async (req, res) => {
 //Ver todos los libros
 router.get("/VerTodos", async (req, res) => {
     libro.find({}).then((doc) => {
-        res.json({ data: doc, error:null });
+        res.json({ lib: doc, error:null });
       })
 
   });
