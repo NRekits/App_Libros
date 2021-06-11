@@ -22,7 +22,7 @@ const schemaLogin = Joi.object({
   contra: Joi.string().min(2).max(1024).required()
 })
 
-//Añadir usuario
+//Añadir usuario por registro
 router.post("/Registro", async (req, res) => {
   try{
     // validate user
@@ -60,6 +60,37 @@ router.post("/Registro", async (req, res) => {
  
 });
 
+//Añadir usuario por registro
+router.post("/Registro", async (req, res) => {
+  try{
+   
+    const isEmailExist = await Usuario.findOne({ Email: req.body.email });
+ 
+    if (isEmailExist) {
+        return res.status(400).json({error: 'Email ya registrado'})
+    }
+  
+
+    const user = new usuario({
+      Nombre: req.body.Nombre,
+      Apellido: req.body.Apellido,
+      Contrasena: password,
+      Email: req.body.email,
+    });
+  
+    const savedUser = user.save();
+    res.json({
+      error: null,
+      response: "Añadido",
+      data: savedUser
+  })
+   
+
+} catch (error) {
+    res.status(400).json({error})
+}
+ 
+});
 //Login
 router.post('/login', async (req, res) => {
   // validaciones

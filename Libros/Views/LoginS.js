@@ -68,7 +68,7 @@ export default class LoginScreen extends React.Component {
                   if (this.state.Admi == false) {
                     this.props.navigation.navigate("Home", { id: this.state.id });
                   } else if (Admi == true) {
-                    //ir a crud
+                    this.props.navigation.navigate("HomeAdmi");
                   }
                 } else if (data.error != null) {
                   console.log(data.error);

@@ -35,6 +35,9 @@ import LEditorialScreen from "./Views/CRUD/Editorial/ListaE";
 import EditorialScreen from "./Views/CRUD/Editorial/VerE";
 import MEditorialScreen from "./Views/CRUD/Editorial/ModificarE";
 
+//Usuario CRUD
+import AUsuarioScreen from "./Views/CRUD/Usuario/AñadirU";
+
 
 
 
@@ -85,8 +88,7 @@ class App extends React.Component {
               <Stack.Screen name='DirDetalles' component={DirDetalles} />
               <Stack.Screen name='ModificarDir' component={ModificarDir} />
 
-              {//Crud
-              }
+              {/*Crud*/}
               <Stack.Screen name='HomeAdmi' component={HomeAdmiScreen} />
               <Stack.Screen name='AddLibro' component={AddLibro} />
               <Stack.Screen name='ModLibro' component={ModLibro} />
@@ -97,6 +99,8 @@ class App extends React.Component {
               <Stack.Screen name='ModEditorial' component={MEditorialScreen} />
               <Stack.Screen name='ListEditorial' component={LEditorialScreen} />
               <Stack.Screen name='VerEditorial' component={EditorialScreen} />
+
+              <Stack.Screen name='AddUsuario' component={AUsuarioScreen} />
              
               <Stack.Screen name='Generos' component={LibroGenero} />
             </Stack.Navigator>
