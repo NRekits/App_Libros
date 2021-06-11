@@ -35,18 +35,39 @@ export default class AddLibro extends React.Component {
 				formato: ''
 			},
 			imageFile: null,
-			show: false
+			editoriales: []
 		}
 
 	}
 
-	uploadImage = async () => {
-		if (this.imageFile != null) {
-			const fileToUpload = this.imageFile;
-			const data = new FormData();
-			data.append('name', 'Image Upload');
-			data.append('file_attachment', fileToUpload);
-		}
+	componentDidMount() {
+		this.getEditoriales();
+	}
+
+	getEditoriales() {
+		fetch(`http://${IP_DB}:3000/Editorial/VerTodos`)
+		.then((res) => res.json())
+		.then((res) => res.edit)
+		.then((data) => {console.log(data); return data;})
+		.then((data) => {
+			this.setState({editoriales: [...data]});
+		})
+		.catch((error) => {console.error(error)})
+		.finally(() => {
+			Toast.show({text: "Editoriales cargados", buttonText: "Entendido", type: "success"});
+		});
+	}
+
+	showEditoriales() {
+		const editArray = [];
+		const editoriales = [...this.state.editoriales];
+		editoriales.forEach((element) => {
+			editArray.push(
+				<Picker.Item label={element.Nombre_editorial} key={element._id} value={element._id} />
+			);
+		});
+
+		return editArray;
 	}
 
 	selectFile = async () => {
@@ -60,6 +81,7 @@ export default class AddLibro extends React.Component {
 			if (result !== null)
 				this.setState({ imageFile: result.uri });
 		}
+
 	}
 
 	Check = () => {
@@ -237,8 +259,7 @@ export default class AddLibro extends React.Component {
 								}}
 							>
 								<Picker.Item label="Selecciona una editorial" value="" />
-								<Picker.Item label="Yo" value="id0" />
-								<Picker.Item label="Otro yo" value="id1" />
+								{this.showEditoriales()}
 							</Picker>
 						</Item>
 

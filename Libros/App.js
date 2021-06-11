@@ -74,7 +74,7 @@ class App extends React.Component {
             <Stack.Navigator screenOptions={{
               headerShown: false
             }}
-              initialRouteName='HomeAdmi'>
+              initialRouteName='AddLibro'>
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
               <Stack.Screen name='Perfil' component={PerfilScreen} />
