@@ -8,8 +8,7 @@ import {
 import {
 	StyleSheet,
 	Image,
-	Dimensions,
-	ToastAndroid
+	Dimensions
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -37,13 +36,62 @@ export default class ModLibro extends React.Component {
 				genero: '',
 				formato: ''
 			},
-			imageFile: null
+			imageFile: null,
+			editoriales: []
 		}
 	}
 
-	componentDidMount() {
-		// const { id, libro, imageFile } = this.props.route.params;
-		// this.setState({ libro: libro, imageFile: `http://${IP_DB}:3000//Libro/Imagen/${imageFile}`, id: id });
+	showEditoriales() {
+		const editArray = [];
+		const editoriales = [...this.state.editoriales];
+		editoriales.forEach((element) => {
+			editArray.push(
+				<Picker.Item label={element.Nombre_editorial} key={element._id} value={element._id} />
+			);
+		});
+		return editArray;
+	}
+
+	async getEditoriales() {
+		await fetch(`http://${IP_DB}:3000/Editorial/VerTodos`)
+			.then((res) => res.json())
+			.then((res) => res.edit)
+			.then((data) => {
+				this.setState({ editoriales: [...data] });
+			})
+			.catch((error) => { console.error(error) })
+			.finally(() => {
+				Toast.show({ text: "Editoriales cargados", buttonText: "Entendido", type: "success" });
+			});
+	}
+
+	fetchLibro(){
+		console.log(this.state.id);
+		fetch(`http://${IP_DB}:3000/Libro/Ver/${this.state.id}`)
+		.then((res) => res.json())
+		.then((res) => {
+			const {data} = res;
+			const libro = {
+				titulo: data.Titulo,
+				autor: data.Autor,
+				idEditorial: data.Id_editorial,
+				precio: `${data.Precio}`,
+				cantidad: `${data.Cantidad_dis}`,
+				fecha: new Date(data.Fecha_adquision),
+				sinopsis: data.Sinopsis,
+				genero: data.Genero,
+				formato: data.Formato
+			};
+			this.setState({libro: libro, imageFile: `http://${IP_DB}:3000/Libro/Imagen/${data.Imagen}`});
+		})
+		// .catch((error) => console.error(error));
+	}
+
+	async componentDidMount() {
+		await this.getEditoriales();
+		// falta pasarle el prop, estaba utilizando un id de prueba
+		// await this.setState({id: '60c51b2e50c8141b929dc028'});
+		this.fetchLibro();
 	}
 
 	selectFile = async () => {
@@ -115,7 +163,6 @@ export default class ModLibro extends React.Component {
 		if (error) {
 			Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
 		} else {
-			Toast.show({ text: "Funciona", buttonText: "Entendido", type: "success" });
 			this.saveBook();
 		}
 	}
@@ -153,8 +200,9 @@ export default class ModLibro extends React.Component {
 				// seria algo como propiedadImagen: res.filename
 				// send the libro
 				fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
-					method: 'POST',
+					method: 'PUT',
 					body: JSON.stringify({
+						id: this.state.id,
 						titulo: libro.titulo,
 						autor: libro.autor,
 						editorial: libro.idEditorial,
@@ -272,8 +320,7 @@ export default class ModLibro extends React.Component {
 								}}
 							>
 								<Picker.Item label="Selecciona una editorial" value="" />
-								<Picker.Item label="Yo" value="id0" />
-								<Picker.Item label="Otro yo" value="id1" />
+								{this.showEditoriales()}
 							</Picker>
 						</Item>
 

@@ -52,7 +52,7 @@ router.get("/Ver/:id", async (req, res) => {
 	const id = req.params.id;
 	libro.findById({ _id: id }).then((doc) => {
 		res.json({ data: doc, error: null });
-	})
+	});
 
 });
 

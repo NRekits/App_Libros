@@ -65,7 +65,6 @@ export default class AddLibro extends React.Component {
 				<Picker.Item label={element.Nombre_editorial} key={element._id} value={element._id} />
 			);
 		});
-
 		return editArray;
 	}
 
