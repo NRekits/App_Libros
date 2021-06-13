@@ -291,4 +291,27 @@ router.get("/MostrarTodos", (req, res) => {
 
 });
 
+//Ver contenido del carrito
+router.get('/verCar_Wish/:id_us', (req, res) => {
+  const id_us = req.params.id_us;
+  const user = await Usuario.findById({ _id: id_us })
+
+  try {
+    // create token
+
+    res.json({
+      error:null,
+      Id:user._id,
+      Email: user.Email,
+      Deseos: user.Deseos,
+      Carrito: user.Carrito,
+      Direccion: user.Direccion
+    });
+
+}catch(e){
+  
+    return status(400).json({error: "Hubo un error, por favor intenta de nuevo"})
+}
+})
+
 module.exports = router;

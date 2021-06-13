@@ -27,24 +27,45 @@ const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
 const productos = [{
-  title: 'El viaje al centro de la tierra', 
-  price: 299.00,
-  cant: 1
-  },
-  {
-    title: 'The Lord of the Rings', 
-    price: 499.00,
-    cant: 1
-  },
-  {
-    title: 'The Hobbit', 
-    price: 459.43,
-    cant: 2
+  id: Number,
+  title: String, 
+  price: Number,
+  cant: Number
   }
 ];
 
 class CarritoScreen extends Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      id_us: "",
+      productos: []
+    }
+  }
 
+  //Montar
+  componentDidMount() {
+    //this.setState({ id_us: this.props.route.params.id });
+    this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
+    this.getCarritoContent();
+  }
+
+  getCarritoContent = () => {
+    fetch(`http://${IP_DB}:3000/Usuario/varCar_Wish/${this.state.id_us}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    .then((res) => res.json())
+    .then((data) => {
+      productos = data
+      console.log(productos);  
+    })   
+    .catch((error) => console.log(error));
+  }
 
   render_item = ({item}) => (
     <Card>
@@ -69,24 +90,58 @@ class CarritoScreen extends Component{
         <Content>
           <Card>
             <SafeAreaView style={{ flex: 1 }}>
-              <List
+              <List           //Lista de los libros agregados al array products (donde deben vasearse los datos de la BD)
                 dataArray={productos}
                 renderRow={(item) => (
-                  <ListItem
+                  <ListItem                  
                     button
                   >
                     <Image source={require('../../assets/libro.png')} style={styles.Image}/>
-                    <Text style={styles.Text2}>
-                      {item.title}
-                    </Text>
-                    <Text style={styles.Text3}>
-                      {item.price}
-                    </Text>
-                    <View>
-                      <Button>-</Button>
-                      <Input/>
-                      <Button>+</Button>
+                    <View style={styles.Flex1}>
+                      <Text style={styles.Text2}>
+                        {item.title}
+                      </Text>
+                      <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: 200}}>
+
+                        <Text style={styles.Text3}>$ 
+                          {item.price}
+                        </Text>
+                        <View style={{flexDirection: 'row', justifyContent: ''}}>
+                          <Button style={styles.Button}
+                            onPress={() => { //reducir cantidad de libros en el carrito
+                              for (let i = 0; i < productos.length; i++) {
+                                if (productos[i].id == item.id) {
+                                  item.cant = productos[i].cant - 1;
+                                  console.log(i+' '+item.cant);
+                                  //pendiente actualiza campo cantidad con setState....
+                                  if (productos[i].cant == 0) {
+                                    //Hacer algo aqui....
+
+                                  }
+                                }                                
+                              }
+                            }}>
+                              <Text>-</Text>
+                          </Button>
+                          <Text id={item.id} style={styles.Text1}>{item.cant}</Text>
+                          <Button style={styles.Button}
+                            onPress={() => { //aumentar cantidad de libros en el carrito
+                              for (let i = 0; i < productos.length; i++) {
+                                if (productos[i].id == item.id) {
+                                  item.cant = productos[i].cant + 1;
+                                  console.log(i+' '+item.cant);  
+                                  document.getElementById(item.id).innerHTML = item.cant;                         
+                                }                                
+                              }
+                            }}>
+                              <Text>+</Text>
+                          </Button>
+                        </View>
+                        
+                      </View>
                     </View>
+                    
+                    
                   </ListItem>
                 )}    
               />
@@ -107,27 +162,37 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "white",
   },
+  Text1: {
+    width: 25,
+    padding: 10,
+    fontSize: 15,
+    color: "black",
+    fontFamily: "Dosis",
+  },
 
   Text2: {
+    display: 'flex',
+    flexDirection: 'column',
     alignSelf: 'flex-start',
     fontSize: 18,
     color: "black",
     fontFamily: "Dosis",
   },
   Text3: {
-    flexDirection: 'row',
-    alignSelf: 'flex-end',
-    justifyContent: 'flex-start',
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+    justifyContent: 'flex-end',
     fontSize: 20,
     color: "black",
     fontFamily: "Dosis",
   },
 
   Button: {
-    alignSelf: "center",
+    padding: 10,
     backgroundColor: "#BB8FCE",
     fontFamily: "Dosis",
-    fontWeight: "400",
+    fontWeight: "100",
   },
   
   background: {
@@ -136,12 +201,6 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: 100,
-  },
-  Button: {
-    alignSelf: "flex-end",
-    fontFamily: "Dosis",
-    backgroundColor: "white",
-    fontWeight: "400",
   },
   Header: {
     fontFamily: "Dosis",
@@ -156,6 +215,10 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     width: 60, 
     height: 60
+  },
+  Flex1: {
+    display: 'flex',
+    flexDirection: 'column'
   }
 });
 
