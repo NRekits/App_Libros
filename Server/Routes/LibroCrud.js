@@ -75,11 +75,14 @@ router.get("/VerTodos", async (req, res) => {
 
 });
 
-//Ver libros por precio
-router.get("/VerPrecio/:id", async (req, res) => {
-	const id = req.params.id;
-	libro.find({}).then((doc) => {
-		res.json({ data: doc, error: null });
+//Ver filtrar libros por precio
+router.get("/FiltrarPrecio", async (req, res) => {
+
+	const MinVal = req.query.min;
+	const MaxVal = req.query.max;
+
+	libro.find({$and: [ {Precio: {$gte: MinVal}}, {Precio: {$lte: MaxVal}} ]}).then((doc) => {
+		res.json({ lib: doc, error: null });
 	})
 
 });
@@ -96,7 +99,7 @@ router.get("/VerMasVendidos", async (req, res) => {
 
 //Ver los 5 libros más novedosos
 router.get("/Novedades", async (req, res) => {
-	libro.find({}).sort({fecha: 1})
+	libro.find({}).sort({Fecha_adquision: -1})
 	.then(doc => {
 		console.log(doc);
 		doc.splice(6);
