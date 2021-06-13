@@ -29,6 +29,7 @@ export default class ModLibro extends React.Component {
 				titulo: '',
 				autor: '',
 				idEditorial: undefined,
+				nombreEditorial: '',
 				precio: '',
 				cantidad: '',
 				fecha: new Date(),
@@ -37,7 +38,8 @@ export default class ModLibro extends React.Component {
 				formato: ''
 			},
 			imageFile: null,
-			editoriales: []
+			editoriales: [],
+			changedImage: false,
 		}
 	}
 
@@ -46,7 +48,7 @@ export default class ModLibro extends React.Component {
 		const editoriales = [...this.state.editoriales];
 		editoriales.forEach((element) => {
 			editArray.push(
-				<Picker.Item label={element.Nombre_editorial} key={element._id} value={element._id} />
+				<Picker.Item label={element.Nombre_editorial} key={element._id} value={`${element._id}.${element.Nombre_editorial}`} />
 			);
 		});
 		return editArray;
@@ -65,32 +67,34 @@ export default class ModLibro extends React.Component {
 			});
 	}
 
-	fetchLibro(){
+	fetchLibro() {
 		console.log(this.state.id);
 		fetch(`http://${IP_DB}:3000/Libro/Ver/${this.state.id}`)
-		.then((res) => res.json())
-		.then((res) => {
-			const {data} = res;
-			const libro = {
-				titulo: data.Titulo,
-				autor: data.Autor,
-				idEditorial: data.Id_editorial,
-				precio: `${data.Precio}`,
-				cantidad: `${data.Cantidad_dis}`,
-				fecha: new Date(data.Fecha_adquision),
-				sinopsis: data.Sinopsis,
-				genero: data.Genero,
-				formato: data.Formato
-			};
-			this.setState({libro: libro, imageFile: `http://${IP_DB}:3000/Libro/Imagen/${data.Imagen}`});
-		})
+			.then((res) => res.json())
+			.then((res) => {
+				const { data } = res;
+				console.log(data);
+				const libro = {
+					titulo: data.Titulo,
+					autor: data.Autor,
+					idEditorial: data.Id_editorial,
+					nombreEditorial: data.NombreEditorial,
+					precio: `${data.Precio}`,
+					cantidad: `${data.Cantidad_dis}`,
+					fecha: new Date(data.Fecha_adquision),
+					sinopsis: data.Sinopsis,
+					genero: data.Genero,
+					formato: data.Formato
+				};
+				this.setState({ libro: libro, imageFile: `http://${IP_DB}:3000/Libro/Imagen/${data.Imagen}` });
+			})
 		// .catch((error) => console.error(error));
 	}
 
 	async componentDidMount() {
 		await this.getEditoriales();
 		// falta pasarle el prop, estaba utilizando un id de prueba
-		// await this.setState({id: '60c51b2e50c8141b929dc028'});
+		await this.setState({ id: '60c561ec01a899880ce21425' });
 		this.fetchLibro();
 	}
 
@@ -103,7 +107,7 @@ export default class ModLibro extends React.Component {
 				quality: 1
 			});
 			if (result !== null)
-				this.setState({ imageFile: result.uri });
+				this.setState({ imageFile: result.uri, changedImage: true });
 		}
 	}
 
@@ -121,6 +125,10 @@ export default class ModLibro extends React.Component {
 			error = true;
 		}
 		else if (libro.idEditorial === "" || libro.idEditorial === undefined || libro.idEditorial === null) {
+			msg = "Editorial es un campo requerido";
+			error = true;
+		}
+		else if (libro.nombreEditorial === "" || libro.nombreEditorial === undefined || libro.nombreEditorial === null) {
 			msg = "Editorial es un campo requerido";
 			error = true;
 		}
@@ -169,71 +177,99 @@ export default class ModLibro extends React.Component {
 
 	saveBook() {
 		const libro = Object.assign({}, this.state.libro);
-		console.log(typeof libro.cantidad);
-		console.log(typeof libro.precio);
+		console.log(libro);
 		libro.cantidad = Number(libro.cantidad);
 		libro.precio = Number(libro.precio);
-		console.log(typeof libro.cantidad);
-		console.log(typeof libro.precio);
-		const uri = this.state.imageFile;
-		let uriParts = uri.split('.');
-		let fileType = uriParts[uriParts.length - 1];
-		let formData = new FormData();
-		formData.append('photo', {
-			uri: uri,
-			name: `${libro.titulo}.${fileType}`,
-			type: `image/${fileType}`
-		});
-
-		//send imagen
-		fetch(`http://${IP_DB}:3000/Libro/SubirImagen`, {
-			method: 'POST',
-			body: formData,
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		})
-			.then((res) => res.json())
-			.then((res) => { console.log(res); return res })
-			.then((res) => {
-				//el nombre del archivo se llama res.filename cuando agregues la propiedad al modelo del libro
-				// seria algo como propiedadImagen: res.filename
-				// send the libro
-				fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
-					method: 'PUT',
-					body: JSON.stringify({
-						id: this.state.id,
-						titulo: libro.titulo,
-						autor: libro.autor,
-						editorial: libro.idEditorial,
-						precio: libro.precio,
-						cantidad: libro.cantidad,
-						fecha: libro.fecha.toISOString(),
-						sinopsis: libro.sinopsis,
-						genero: libro.genero,
-						imagen: res.filename,
-						formato: libro.formato,
-					}),
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				}).then((res) => res.json())
-					.then((data) => {
-						Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
-
-						/* navegacion pendiente
-						this.props.navigation.navigate("Perfil", {
-						  id: route.params.id,
-						});*/
-
-					})
+		if (this.state.changedImage) {
+			const uri = this.state.imageFile;
+			let uriParts = uri.split('.');
+			let fileType = uriParts[uriParts.length - 1];
+			let formData = new FormData();
+			formData.append('photo', {
+				uri: uri,
+				name: `${libro.titulo}.${fileType}`,
+				type: `image/${fileType}`
+			});
+			//send imagen
+			fetch(`http://${IP_DB}:3000/Libro/SubirImagen`, {
+				method: 'POST',
+				body: formData,
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
 			})
-			.catch((error) => {
-				Toast.show({ text: error.error, buttonText: 'Okay', type: 'danger' });
-			})
-
-
-
+				.then((res) => res.json())
+				.then((res) => { console.log(res); return res })
+				.then((res) => {
+					//el nombre del archivo se llama res.filename cuando agregues la propiedad al modelo del libro
+					// seria algo como propiedadImagen: res.filename
+					// send the libro
+					fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
+						method: 'PUT',
+						body: JSON.stringify({
+							id: this.state.id,
+							titulo: libro.titulo,
+							autor: libro.autor,
+							editorial: libro.idEditorial,
+							nombreEditorial: libro.nombreEditorial,
+							precio: libro.precio,
+							cantidad: libro.cantidad,
+							fecha: libro.fecha.toISOString(),
+							sinopsis: libro.sinopsis,
+							genero: libro.genero,
+							imagen: res.filename,
+							formato: libro.formato,
+						}),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					}).then((res) => res.json())
+						.then((data) => {
+							Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
+							/* navegacion pendiente
+							this.props.navigation.navigate("Perfil", {
+							  id: route.params.id,
+							});*/
+						})
+				})
+				.catch((error) => {
+					console.error(error);
+					Toast.show({ text: "No se pudo guardar el cambio", buttonText: 'Okay', type: 'danger' });
+				})
+		}
+		else {
+			const imagePath = this.state.imageFile;
+			const imageSplit = imagePath.split('/');
+			const imageFile = imageSplit[imageSplit.length-1];
+			// send the libro
+			fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					id: this.state.id,
+					titulo: libro.titulo,
+					autor: libro.autor,
+					editorial: libro.idEditorial,
+					nombreEditorial: libro.nombreEditorial,
+					precio: libro.precio,
+					cantidad: libro.cantidad,
+					fecha: libro.fecha.toISOString(),
+					sinopsis: libro.sinopsis,
+					genero: libro.genero,
+					imagen: imageFile,
+					formato: libro.formato,
+				}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then((res) => res.json())
+				.then((data) => {
+					Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
+					/* navegacion pendiente
+					this.props.navigation.navigate("Perfil", {
+					  id: route.params.id,
+					});*/
+				})
+		}
 	}
 
 	deleteBook() {
@@ -241,7 +277,7 @@ export default class ModLibro extends React.Component {
 		fetch(`http://${IP_DB}:3000/Libro/Eliminar/${this.state.id}`)
 		.then((res) => res.json())
 		.then((data) => {
-			Toast.show({text: "Se elimino el registro", buttonText: "Okay", type:"success"});
+			Toast.show({text: "Libro eliminado", buttonText: "Okay", type:"danger"});
 						this.props.navigation.navigate("HomeAdmi");
 		})
 		.then((data) => {console.log(data)});
@@ -249,7 +285,7 @@ export default class ModLibro extends React.Component {
 	}
 
 	render() {
-		let { libro } = this.state;
+		let { libro } = Object.assign(this.state);
 		return (
 			<Container style={styles.Container}>
 				<Header transparent
@@ -309,10 +345,12 @@ export default class ModLibro extends React.Component {
 							<Picker
 								mode="dropdown"
 								placeholder="Editorial"
-								selectedValue={libro.idEditorial}
+								selectedValue={`${libro.idEditorial}.${libro.nombreEditorial}`}
 								style={{ width: undefined, height: 50 }}
 								onValueChange={(value) => {
-									libro.idEditorial = value;
+									const res = value.split(".");
+									libro.idEditorial = res[0];
+									libro.nombreEditorial = res[1];
 									this.setState({ libro: libro });
 								}}
 							>

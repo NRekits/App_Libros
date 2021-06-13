@@ -26,6 +26,7 @@ export default class AddLibro extends React.Component {
 				titulo: '',
 				autor: '',
 				idEditorial: undefined,
+				nombreEditorial: '',
 				precio: '',
 				cantidad: '',
 				fecha: new Date(),
@@ -62,7 +63,7 @@ export default class AddLibro extends React.Component {
 		const editoriales = [...this.state.editoriales];
 		editoriales.forEach((element) => {
 			editArray.push(
-				<Picker.Item label={element.Nombre_editorial} key={element._id} value={element._id} />
+				<Picker.Item label={element.Nombre_editorial} key={element._id} value={`${element._id}.${element.Nombre_editorial}`} />
 			);
 		});
 		return editArray;
@@ -95,6 +96,10 @@ export default class AddLibro extends React.Component {
 			error = true;
 		}
 		else if (libro.idEditorial === "" || libro.idEditorial === undefined || libro.idEditorial === null) {
+			msg = "Editorial es un campo requerido";
+			error = true;
+		}
+		else if(libro.nombreEditorial == "" || libro.nombreEditorial === undefined || libro.nombreEditorial === null){
 			msg = "Editorial es un campo requerido";
 			error = true;
 		}
@@ -181,6 +186,7 @@ export default class AddLibro extends React.Component {
 						titulo: libro.titulo,
 						autor: libro.autor,
 						editorial: libro.idEditorial,
+						nombreEditorial: libro.nombreEditorial,
 						precio: libro.precio,
 						cantidad: libro.cantidad,
 						fecha: libro.fecha.toISOString(),
@@ -208,7 +214,7 @@ export default class AddLibro extends React.Component {
 
 
 	render() {
-		let { libro } = this.state;
+		let { libro } = Object.assign({}, this.state);
 		return (
 			<Container style={styles.Container}>
 				<Header transparent
@@ -263,10 +269,12 @@ export default class AddLibro extends React.Component {
 							<Picker
 								mode="dropdown"
 								placeholder="Editorial"
-								selectedValue={libro.idEditorial}
+								selectedValue={`${libro.idEditorial}.${libro.nombreEditorial}`}
 								style={{ width: undefined, height: 50 }}
 								onValueChange={(value) => {
-									libro.idEditorial = value;
+									const res = value.split(".");
+									libro.idEditorial = res[0];
+									libro.nombreEditorial = res[1];
 									this.setState({ libro: libro });
 								}}
 							>
