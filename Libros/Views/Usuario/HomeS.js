@@ -38,10 +38,15 @@ export default class HomeScreen extends React.Component{
         this.state = {
           id: "",
         };
+		this.goGeneros = this.goGeneros.bind(this);
       }
     //Montar
 	goLista(){
 		this.props.navigation.navigate('Buscar');
+	}
+	//Ir a lista de generos
+	goGeneros(){
+		this.props.navigation.navigate('Generos');
 	}
  componentDidMount() {
         this.setState({ id: this.props.route.params.id})
@@ -87,7 +92,7 @@ export default class HomeScreen extends React.Component{
             <Button active style={styles.Button} onPress={this.goPerfil}>
               <Icon name="home" size={30} />
             </Button>
-            <Button  style={styles.Button} onPress={this.goPerfil}>
+            <Button  style={styles.Button} onPress={this.goGeneros}>
               <Icon name="list-ul" size={30} />
             </Button>
             <Button style={styles.Button} onPress={this.goLista}>

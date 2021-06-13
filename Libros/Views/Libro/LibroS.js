@@ -10,7 +10,8 @@ import {
 	Body,
 	Right,
 	Title,
-	Textarea
+	Textarea,
+	Radio
 } from "native-base";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -21,7 +22,7 @@ import { isLoading } from "expo-font";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 export default class LibroDetailsScreen extends React.Component {
-	constructor(props){
+	constructor(props) {
 		super(props);
 		this.state = {
 			libro: {
@@ -38,45 +39,45 @@ export default class LibroDetailsScreen extends React.Component {
 				vendidos: '',
 				fecha: new Date(),
 				formato: ''
-			}
-
+			},
+			selectedFormat: ''
 		}
 	}
 
-	async fetchLibro(){
-		const {libro} = Object.assign({}, this.state);
+	async fetchLibro() {
+		const { libro } = Object.assign({}, this.state);
 		await fetch(`http://${IP_DB}:3000/Libro/Ver/${libro.id}`)
-		.then(res => res.json())
-		.then(res => res.data)
-		.then((res) => {
-			const newLibro = {
-				id: res._id,
-				titulo: res.Titulo,
-				autor: res.Autor,
-				sinopsis: res.Sinopsis,
-				genero: res.Genero,
-				idEditorial: res.Id_editorial,
-				editorial: res.NombreEditorial,
-				precio: res.Precio,
-				cantidad: res.Cantidad_dis,
-				imagen: res.Imagen,
-				vendidos: res.Vendidos,
-				fecha: new Date(res.Fecha_adquision),
-				formato: res.Formato
-			}
-			this.setState({libro: newLibro});
-		})
+			.then(res => res.json())
+			.then(res => res.data)
+			.then((res) => {
+				const newLibro = {
+					id: res._id,
+					titulo: res.Titulo,
+					autor: res.Autor,
+					sinopsis: res.Sinopsis,
+					genero: res.Genero,
+					idEditorial: res.Id_editorial,
+					editorial: res.NombreEditorial,
+					precio: res.Precio,
+					cantidad: res.Cantidad_dis,
+					imagen: res.Imagen,
+					vendidos: res.Vendidos,
+					fecha: new Date(res.Fecha_adquision),
+					formato: res.Formato
+				}
+				this.setState({ libro: newLibro });
+			})
 	}
 
-	async componentDidMount(){
-		let {libro} = Object.assign({}, this.state);
+	async componentDidMount() {
+		let { libro } = Object.assign({}, this.state);
 		libro.id = this.props.route.params.id;
-		await this.setState({libro});
+		await this.setState({ libro });
 		await this.fetchLibro();
 	}
 
 	render() {
-		const {libro} = this.state;
+		const { libro } = this.state;
 		return (
 			<Container>
 				<Header
@@ -100,52 +101,110 @@ export default class LibroDetailsScreen extends React.Component {
 					</Body>
 					<Right />
 				</Header>
-				<Content>
-					<Image style={{alignSelf: 'center', width: 200, height: 200 }} source={{uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}`}} />
+				<Content style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 30  }}>
+					<Image style={{ alignSelf: 'center', width: 200, height: 200 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
 
 					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Titulo</Label>
-							<Input disabled style={styles.Input} value={libro.titulo}/>
+						<Label style={styles.Label}>Titulo</Label>
+						<Input disabled style={styles.Input} value={libro.titulo} />
 					</Item>
 
 					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Autor</Label>
-	 						<Input disabled style={styles.Input} value={libro.autor}/>
+						<Label style={styles.Label}>Autor</Label>
+						<Input disabled style={styles.Input} value={libro.autor} />
 					</Item>
 
 					<Item style={styles.Item} disabled>
-							<Textarea disabled style={styles.Input} rowSpan={5} value={libro.sinopsis}/>
+						<Textarea disabled style={styles.Input} rowSpan={5} value={libro.sinopsis} />
 					</Item>
 
 					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Genero</Label>
-	 						<Input disabled style={styles.Input} value={libro.genero}/>
+						<Label style={styles.Label}>Genero</Label>
+						<Input disabled style={styles.Input} value={libro.genero} />
 					</Item>
 
 					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Editorial</Label>
-	 						<Input disabled style={styles.Input} value={libro.editorial}/>
+						<Label style={styles.Label}>Editorial</Label>
+						<Input disabled style={styles.Input} value={libro.editorial} />
 					</Item>
 
 					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Precio</Label>
-	 						<Input disabled style={styles.Input} value={`$${libro.precio}`}/>
+						<Label style={styles.Label}>Precio</Label>
+						<Input disabled style={styles.Input} value={`$${libro.precio}`} />
 					</Item>
 
 					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Disponibles</Label>
-	 						<Input disabled style={styles.Input} value={`${libro.cantidad}`}/>
+						<Label style={styles.Label}>Disponibles</Label>
+						<Input disabled style={styles.Input} value={`${libro.cantidad}`} />
 					</Item>
 
 					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Disponible desde:</Label>
-	 						<Input disabled style={styles.Input} value={libro.fecha.toDateString()}/>
+						<Label style={styles.Label}>Disponible desde:</Label>
+						<Input disabled style={styles.Input} value={libro.fecha.toDateString()} />
 					</Item>
+					{
+						libro.formato === 'Ambos' && (
 
-					<Item style={styles.Item} floatingLabel disabled>
-							<Label style={styles.Label}>Formato</Label>
-	 						<Input disabled style={styles.Input} value={libro.formato}/>
-					</Item>
+							<Content>
+								<Item
+									onPress={() => { this.setState({ selectedFormat: "Físico" }) }}
+								>
+									<Text>Físico</Text>
+									<Right>
+										<Radio selected={this.state.selectedFormat === "Físico"}
+										/>
+									</Right>
+								</Item>
+
+								<Item
+									onPress={() => { this.setState({ selectedFormat: "EPub" }) }}
+								>
+									<Text>EPub</Text>
+									<Right>
+										<Radio selected={this.state.selectedFormat === "EPub"}
+										/>
+									</Right>
+								</Item>
+							</Content>
+						)
+					}
+					{
+						libro.formato === "Físico" && (
+							<Content>
+								<Item
+									onPress={() => { this.setState({ selectedFormat: "Físico" }) }}
+								>
+									<Text>Físico</Text>
+									<Right>
+										<Radio selected={this.state.selectedFormat === 'Físico'}
+										/>
+									</Right>
+								</Item>
+							</Content>
+						)
+					}
+					{
+						libro.formato === 'EPub' && (
+							<Content>
+								<Item
+									onPress={() => { this.setState({ selectedFormat: "EPub" }) }}
+								>
+									<Text>EPub</Text>
+									<Right>
+										<Radio selected={this.state.selectedFormat === 'EPub'}
+										/>
+									</Right>
+								</Item>
+							</Content>
+						)
+					}
+
+					<Button rounded success block style={styles.Button} onPress={() => {
+
+					}}>
+						<Text>Añadir al carro</Text>
+					</Button>
+
 				</Content>
 			</Container>
 		);
