@@ -93,8 +93,7 @@ export default class ModLibro extends React.Component {
 
 	async componentDidMount() {
 		await this.getEditoriales();
-		// falta pasarle el prop, estaba utilizando un id de prueba
-		await this.setState({ id: '60c561ec01a899880ce21425' });
+		await this.setState({ id: this.props.route.params.libId });
 		this.fetchLibro();
 	}
 
@@ -225,11 +224,8 @@ export default class ModLibro extends React.Component {
 						}
 					}).then((res) => res.json())
 						.then((data) => {
-							Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
-							/* navegacion pendiente
-							this.props.navigation.navigate("Perfil", {
-							  id: route.params.id,
-							});*/
+							Toast.show({ text: 'Libro Modificado', buttonText: 'Okay', type: 'success' });
+							this.props.navigation.navigate("HomeAdmi");
 						})
 				})
 				.catch((error) => {
@@ -263,26 +259,13 @@ export default class ModLibro extends React.Component {
 				}
 			}).then((res) => res.json())
 				.then((data) => {
-					Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
-					/* navegacion pendiente
-					this.props.navigation.navigate("Perfil", {
-					  id: route.params.id,
-					});*/
+					Toast.show({ text: 'Libro modificado', buttonText: 'Okay', type: 'success' });
+				
+					this.props.navigation.navigate("HomeAdmi");
 				})
 		}
 	}
 
-	deleteBook() {
-
-		fetch(`http://${IP_DB}:3000/Libro/Eliminar/${this.state.id}`)
-		.then((res) => res.json())
-		.then((data) => {
-			Toast.show({text: "Libro eliminado", buttonText: "Okay", type:"danger"});
-						this.props.navigation.navigate("HomeAdmi");
-		})
-		.then((data) => {console.log(data)});
-
-	}
 
 	render() {
 		let { libro } = Object.assign(this.state);
@@ -304,16 +287,10 @@ export default class ModLibro extends React.Component {
 						<Title style={styles.Header}>LIBROS</Title>
 					</Body>
 					<Right>
-						<Button
-							transparent
-							style={styles.Button}
-							onPress={() => { this.deleteBook() }}
-						>
-							<Icon />
-						</Button>
+					
 					</Right>
 				</Header>
-				<H3 style={{ alignSelf: 'center', fontSize: 20 }}>Añadir Libro</H3>
+				<H3 style={{ alignSelf: 'center', fontSize: 20 }}>Modificar Libro</H3>
 				<Content style={styles.Content}>
 					<Image source={{ uri: this.state.imageFile }} style={{ alignSelf: 'center', width: 200, height: 200, backgroundColor: "#666666" }} />
 					<Button style={{ ...styles.Button }} rounded success block onPress={() => { this.selectFile() }}>
@@ -457,11 +434,7 @@ export default class ModLibro extends React.Component {
 							<Text>Guardar</Text>
 						</Button>
 
-						<Button full block rounded danger style={styles.Button} onPress={() => {
-							this.deleteBook();
-						}}>
-							<Text>Borrar</Text>
-						</Button>
+					
 					</Form>
 				</Content>
 			</Container>

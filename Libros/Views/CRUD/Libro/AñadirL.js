@@ -142,7 +142,6 @@ export default class AddLibro extends React.Component {
 		if (error) {
 			Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
 		} else {
-			Toast.show({ text: "Funciona", buttonText: "Entendido", type: "success" });
 			this.saveBook();
 		}
 	}

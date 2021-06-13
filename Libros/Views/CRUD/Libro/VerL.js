@@ -29,14 +29,13 @@ export default class LibroScreen extends React.Component {
       Libro: {},
       cargar: false,
       libId:"",
-      editorial:""
     };
   }
   //Montar
   componentDidMount() {
   
     this.setState({Libro: this.props.route.params.lib, 
-      cargar:true, libId : this.props.route.params.libtId});
+      cargar:true, libId : this.props.route.params.libId});
 
   }
 
@@ -112,7 +111,7 @@ export default class LibroScreen extends React.Component {
           <Content>
             <Text style={styles.Text2}>Titulo: {this.state.Libro.Titulo}</Text>
             <Text style={styles.Text2}>Autor: {this.state.Libro.Autor}</Text>
-           {/* <Text style={styles.Text2}>Nombre editorial: {this.state.editorial}</Text>*/}
+            <Text style={styles.Text2}>Nombre editorial: {this.state.Libro.NombreEditorial}</Text>
             <Text style={styles.Text2}>Cantidad disponible: {this.state.Libro.Cantidad_dis}</Text>
             <Text style={styles.Text2}>Precio: {this.state.Libro.Precio}</Text>
             <Text style={styles.Text2}>Fecha Adquisión: {this.state.Libro.Fecha_adquision}</Text>
