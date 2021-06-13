@@ -26,6 +26,7 @@ export default class AddLibro extends React.Component {
 				titulo: '',
 				autor: '',
 				idEditorial: undefined,
+				nombreEditorial: '',
 				precio: '',
 				cantidad: '',
 				fecha: new Date(),
@@ -62,10 +63,9 @@ export default class AddLibro extends React.Component {
 		const editoriales = [...this.state.editoriales];
 		editoriales.forEach((element) => {
 			editArray.push(
-				<Picker.Item label={element.Nombre_editorial} key={element._id} value={element._id} />
+				<Picker.Item label={element.Nombre_editorial} key={element._id} value={`${element._id}.${element.Nombre_editorial}`} />
 			);
 		});
-
 		return editArray;
 	}
 
@@ -96,6 +96,10 @@ export default class AddLibro extends React.Component {
 			error = true;
 		}
 		else if (libro.idEditorial === "" || libro.idEditorial === undefined || libro.idEditorial === null) {
+			msg = "Editorial es un campo requerido";
+			error = true;
+		}
+		else if(libro.nombreEditorial == "" || libro.nombreEditorial === undefined || libro.nombreEditorial === null){
 			msg = "Editorial es un campo requerido";
 			error = true;
 		}
@@ -138,7 +142,6 @@ export default class AddLibro extends React.Component {
 		if (error) {
 			Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
 		} else {
-			Toast.show({ text: "Funciona", buttonText: "Entendido", type: "success" });
 			this.saveBook();
 		}
 	}
@@ -182,6 +185,7 @@ export default class AddLibro extends React.Component {
 						titulo: libro.titulo,
 						autor: libro.autor,
 						editorial: libro.idEditorial,
+						nombreEditorial: libro.nombreEditorial,
 						precio: libro.precio,
 						cantidad: libro.cantidad,
 						fecha: libro.fecha.toISOString(),
@@ -196,10 +200,8 @@ export default class AddLibro extends React.Component {
 				}).then((res) => res.json())
 					.then((data) => {
 						Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
-						/* navegacion pendiente
-						this.props.navigation.navigate("Perfil", {
-						  id: route.params.id,
-						});*/
+					
+						this.props.navigation.navigate("HomeAdmi")
 					})
 			})
 			.catch((error) => {
@@ -211,7 +213,7 @@ export default class AddLibro extends React.Component {
 
 
 	render() {
-		let { libro } = this.state;
+		let { libro } = Object.assign({}, this.state);
 		return (
 			<Container style={styles.Container}>
 				<Header transparent
@@ -221,7 +223,7 @@ export default class AddLibro extends React.Component {
 					<Left>
 						<Button transparent style={styles.Button}
 							onPress={() => {
-								this.props.navigation.navigate.goBack();
+								this.props.navigation.goBack();
 							}}>
 							<Icon name="chevron-left" size={30} />
 						</Button>
@@ -266,10 +268,12 @@ export default class AddLibro extends React.Component {
 							<Picker
 								mode="dropdown"
 								placeholder="Editorial"
-								selectedValue={libro.idEditorial}
+								selectedValue={`${libro.idEditorial}.${libro.nombreEditorial}`}
 								style={{ width: undefined, height: 50 }}
 								onValueChange={(value) => {
-									libro.idEditorial = value;
+									const res = value.split(".");
+									libro.idEditorial = res[0];
+									libro.nombreEditorial = res[1];
 									this.setState({ libro: libro });
 								}}
 							>
@@ -334,7 +338,7 @@ export default class AddLibro extends React.Component {
 								<Picker.Item label="Romance" value="Romance" />
 								<Picker.Item label="Humor" value="Humor" />
 								<Picker.Item label="Poesía" value="Poesía" />
-								<Picker.Item label="Clásicos" value="Clásicos" />
+								<Picker.Item label="Clásico" value="Clásico" />
 							</Picker>
 						</Item>
 

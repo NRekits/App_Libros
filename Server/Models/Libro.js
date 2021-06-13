@@ -9,6 +9,7 @@ const libroSchema = new Schema({
     Sinopsis:{type: String},
     Genero: {type:String},
     Id_editorial: { type: Schema.Types.ObjectId, ref: "Editorial", default: undefined },
+	NombreEditorial: {type: String},
     Precio: { type: Number },
     Cantidad_dis: { type:Number },
     Imagen: { type:String },

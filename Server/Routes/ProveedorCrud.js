@@ -36,7 +36,7 @@ router.post("/Insertar", async (req, res) => {
 router.get("/Ver/:id",  (req, res) => {
   const id = req.params.id;
   editorial.findById({ _id: id }).then((doc) => {
-    res.json({ data: doc, error:null });
+    res.json({ edit: doc, error:null });
   })
    
 });

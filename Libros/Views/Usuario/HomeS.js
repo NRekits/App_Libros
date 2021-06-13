@@ -38,9 +38,11 @@ export default class HomeScreen extends React.Component{
         this.state = {
           id: "",
         };
-        
       }
     //Montar
+	goLista(){
+		this.props.navigation.navigate('Buscar');
+	}
  componentDidMount() {
         this.setState({ id: this.props.route.params.id})
         console.log(this.state.id)
@@ -56,7 +58,7 @@ export default class HomeScreen extends React.Component{
             style={styles.Header}
           >
             <Left>
-            <Button transparent style={styles.Button} onPress={this.goLista}>
+            <Button transparent style={styles.Button} onPress={() => {this.goLista()}}>
               <Icon name="search" size={30} />
             </Button>
             </Left>

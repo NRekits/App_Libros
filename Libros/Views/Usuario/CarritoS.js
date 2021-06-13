@@ -20,9 +20,6 @@ import { Container, Header, Content, Form, Item, Input,
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
 
-
-
-
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 

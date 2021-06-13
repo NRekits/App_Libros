@@ -8,8 +8,7 @@ import {
 import {
 	StyleSheet,
 	Image,
-	Dimensions,
-	ToastAndroid
+	Dimensions
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -30,6 +29,7 @@ export default class ModLibro extends React.Component {
 				titulo: '',
 				autor: '',
 				idEditorial: undefined,
+				nombreEditorial: '',
 				precio: '',
 				cantidad: '',
 				fecha: new Date(),
@@ -37,13 +37,64 @@ export default class ModLibro extends React.Component {
 				genero: '',
 				formato: ''
 			},
-			imageFile: null
+			imageFile: null,
+			editoriales: [],
+			changedImage: false,
 		}
 	}
 
-	componentDidMount() {
-		// const { id, libro, imageFile } = this.props.route.params;
-		// this.setState({ libro: libro, imageFile: `http://${IP_DB}:3000//Libro/Imagen/${imageFile}`, id: id });
+	showEditoriales() {
+		const editArray = [];
+		const editoriales = [...this.state.editoriales];
+		editoriales.forEach((element) => {
+			editArray.push(
+				<Picker.Item label={element.Nombre_editorial} key={element._id} value={`${element._id}.${element.Nombre_editorial}`} />
+			);
+		});
+		return editArray;
+	}
+
+	async getEditoriales() {
+		await fetch(`http://${IP_DB}:3000/Editorial/VerTodos`)
+			.then((res) => res.json())
+			.then((res) => res.edit)
+			.then((data) => {
+				this.setState({ editoriales: [...data] });
+			})
+			.catch((error) => { console.error(error) })
+			.finally(() => {
+				Toast.show({ text: "Editoriales cargados", buttonText: "Entendido", type: "success" });
+			});
+	}
+
+	fetchLibro() {
+		console.log(this.state.id);
+		fetch(`http://${IP_DB}:3000/Libro/Ver/${this.state.id}`)
+			.then((res) => res.json())
+			.then((res) => {
+				const { data } = res;
+				console.log(data);
+				const libro = {
+					titulo: data.Titulo,
+					autor: data.Autor,
+					idEditorial: data.Id_editorial,
+					nombreEditorial: data.NombreEditorial,
+					precio: `${data.Precio}`,
+					cantidad: `${data.Cantidad_dis}`,
+					fecha: new Date(data.Fecha_adquision),
+					sinopsis: data.Sinopsis,
+					genero: data.Genero,
+					formato: data.Formato
+				};
+				this.setState({ libro: libro, imageFile: `http://${IP_DB}:3000/Libro/Imagen/${data.Imagen}` });
+			})
+		// .catch((error) => console.error(error));
+	}
+
+	async componentDidMount() {
+		await this.getEditoriales();
+		await this.setState({ id: this.props.route.params.libId });
+		this.fetchLibro();
 	}
 
 	selectFile = async () => {
@@ -55,7 +106,7 @@ export default class ModLibro extends React.Component {
 				quality: 1
 			});
 			if (result !== null)
-				this.setState({ imageFile: result.uri });
+				this.setState({ imageFile: result.uri, changedImage: true });
 		}
 	}
 
@@ -73,6 +124,10 @@ export default class ModLibro extends React.Component {
 			error = true;
 		}
 		else if (libro.idEditorial === "" || libro.idEditorial === undefined || libro.idEditorial === null) {
+			msg = "Editorial es un campo requerido";
+			error = true;
+		}
+		else if (libro.nombreEditorial === "" || libro.nombreEditorial === undefined || libro.nombreEditorial === null) {
 			msg = "Editorial es un campo requerido";
 			error = true;
 		}
@@ -115,96 +170,105 @@ export default class ModLibro extends React.Component {
 		if (error) {
 			Toast.show({ text: msg, buttonText: "Entendido", type: "warning" });
 		} else {
-			Toast.show({ text: "Funciona", buttonText: "Entendido", type: "success" });
 			this.saveBook();
 		}
 	}
 
 	saveBook() {
 		const libro = Object.assign({}, this.state.libro);
-		console.log(typeof libro.cantidad);
-		console.log(typeof libro.precio);
+		console.log(libro);
 		libro.cantidad = Number(libro.cantidad);
 		libro.precio = Number(libro.precio);
-		console.log(typeof libro.cantidad);
-		console.log(typeof libro.precio);
-		const uri = this.state.imageFile;
-		let uriParts = uri.split('.');
-		let fileType = uriParts[uriParts.length - 1];
-		let formData = new FormData();
-		formData.append('photo', {
-			uri: uri,
-			name: `${libro.titulo}.${fileType}`,
-			type: `image/${fileType}`
-		});
-
-		//send imagen
-		fetch(`http://${IP_DB}:3000/Libro/SubirImagen`, {
-			method: 'POST',
-			body: formData,
-			headers: {
-				'Content-Type': 'multipart/form-data'
-			}
-		})
-			.then((res) => res.json())
-			.then((res) => { console.log(res); return res })
-			.then((res) => {
-				//el nombre del archivo se llama res.filename cuando agregues la propiedad al modelo del libro
-				// seria algo como propiedadImagen: res.filename
-				// send the libro
-				fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
-					method: 'POST',
-					body: JSON.stringify({
-						titulo: libro.titulo,
-						autor: libro.autor,
-						editorial: libro.idEditorial,
-						precio: libro.precio,
-						cantidad: libro.cantidad,
-						fecha: libro.fecha.toISOString(),
-						sinopsis: libro.sinopsis,
-						genero: libro.genero,
-						imagen: res.filename,
-						formato: libro.formato,
-					}),
-					headers: {
-						'Content-Type': 'application/json'
-					}
-				}).then((res) => res.json())
-					.then((data) => {
-						Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
-
-						/* navegacion pendiente
-						this.props.navigation.navigate("Perfil", {
-						  id: route.params.id,
-						});*/
-
-					})
+		if (this.state.changedImage) {
+			const uri = this.state.imageFile;
+			let uriParts = uri.split('.');
+			let fileType = uriParts[uriParts.length - 1];
+			let formData = new FormData();
+			formData.append('photo', {
+				uri: uri,
+				name: `${libro.titulo}.${fileType}`,
+				type: `image/${fileType}`
+			});
+			//send imagen
+			fetch(`http://${IP_DB}:3000/Libro/SubirImagen`, {
+				method: 'POST',
+				body: formData,
+				headers: {
+					'Content-Type': 'multipart/form-data'
+				}
 			})
-			.catch((error) => {
-				Toast.show({ text: error.error, buttonText: 'Okay', type: 'danger' });
-			})
-
-
-
+				.then((res) => res.json())
+				.then((res) => { console.log(res); return res })
+				.then((res) => {
+					//el nombre del archivo se llama res.filename cuando agregues la propiedad al modelo del libro
+					// seria algo como propiedadImagen: res.filename
+					// send the libro
+					fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
+						method: 'PUT',
+						body: JSON.stringify({
+							id: this.state.id,
+							titulo: libro.titulo,
+							autor: libro.autor,
+							editorial: libro.idEditorial,
+							nombreEditorial: libro.nombreEditorial,
+							precio: libro.precio,
+							cantidad: libro.cantidad,
+							fecha: libro.fecha.toISOString(),
+							sinopsis: libro.sinopsis,
+							genero: libro.genero,
+							imagen: res.filename,
+							formato: libro.formato,
+						}),
+						headers: {
+							'Content-Type': 'application/json'
+						}
+					}).then((res) => res.json())
+						.then((data) => {
+							Toast.show({ text: 'Libro Modificado', buttonText: 'Okay', type: 'success' });
+							this.props.navigation.navigate("HomeAdmi");
+						})
+				})
+				.catch((error) => {
+					console.error(error);
+					Toast.show({ text: "No se pudo guardar el cambio", buttonText: 'Okay', type: 'danger' });
+				})
+		}
+		else {
+			const imagePath = this.state.imageFile;
+			const imageSplit = imagePath.split('/');
+			const imageFile = imageSplit[imageSplit.length-1];
+			// send the libro
+			fetch(`http://${IP_DB}:3000/Libro/Modificar/${this.state.id}`, {
+				method: 'PUT',
+				body: JSON.stringify({
+					id: this.state.id,
+					titulo: libro.titulo,
+					autor: libro.autor,
+					editorial: libro.idEditorial,
+					nombreEditorial: libro.nombreEditorial,
+					precio: libro.precio,
+					cantidad: libro.cantidad,
+					fecha: libro.fecha.toISOString(),
+					sinopsis: libro.sinopsis,
+					genero: libro.genero,
+					imagen: imageFile,
+					formato: libro.formato,
+				}),
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then((res) => res.json())
+				.then((data) => {
+					Toast.show({ text: 'Libro modificado', buttonText: 'Okay', type: 'success' });
+				
+					this.props.navigation.navigate("HomeAdmi");
+				})
+		}
 	}
 
-	deleteBook() {
-
-		fetch(`http://${IP_DB}:3000/Libro/Eliminar/${this.state.id}`)
-		.then((res) => res.json())
-		.then((data) => {
-			Toast.show({text: "Se elimino el registro", buttonText: "Okay", type:"success"});
-						/* navegacion pendiente
-						this.props.navigation.navigate("Perfil", {
-						  id: route.params.id,
-						});*/
-		})
-		.then((data) => {console.log(data)});
-
-	}
 
 	render() {
-		let { libro } = this.state;
+		let { libro } = Object.assign(this.state);
 		return (
 			<Container style={styles.Container}>
 				<Header transparent
@@ -214,7 +278,7 @@ export default class ModLibro extends React.Component {
 					<Left>
 						<Button transparent style={styles.Button}
 							onPress={() => {
-								this.props.navigation.navigate.goBack();
+								this.props.navigation.goBack();
 							}}>
 							<Icon name="chevron-left" size={30} />
 						</Button>
@@ -223,16 +287,10 @@ export default class ModLibro extends React.Component {
 						<Title style={styles.Header}>LIBROS</Title>
 					</Body>
 					<Right>
-						<Button
-							transparent
-							style={styles.Button}
-							onPress={() => { this.deleteBook() }}
-						>
-							<Icon />
-						</Button>
+					
 					</Right>
 				</Header>
-				<H3 style={{ alignSelf: 'center', fontSize: 20 }}>Añadir Libro</H3>
+				<H3 style={{ alignSelf: 'center', fontSize: 20 }}>Modificar Libro</H3>
 				<Content style={styles.Content}>
 					<Image source={{ uri: this.state.imageFile }} style={{ alignSelf: 'center', width: 200, height: 200, backgroundColor: "#666666" }} />
 					<Button style={{ ...styles.Button }} rounded success block onPress={() => { this.selectFile() }}>
@@ -264,16 +322,17 @@ export default class ModLibro extends React.Component {
 							<Picker
 								mode="dropdown"
 								placeholder="Editorial"
-								selectedValue={libro.idEditorial}
+								selectedValue={`${libro.idEditorial}.${libro.nombreEditorial}`}
 								style={{ width: undefined, height: 50 }}
 								onValueChange={(value) => {
-									libro.idEditorial = value;
+									const res = value.split(".");
+									libro.idEditorial = res[0];
+									libro.nombreEditorial = res[1];
 									this.setState({ libro: libro });
 								}}
 							>
 								<Picker.Item label="Selecciona una editorial" value="" />
-								<Picker.Item label="Yo" value="id0" />
-								<Picker.Item label="Otro yo" value="id1" />
+								{this.showEditoriales()}
 							</Picker>
 						</Item>
 
@@ -375,11 +434,7 @@ export default class ModLibro extends React.Component {
 							<Text>Guardar</Text>
 						</Button>
 
-						<Button full block rounded danger style={styles.Button} onPress={() => {
-							this.deleteBook();
-						}}>
-							<Text>Borrar</Text>
-						</Button>
+					
 					</Form>
 				</Content>
 			</Container>
