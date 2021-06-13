@@ -84,6 +84,26 @@ router.get("/VerPrecio/:id", async (req, res) => {
 
 });
 
+//Ver los 10 libros más vendidos
+router.get("/VerMasVendidos", async (req, res) => {
+	libro.find({}).sort({Vendidos: -1})
+	.then(doc => {
+		console.log(doc);
+		doc.splice(10);
+		res.json({lib: doc, error: null});
+	})
+});
+
+//Ver los 5 libros más novedosos
+router.get("/Novedades", async (req, res) => {
+	libro.find({}).sort({fecha: 1})
+	.then(doc => {
+		console.log(doc);
+		doc.splice(6);
+		res.json({lib: doc, error: null});
+	});
+})
+
 //Buscar libros
 router.get("/Buscar", async (req, res) => {
 	if (Object.keys(req.query).length != 0) {

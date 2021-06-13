@@ -42,24 +42,29 @@ const cards = [
   },
 ];
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
-export default class HomeScreen extends React.Component {
-  //Constructor
-  constructor(props) {
-    super(props);
-    this.state = {
-      id: "",
-    };
-  }
-  //Montar
-  goLista() {
-    this.props.navigation.navigate("Buscar");
-  }
-  componentDidMount() {
-    this.setState({ id: this.props.route.params.id });
-    console.log(this.state.id);
-  }
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+export default class HomeScreen extends React.Component{
+    //Constructor
+    constructor(props) {
+        super(props);
+        this.state = {
+          id: "",
+        };
+		this.goGeneros = this.goGeneros.bind(this);
+      }
+    //Montar
+	goLista(){
+		this.props.navigation.navigate('Buscar');
+	}
+	//Ir a lista de generos
+	goGeneros(){
+		this.props.navigation.navigate('Generos');
+	}
+ componentDidMount() {
+        this.setState({ id: this.props.route.params.id})
+        console.log(this.state.id)
+    }
 
   render() {
     return (
@@ -142,14 +147,7 @@ export default class HomeScreen extends React.Component {
             >
               <Icon name="home" size={30} />
             </Button>
-            <Button
-              style={styles.Button}
-              onPress={() => {
-                this.props.navigation.navigate("Generos", {
-                  id: this.state.id,
-                });
-              }}
-            >
+            <Button  style={styles.Button} onPress={this.goGeneros}>
               <Icon name="list-ul" size={30} />
             </Button>
             <Button
