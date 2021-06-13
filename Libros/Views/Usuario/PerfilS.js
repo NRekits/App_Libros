@@ -208,7 +208,7 @@ export default class PerfilScreen extends React.Component {
               <Button active style={styles.Button} onPress={this.goHome}>
                 <Icon name="home" size={30} />
               </Button>
-              <Button style={styles.Button} onPress={this.goPerfil}>
+              <Button style={styles.Button} onPress={this.goGeneros}>
                 <Icon name="list-ul" size={30} />
               </Button>
               <Button style={styles.Button} onPress={this.goLista}>

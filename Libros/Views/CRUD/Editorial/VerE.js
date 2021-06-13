@@ -115,7 +115,7 @@ export default class EditorialScreen extends React.Component {
             
             <Row>
               <Col>
-                <Button danger block rounded onPress={this.showAlert}>
+                <Button style={styles.ButtonB} danger block rounded onPress={this.showAlert}>
                   <Text>Eliminar</Text>
                 </Button>
               </Col>
@@ -124,6 +124,7 @@ export default class EditorialScreen extends React.Component {
                   info
                   block
                   rounded
+                  style={styles.ButtonB}
                   onPress={() => {
                     this.props.navigation.navigate("ModEditorial", {
                       editId: this.state.editId, edit: this.state.editorial
@@ -176,4 +177,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "600",
   },
+  ButtonB:{
+    margin:10
+  }
 });

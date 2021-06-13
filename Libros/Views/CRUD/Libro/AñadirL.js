@@ -195,10 +195,8 @@ export default class AddLibro extends React.Component {
 				}).then((res) => res.json())
 					.then((data) => {
 						Toast.show({ text: 'Libro añadido', buttonText: 'Okay', type: 'success' });
-						/* navegacion pendiente
-						this.props.navigation.navigate("Perfil", {
-						  id: route.params.id,
-						});*/
+					
+						this.props.navigation.navigate("HomeAdmi")
 					})
 			})
 			.catch((error) => {
@@ -220,7 +218,7 @@ export default class AddLibro extends React.Component {
 					<Left>
 						<Button transparent style={styles.Button}
 							onPress={() => {
-								this.props.navigation.navigate.goBack();
+								this.props.navigation.goBack();
 							}}>
 							<Icon name="chevron-left" size={30} />
 						</Button>
@@ -333,7 +331,7 @@ export default class AddLibro extends React.Component {
 								<Picker.Item label="Romance" value="Romance" />
 								<Picker.Item label="Humor" value="Humor" />
 								<Picker.Item label="Poesía" value="Poesía" />
-								<Picker.Item label="Clásicos" value="Clásicos" />
+								<Picker.Item label="Clásico" value="Clásico" />
 							</Picker>
 						</Item>
 

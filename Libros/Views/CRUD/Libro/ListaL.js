@@ -11,7 +11,8 @@ import {
   Left,
   Right,
   Button,
-  Text
+  Text,
+  Item
 } from "native-base";
 import IP_DB from "../../../ip_address";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -37,6 +38,7 @@ export default function LLibrosScreen({ route, navigation }) {
       .catch((error) => console.error(error));
   }, []);
 
+   
   return (
     <Container style={styles.Container}>
       <Header transparent androidStatusBarColor="#C0FFC0" style={styles.Header}>
@@ -64,23 +66,26 @@ export default function LLibrosScreen({ route, navigation }) {
               navigation.navigate("AddLibro");
             }}
           >
-          <Text styles={styles.Text3}>Añadir Editorial</Text>
+          <Text styles={styles.Text3}>Añadir Libro</Text>
           </Button>
       <H3 style={styles.H3}>Presiona cualquiera para ver mas detalles</H3>
 
       <SafeAreaView style={{ flex: 1 }}>
         <List
-          dataArray={editoriales}
+          dataArray={libros}
           keyExtractor={(item, index) => index.toString()}
           renderRow={(item) => (
             <ListItem
               button
               onPress={() => {
-               navigation.navigate("VerEditorial", { editId: item._id, edit: editoriales.find((edit) => edit._id == item._id)});
+               navigation.navigate("VerLibro", { libId: item._id, lib: libros.find((lib) => lib._id == item._id)});
               }}
             >
               <Text style={styles.Text2}>
-                {item.Nombre_editorial}
+                {item.Titulo}
+              </Text>
+              <Text style={styles.Text2}>
+                {item.Autor}
               </Text>
             </ListItem>
           )}

@@ -242,10 +242,7 @@ export default class ModLibro extends React.Component {
 		.then((res) => res.json())
 		.then((data) => {
 			Toast.show({text: "Se elimino el registro", buttonText: "Okay", type:"success"});
-						/* navegacion pendiente
-						this.props.navigation.navigate("Perfil", {
-						  id: route.params.id,
-						});*/
+						this.props.navigation.navigate("HomeAdmi");
 		})
 		.then((data) => {console.log(data)});
 
@@ -262,7 +259,7 @@ export default class ModLibro extends React.Component {
 					<Left>
 						<Button transparent style={styles.Button}
 							onPress={() => {
-								this.props.navigation.navigate.goBack();
+								this.props.navigation.goBack();
 							}}>
 							<Icon name="chevron-left" size={30} />
 						</Button>

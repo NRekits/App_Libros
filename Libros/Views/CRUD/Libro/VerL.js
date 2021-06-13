@@ -26,22 +26,24 @@ export default class LibroScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      editorial: {},
+      Libro: {},
       cargar: false,
-      editId:"",
+      libId:"",
+      editorial:""
     };
   }
   //Montar
   componentDidMount() {
   
-    this.setState({editorial: this.props.route.params.edit, 
-      cargar:true, editId : this.props.route.params.editId});
+    this.setState({Libro: this.props.route.params.lib, 
+      cargar:true, libId : this.props.route.params.libtId});
+
   }
 
  showAlert = () => {
     Alert.alert(
       "Precaucion",
-      "¿Estas seguro de eliminar esta editorial?",
+      "¿Estas seguro de eliminar este libro?",
       [
         {
           text: "Cancelar",
@@ -50,7 +52,7 @@ export default class LibroScreen extends React.Component {
         {
           text: "Confirmar",
           onPress: () =>{
-            fetch(`http://${IP_DB}:3000/Editorial/Eliminar/${this.state.editId}`, {
+            fetch(`http://${IP_DB}:3000/Libro/Eliminar/${this.state.libId}`, {
               method: "GET",
               headers: {
                 "Content-Type": "application/json",
@@ -59,7 +61,7 @@ export default class LibroScreen extends React.Component {
               .then((res) => res.json())
               .then((data) => {
                 Toast.show({
-                  text: "Editorial eliminada",
+                  text: "Libro eliminado",
                   buttonText: "Okay",
                   type: "danger",
                 })
@@ -77,6 +79,7 @@ export default class LibroScreen extends React.Component {
       }
     );
   };
+
 
   render() {
     if (this.state.cargar == false) {
@@ -107,15 +110,20 @@ export default class LibroScreen extends React.Component {
           </Header>
 
           <Content>
-            <Text style={styles.Text2}>Nombre encargado: {this.state.editorial.Nombre_encargado}</Text>
-            <Text style={styles.Text2}>Apellido encargado: {this.state.editorial.Ape_encargado}</Text>
-            <Text style={styles.Text2}>Nombre editorial: {this.state.editorial.Nombre_editorial}</Text>
-            <Text style={styles.Text2}>Email: {this.state.editorial.Email}</Text>
-            <Text style={styles.Text2}>Telefono: {this.state.editorial.Tel}</Text>
+            <Text style={styles.Text2}>Titulo: {this.state.Libro.Titulo}</Text>
+            <Text style={styles.Text2}>Autor: {this.state.Libro.Autor}</Text>
+           {/* <Text style={styles.Text2}>Nombre editorial: {this.state.editorial}</Text>*/}
+            <Text style={styles.Text2}>Cantidad disponible: {this.state.Libro.Cantidad_dis}</Text>
+            <Text style={styles.Text2}>Precio: {this.state.Libro.Precio}</Text>
+            <Text style={styles.Text2}>Fecha Adquisión: {this.state.Libro.Fecha_adquision}</Text>
+            <Text style={styles.Text2}>Sinopsis: {this.state.Libro.Sinopsis}</Text>
+            <Text style={styles.Text2}>Género: {this.state.Libro.Genero}</Text>
+            <Text style={styles.Text2}>Formato: {this.state.Libro.Formato}</Text>
+            <Text style={styles.Text2}>Vendidos: {this.state.Libro.Vendidos}</Text>
             
             <Row>
               <Col>
-                <Button danger block rounded onPress={this.showAlert}>
+                <Button danger block rounded onPress={this.showAlert} style={styles.ButtonB}>
                   <Text>Eliminar</Text>
                 </Button>
               </Col>
@@ -124,9 +132,11 @@ export default class LibroScreen extends React.Component {
                   info
                   block
                   rounded
+                  style={styles.ButtonB}
+
                   onPress={() => {
-                    this.props.navigation.navigate("ModEditorial", {
-                      editId: this.state.editId, edit: this.state.editorial
+                    this.props.navigation.navigate("ModLibro", {
+                      libId: this.state.libId, lib: this.state.Libro
                     });
                   }}
                 >
@@ -176,4 +186,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "600",
   },
+  ButtonB:{
+    margin:10
+  }
 });

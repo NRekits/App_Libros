@@ -104,20 +104,23 @@ export default class UsuarioScreen extends React.Component {
               Apellido: {this.state.usuario.Apellido}
             </Text>
             <Text style={styles.Text2}>Email: {this.state.usuario.Email}</Text>
-            {this.state.usuario.admi == true ? (
+            {this.state.usuario.Admi == true ? (
               <Text style={styles.Text2}>Tipo de usuario: Administrador</Text>
             ) : (
               <Text style={styles.Text2}>Tipo de usuario: Regular</Text>
-            )}
+            )
+           
+            }
 
             <Row>
               <Col>
-                <Button danger block rounded onPress={this.showAlert}>
+                <Button style={styles.ButtonB} danger block rounded onPress={this.showAlert}>
                   <Text>Eliminar</Text>
                 </Button>
               </Col>
               <Col>
                 <Button
+                  style={styles.ButtonB}
                   info
                   block
                   rounded
@@ -174,4 +177,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "600",
   },
+  ButtonB:{
+    margin:10
+  }
 });
