@@ -3,7 +3,7 @@
 /*al presionar cualquiera de los productos en el carrito debe de llevar a los detalles del producto*/
 import React, { Component, useState } from "react";
 import { Text, Dimensions, Alert, Image, StyleSheet, SafeAreaView } from "react-native";
-import { Container, Header, Content, Form, Item, Input,
+import { Container, Header, Content, Footer, FooterTab, Form, Item, Input,
   Label,
   Button,
   H1,
@@ -17,6 +17,9 @@ import { Container, Header, Content, Form, Item, Input,
   CardItem,
   Title,
 } from "native-base";
+import IP_DB from "../../ip_address";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import Icon from "react-native-vector-icons/FontAwesome";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -42,8 +45,8 @@ class CarritoScreen extends Component{
 
   //Montar
   componentDidMount() {
-    //this.setState({ id_us: this.props.route.params.id });
-    this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
+    this.setState({ id_us: this.props.route.params.id });
+    //this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
     this.getCarritoContent();
   }
 
@@ -104,7 +107,7 @@ class CarritoScreen extends Component{
                           {item.price}
                         </Text>
                         <View style={{flexDirection: 'row', justifyContent: ''}}>
-                          <Button style={styles.Button}
+                          <Button style={styles.Button1}
                             onPress={() => { //reducir cantidad de libros en el carrito
                               for (let i = 0; i < productos.length; i++) {
                                 if (productos[i].id == item.id) {
@@ -121,7 +124,7 @@ class CarritoScreen extends Component{
                               <Text>-</Text>
                           </Button>
                           <Text id={item.id} style={styles.Text1}>{item.cant}</Text>
-                          <Button style={styles.Button}
+                          <Button style={styles.Button1}
                             onPress={() => { //aumentar cantidad de libros en el carrito
                               for (let i = 0; i < productos.length; i++) {
                                 if (productos[i].id == item.id) {
@@ -145,6 +148,30 @@ class CarritoScreen extends Component{
             </SafeAreaView>
           </Card>
         </Content>
+        <Footer>
+          <FooterTab style={{ backgroundColor: "#FFF" }}>
+            <Button style={styles.Button} onPress={()=>{
+                  this.props.navigation.navigate("Perfil",{id:this.state.id});
+            }}>
+              <Icon name="user-circle-o" size={30} />
+            </Button>
+            <Button  style={styles.Button} onPress={ ()=>{
+              this.props.navigation.navigate("Carrito",{id:this.state.id})}
+              }>
+              <Ionicons name="cart" size={30} />
+            </Button>
+            <Button active style={styles.Button} onPress={this.goPerfil}>
+              <Icon name="home" size={30} />
+            </Button>
+            <Button  style={styles.Button} onPress={this.goPerfil}>
+              <Icon name="list-ul" size={30} />
+            </Button>
+            <Button style={styles.Button} onPress={this.goLista}>
+              <Icon name="heart" size={30} />
+            </Button>
+
+          </FooterTab>
+        </Footer>
       </Container>
     );
   }
@@ -185,7 +212,7 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
   },
 
-  Button: {
+  Button1: {
     padding: 10,
     backgroundColor: "#BB8FCE",
     fontFamily: "Dosis",
@@ -198,6 +225,12 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     height: 100,
+  },
+  Button: {
+    alignSelf: "center",
+    fontFamily: "Dosis",
+    backgroundColor: "white",
+    fontWeight: "400",
   },
   Header: {
     fontFamily: "Dosis",

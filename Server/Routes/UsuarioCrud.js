@@ -294,7 +294,7 @@ router.get("/MostrarTodos", (req, res) => {
 //Ver contenido del carrito
 router.get('/verCar_Wish/:id_us', (req, res) => {
   const id_us = req.params.id_us;
-  const user = await Usuario.findById({ _id: id_us })
+  const user = Usuario.findById({ _id: id_us })
 
   try {
     // create token
