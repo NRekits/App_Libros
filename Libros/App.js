@@ -12,7 +12,8 @@ import PerfilScreen from "./Views/Usuario/PerfilS";
 import HomeScreen from "./Views/Usuario/HomeS";
 import CarritoScreen from "./Views/Usuario/CarritoS";
 import LibroGenero from './Views/Libro/LibrosGenero';
-
+import BusquedaScreen from './Views/Libro/BusquedaS';
+import LibroDetailsScreen from './Views/Libro/LibroS';
 
 //Direccion
 import ADireccionScreen from "./Views/Direccion/AñadirDirS";
@@ -110,6 +111,8 @@ class App extends React.Component {
               <Stack.Screen name='VerUsuario' component={UsuarioScreen} />
 
               <Stack.Screen name='Generos' component={LibroGenero} />
+              <Stack.Screen name='Buscar' component={BusquedaScreen} />
+			  <Stack.Screen name='LibroS' component={LibroDetailsScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </Root>

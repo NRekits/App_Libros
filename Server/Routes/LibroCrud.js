@@ -20,12 +20,13 @@ router.post("/Insertar", async (req, res) => {
 			Titulo: req.body.titulo,
 			Autor: req.body.autor,
 			Id_editorial: mongoose.Types.ObjectId(req.body.editorial),
+			NombreEditorial: req.body.nombreEditorial,
 			Precio: req.body.precio,
 			Cantidad_dis: req.body.cantidad,
 			Fecha_adquision: req.body.fecha,
 			Sinopsis: req.body.sinopsis,
 			Genero: req.body.genero,
-			Imagen: req.body.imagen, 
+			Imagen: req.body.imagen,
 			Formato: req.body.formato,
 
 		});
@@ -67,6 +68,7 @@ router.get("/VerGenero/:genero", async (req, res) => {
 
 //Ver todos los libros
 router.get("/VerTodos", async (req, res) => {
+
 	libro.find({}).then((doc) => {
 		res.json({ lib: doc, error: null });
 	})
@@ -82,6 +84,24 @@ router.get("/VerPrecio/:id", async (req, res) => {
 
 });
 
+//Buscar libros
+router.get("/Buscar", async (req, res) => {
+	if (Object.keys(req.query).length != 0) {
+		if (req.query.name !== undefined) {
+			const Search = req.query.name;
+			libro.find({ Titulo: { $regex: `${Search}`, $options: 'i' } })
+				.then((doc) => {
+					res.json({lib: doc, error: null});
+				})
+		}
+	}
+	else {
+		libro.find({}).then((doc) => {
+			res.json({ lib: doc, error: null });
+		})
+	}
+});
+
 //Modificar libro
 router.put("/Modificar/:id", (req, res) => {
 
@@ -91,6 +111,7 @@ router.put("/Modificar/:id", (req, res) => {
 	const sinop = req.body.sinopsis;
 	const gen = req.body.genero;
 	const edit = req.body.editorial;
+	const nom_edit = req.body.nombreEditorial;
 	const pre = req.body.precio;
 	const cant = req.body.cantidad;
 	const vend = req.body.vendidos;
@@ -103,7 +124,9 @@ router.put("/Modificar/:id", (req, res) => {
 		{
 			$set: {
 				Titulo: titu, Autor: au, Sinopsis: sinop, Genero: gen,
-				Id_editorial: edit, Precio: pre, Cantidad_dis: cant,
+				Id_editorial: edit,
+				NombreEditorial: nom_edit,
+				Precio: pre, Cantidad_dis: cant,
 				Imagen: imag,
 				Vendidos: vend, Fecha_adquision: fecha, Formato: format
 			}
@@ -114,6 +137,7 @@ router.put("/Modificar/:id", (req, res) => {
 		})
 		.catch((err) => {
 			console.log("error al cambiar", err.message);
+			res.status(400).json({error: err.message});
 		});
 });
 
