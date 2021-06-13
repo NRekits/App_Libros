@@ -73,7 +73,19 @@ export default class HomeAdmiScreen extends React.Component {
           </Right>
         </Header>
         <Content>
+        <Text style={styles.Text3}>Pedidos por día</Text>
         <LineChart
+            data={data}
+            width={screenWidth}
+            height={220}
+            chartConfig={chartConfig}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+            <LineChart
             data={data}
             width={screenWidth}
             height={220}

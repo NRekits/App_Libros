@@ -12,8 +12,13 @@ import {
   Right,
   Body,
   Text,
+  View,
   Item,
   Toast,
+  DeckSwiper, 
+  Card, 
+  CardItem, 
+  Thumbnail,
   Footer,
   FooterTab,
 } from "native-base";
@@ -25,8 +30,18 @@ import IP_DB from "../../ip_address";
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-
-
+const cards = [
+  {
+    text: 'Card One',
+    name: 'One',
+    image: require('../../assets/libro.png'),
+  },
+  {
+    text: 'Card Two',
+    name: 'One',
+    image: require('../../assets/libro.png'),
+  },
+];
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -66,11 +81,38 @@ export default class HomeScreen extends React.Component{
               <Title style={styles.Header}> HOME </Title>
             </Body>
             <Right
-            //Poner ruta a log-out
+         
             >
               
             </Right>
           </Header>
+  
+            <View style={{height:400}}>
+          <DeckSwiper
+            dataSource={cards}
+            renderItem={item =>
+              <Card style={{ elevation: 3 }}>
+                <CardItem>
+                  <Left>
+                    <Thumbnail source={item.image} />
+                    <Body>
+                      <Text>{item.text}</Text>
+                      <Text note>Autor</Text>
+                    </Body>
+                  </Left>
+                </CardItem>
+                <CardItem cardBody>
+                  <Image style={{ height: 300, flex: 1 }} source={item.image} />
+                </CardItem>
+                <CardItem>
+                  <Icon name="heart" style={{ color: '#ED4A6A' }} />
+               
+                  <Text> {' '}Novedades </Text>
+                </CardItem>
+              </Card>
+            }
+          />
+          </View>
           <Content/>
           <Footer>
           <FooterTab style={{ backgroundColor: "#FFF" }}>
