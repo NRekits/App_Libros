@@ -80,6 +80,11 @@ export default class PerfilScreen extends React.Component {
     this.props.navigation.navigate("Home",{id: this.state.id});
   }
 
+  //WishList
+  goWishL = () => {
+    this.props.navigation.navigate("Deseos", {id: this.state.id});
+  }
+
   render() {
     if (this.state.cargar == false) {
       return (
@@ -211,7 +216,7 @@ export default class PerfilScreen extends React.Component {
               <Button style={styles.Button} onPress={this.goGeneros}>
                 <Icon name="list-ul" size={30} />
               </Button>
-              <Button style={styles.Button} onPress={this.goLista}>
+              <Button style={styles.Button} onPress={this.goWishL}>
                 <Icon name="heart" size={30} />
               </Button>
             </FooterTab>
