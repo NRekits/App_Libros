@@ -6,10 +6,10 @@ import IP_DB from '../../ip_address';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default function LibroItem({ id, image, titulo, autor, precio, navigation }) {
+export default function LibroItem({ id, image, titulo, autor, precio, navigate }) {
 	return (
-		<ListItem key={id} thumbnail button onPress={() => {
-			navigation.navigate('LibroS', { id: id });
+		<ListItem thumbnail button onPress={() => {
+			navigate(id);
 		}}>
 			<Left>
 				<Thumbnail square source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${image}` }} />

@@ -89,7 +89,7 @@ router.get("/Buscar", async (req, res) => {
 	if (Object.keys(req.query).length != 0) {
 		if (req.query.name !== undefined) {
 			const Search = req.query.name;
-			libro.find({ Titulo: { $regex: `${Search}`, $options: 'i' } })
+			libro.find({ $or: [ {Titulo: { $regex: `${Search}`, $options: 'i' }}, {Autor: {$regex: `${Search}`, $options: 'i'}} ]})
 				.then((doc) => {
 					res.json({lib: doc, error: null});
 				})

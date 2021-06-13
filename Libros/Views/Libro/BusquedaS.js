@@ -25,6 +25,11 @@ export default class BusquedaScreen extends React.Component {
 			data: [],
 			name: ""
 		}
+		this.goToLibro = this.goToLibro.bind(this);
+	}
+
+	goToLibro(id) {
+		this.props.navigation.navigate('LibroS', {id: id});
 	}
 
 	async loadLibros(name) {
@@ -72,10 +77,10 @@ export default class BusquedaScreen extends React.Component {
 						</Item>
 					</Body>
 				</Header>
-				<Content>
 					<List
 						dataArray={this.state.data}
-					renderRow={(item) => {
+						keyExtractor={item => item._id}
+						renderRow={(item) => {
 							return(
 								<LibroItem
 									id={item._id}
@@ -83,11 +88,11 @@ export default class BusquedaScreen extends React.Component {
 									titulo={item.Titulo}
 									autor={item.Autor}
 									precio={item.Precio}
+									navigate={this.goToLibro}
 								/>
 							);
 						}}
 					></List>
-				</Content>
 			</Container>
 		);
 	}
@@ -135,6 +140,7 @@ const styles = StyleSheet.create({
 		fontFamily: "Dosis",
 		fontSize: 20,
 		fontWeight: "600",
-		marginTop: 30
+		marginTop: 30,
+		borderBottomWidth: 1,
 	},
 });
