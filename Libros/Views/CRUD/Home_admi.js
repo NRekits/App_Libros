@@ -75,7 +75,7 @@ export default class HomeAdmiScreen extends React.Component {
             <Button
               style={styles.Button}
               onPress={() => {
-                //  this.props.navigation.navigate("Carrito",{id:this.state.id})}
+                this.props.navigation.navigate("Carrito");
               }}
             >
               <Icon name="boxes" size={30} />
@@ -88,9 +88,12 @@ export default class HomeAdmiScreen extends React.Component {
             >
               <Icon name="user-tie" size={30} />
             </Button>
-            <Button style={styles.Button} onPress={() => {
+            <Button
+              style={styles.Button}
+              onPress={() => {
                 this.props.navigation.navigate("ListLibro");
-              }}>
+              }}
+            >
               <Icon name="book" size={30} />
             </Button>
           </FooterTab>
