@@ -35,7 +35,7 @@ export default class LibroGenero extends React.Component{
 						transparent
 						style={styles.Button}
 						onPress={() => {
-							this.props.navigation.navigate.goBack();
+							this.props.navigation.goBack();
 						}}
 					>
 						<Icon name="chevron-left" size={30}/>
