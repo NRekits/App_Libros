@@ -12,7 +12,8 @@ import {
 	Tabs,
 	Tab,
 	Text,
-	List
+	List,
+	TabHeading
 } from 'native-base';
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from '../../ip_address';
@@ -21,28 +22,40 @@ import LibroItem from './LibroItem';
 
 const windowHeight = Dimensions.get('window').height;
 
+const renderTabBar = (props) => {
+	props.tabStyle = Object.create(props.tabStyle);
+	return <ScrollableTab {...props} />
+}
+
 function LibrosGenero({ genero, navigate }) {
 	const [data, setData] = useState([]);
+	const [fetchingData, setFetchingData] = useState(true);
 	useEffect(() => {
 		async function fetchData() {
-			await fetch(`http://${IP_DB}:3000/Libro/VerGenero/${genero}`)
-				.then((res) => res.json())
-				.then(res => res.data)
-				.then((res) => {
-					setData([...res]);
-				});
-			return;
+
+			if (fetchingData) {
+				await fetch(`http://${IP_DB}:3000/Libro/VerGenero/${genero}`)
+					.then((res) => res.json())
+					.then(res => res.data)
+					.then((res) => {
+						setData([...res]);
+					}).finally(() => { });
+				await setFetchingData(false);
+			}
 		}
 		fetchData();
-	});
+		return () => {
+
+		};
+	}, []);
 
 	return (
 		<List
 			dataArray={data}
 			keyExtractor={item => item._id}
 			renderRow={(item) => {
-				return(
-					<LibroItem 
+				return (
+					<LibroItem
 						id={item._id}
 						image={item.Imagen}
 						titulo={item.Titulo}
@@ -60,15 +73,15 @@ export default class LibroGenero extends React.Component {
 	constructor(props) {
 		super(props);
 		this.goToLibro = this.goToLibro.bind(this);
-		this.state ={
+		this.state = {
 			userId: "",
 		};
 	}
-	goToLibro(id){
-		this.props.navigation.navigate('LibroS', {id: id, userId: this.state.userId});
+	goToLibro(id) {
+		this.props.navigation.navigate('LibroS', { id: id, userId: this.state.userId });
 	}
-	async componentDidMount(){
-		await this.setState({userId: this.props.route.params.userId})
+	async componentDidMount() {
+		await this.setState({ userId: this.props.route.params.userId })
 	}
 	render() {
 		return (
@@ -96,56 +109,72 @@ export default class LibroGenero extends React.Component {
 					<Right />
 				</Header>
 
-				<Tabs transparent tabBarUnderlineStyle={styles.Underline} initialPage={0} renderTabBar={() => <ScrollableTab />}>
+				<Tabs tabBarUnderlineStyle={{ backgroundColor: '#0D7C0D' }} initialPage={0} renderTabBar={renderTabBar}>
 					<Tab
-						activeTabStyle={{ backgroundColor: 'white' }}
-						activeTextStyle={styles.Header}
-						textStyle={styles.Header}
-						heading="Aventura">
+						heading={
+							<TabHeading style={styles.WhiteBg}>
+								<Text style={styles.Header}>Aventura</Text>
+							</TabHeading>
+						}
+					>
 						<LibrosGenero navigate={this.goToLibro} genero="Aventura" />
 					</Tab>
 					<Tab
-						activeTabStyle={{ backgroundColor: 'white' }}
-						activeTextStyle={styles.Header}
-						textStyle={styles.Header}
-						heading="Ciencia ficción">
-							<LibrosGenero navigate={this.goToLibro} genero="Ciencia Ficción" />
+						heading={
+							<TabHeading style={styles.WhiteBg}>
+								<Text style={styles.Header}>Ciencia Ficción</Text>
+							</TabHeading>
+						}
+					>
+						<LibrosGenero navigate={this.goToLibro} genero="Ciencia Ficción" />
 					</Tab>
 					<Tab
-						activeTabStyle={{ backgroundColor: 'white' }}
-						activeTextStyle={styles.Header}
-						textStyle={styles.Header}
-						heading="Terror">
-							<LibrosGenero navigate={this.goToLibro} genero="Terror" />
+						heading={
+							<TabHeading style={styles.WhiteBg}>
+								<Text style={styles.Header}>Terror</Text>
+							</TabHeading>
+						}
+					>
+						<LibrosGenero navigate={this.goToLibro} genero="Terror" />
 					</Tab>
 					<Tab
-						activeTabStyle={{ backgroundColor: 'white' }}
-						activeTextStyle={styles.Header}
-						textStyle={styles.Header}
-						heading="Romance">
-							<LibrosGenero navigate={this.goToLibro} genero="Romance" />
+						heading={
+							<TabHeading style={styles.WhiteBg}>
+								<Text style={styles.Header}>Romance</Text>
+							</TabHeading>
+						}
+					>
+						<LibrosGenero navigate={this.goToLibro} genero="Romance" />
 					</Tab>
 					<Tab
-						activeTabStyle={{ backgroundColor: 'white' }}
-						activeTextStyle={styles.Header}
-						textStyle={styles.Header}
-						heading="Humor">
-							<LibrosGenero navigate={this.goToLibro} genero="Humor" />
-						</Tab>
+						heading={
+							<TabHeading style={styles.WhiteBg}>
+								<Text style={styles.Header}>Humor</Text>
+							</TabHeading>
+						}
+					>
+						<LibrosGenero navigate={this.goToLibro} genero="Humor" />
+					</Tab>
 					<Tab
-						activeTabStyle={{ backgroundColor: 'white' }}
-						activeTextStyle={styles.Header}
-						textStyle={styles.Header}
-						heading="Poesía">
-							<LibrosGenero navigate={this.goToLibro} genero="Poesía" />
-						</Tab>
+						heading={
+							<TabHeading style={styles.WhiteBg}>
+								<Text style={styles.Header}>Poesía</Text>
+							</TabHeading>
+						}
+
+					>
+						<LibrosGenero navigate={this.goToLibro} genero="Poesía" />
+					</Tab>
 					<Tab
-						activeTabStyle={{ backgroundColor: 'white' }}
-						activeTextStyle={styles.Header}
-						textStyle={styles.Header}
-						heading="Clásicos">
-							<LibrosGenero navigate={this.goToLibro} genero="Clásico" />
-						</Tab>
+
+						heading={
+							<TabHeading style={styles.WhiteBg}>
+								<Text style={styles.Header}>Clásicos</Text>
+							</TabHeading>
+						}
+					>
+						<LibrosGenero navigate={this.goToLibro} genero="Clásico" />
+					</Tab>
 				</Tabs>
 			</Container>
 		);
@@ -196,6 +225,9 @@ const styles = StyleSheet.create({
 		fontWeight: "600"
 	},
 	Underline: {
-		backgroundColor: '#0D7C0D' 
+		backgroundColor: '#0D7C0D'
+	},
+	WhiteBg: {
+		backgroundColor: 'white'
 	}
 });
