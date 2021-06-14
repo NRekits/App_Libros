@@ -26,13 +26,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const productos = [{
-  id: Number,
-  title: String, 
-  price: Number,
-  cant: Number
-  }
-];
+// const productos = [{
+//   id: Number,
+//   title: String, 
+//   price: Number,
+//   cant: Number
+//   }
+// ];
 
 class CarritoScreen extends Component{
   constructor(props){
@@ -47,11 +47,11 @@ class CarritoScreen extends Component{
   componentDidMount() {
     this.setState({ id_us: this.props.route.params.id });
     //this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
-    this.getCarritoContent();
+    this.getCarritoContent(); 
   }
 
   getCarritoContent = () => {
-    fetch(`http://${IP_DB}:3000/Usuario/varCar_Wish/${this.state.id_us}`,
+    fetch(`http://${IP_DB}:3000/Usuario/verCar_Wish/${this.props.route.params.id}`,
       {
         method: "GET",
         headers: {
@@ -61,10 +61,23 @@ class CarritoScreen extends Component{
     )
     .then((res) => res.json())
     .then((data) => {
-      productos = data
-      console.log(productos);  
+      this.setState({
+        productos: data.Carrito
+      }) 
     })   
     .catch((error) => console.log(error));
+  }
+
+
+  goDirecciones = () =>{
+    this.props.navigation.navigate("Direcciones",{id: this.state.id_us});
+  }
+  goHome = () =>{
+    this.props.navigation.navigate("Home",{id: this.state.id_us});
+  }
+  //WishList
+  goWishL = () => {
+    this.props.navigation.navigate("Deseos", {id: this.state.id_us});
   }
 
   render_item = ({item}) => (
@@ -91,7 +104,7 @@ class CarritoScreen extends Component{
           <Card>
             <SafeAreaView style={{ flex: 1 }}>
               <List           //Lista de los libros agregados al array products (donde deben vasearse los datos de la BD)
-                dataArray={productos}
+                dataArray={this.state.productos}
                 renderRow={(item) => (
                   <ListItem                  
                     button
@@ -99,22 +112,22 @@ class CarritoScreen extends Component{
                     <Image source={require('../../assets/libro.png')} style={styles.Image}/>
                     <View style={styles.Flex1}>
                       <Text style={styles.Text2}>
-                        {item.title}
+                        {item.Title}
                       </Text>
                       <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: 200}}>
 
                         <Text style={styles.Text3}>$ 
-                          {item.price}
+                          {item.Precio}
                         </Text>
                         <View style={{flexDirection: 'row', justifyContent: ''}}>
                           <Button style={styles.Button1}
                             onPress={() => { //reducir cantidad de libros en el carrito
-                              for (let i = 0; i < productos.length; i++) {
-                                if (productos[i].id == item.id) {
-                                  item.cant = productos[i].cant - 1;
+                              for (let i = 0; i < this.state.productos.length; i++) {
+                                if (this.state.productos[i].id == item.id) {
+                                  item.cant = this.state.productos[i].cant - 1;
                                   console.log(i+' '+item.cant);
                                   //pendiente actualiza campo cantidad con setState....
-                                  if (productos[i].cant == 0) {
+                                  if (this.state.productos[i].cant == 0) {
                                     //Hacer algo aqui....
 
                                   }
@@ -123,14 +136,15 @@ class CarritoScreen extends Component{
                             }}>
                               <Text>-</Text>
                           </Button>
-                          <Text id={item.id} style={styles.Text1}>{item.cant}</Text>
+                          <Text  style={styles.Text1}>{item.Cant}</Text>
                           <Button style={styles.Button1}
                             onPress={() => { //aumentar cantidad de libros en el carrito
-                              for (let i = 0; i < productos.length; i++) {
-                                if (productos[i].id == item.id) {
-                                  item.cant = productos[i].cant + 1;
-                                  console.log(i+' '+item.cant);  
-                                  document.getElementById(item.id).innerHTML = item.cant;                         
+                              for (let i = 0; i < this.state.productos.length; i++) {
+                                if (this.state.productos[i].id == item.id) {
+                                  this.setState({productos })
+                                  item.Cant = this.state.productos[i].Cant + 1;
+                                  console.log(i+' '+item.Cant);  
+                                  //document.getElementById(item.id).innerHTML = item.cant;                         
                                 }                                
                               }
                             }}>
@@ -151,7 +165,7 @@ class CarritoScreen extends Component{
         <Footer>
           <FooterTab style={{ backgroundColor: "#FFF" }}>
             <Button style={styles.Button} onPress={()=>{
-                  this.props.navigation.navigate("Perfil",{id:this.state.id});
+                  this.props.navigation.navigate("Perfil",{id:this.state.id_us});
             }}>
               <Icon name="user-circle-o" size={30} />
             </Button>
@@ -160,13 +174,13 @@ class CarritoScreen extends Component{
               }>
               <Ionicons name="cart" size={30} />
             </Button>
-            <Button active style={styles.Button} onPress={this.goPerfil}>
+            <Button active style={styles.Button} onPress={this.goHome}>
               <Icon name="home" size={30} />
             </Button>
             <Button  style={styles.Button} onPress={this.goPerfil}>
               <Icon name="list-ul" size={30} />
             </Button>
-            <Button style={styles.Button} onPress={this.goLista}>
+            <Button style={styles.Button} onPress={this.goWishL}>
               <Icon name="heart" size={30} />
             </Button>
 

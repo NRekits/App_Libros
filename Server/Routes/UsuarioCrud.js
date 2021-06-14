@@ -1,39 +1,37 @@
 const router = require("express").Router();
 const usuario = require("../Models/Usuario");
-const libro = require("../Models/Libro");
-const pedido = require("../Models/Pedido");
 const Usuario = require("../Models/Usuario");
-var mongoose = require('mongoose');
-const jwt = require('jsonwebtoken');
+var mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
 // constraseña
-const bcrypt = require('bcrypt');
+const bcrypt = require("bcrypt");
 
 // validation
-const Joi = require('@hapi/joi');
+const Joi = require("@hapi/joi");
 const schemaRegister = Joi.object({
 	Nombre: Joi.string().min(2).max(255).required(),
 	Apellido: Joi.string().min(2).max(255).required(),
 	email: Joi.string().max(255).required().email(),
-	contra: Joi.string().min(2).max(1024).required()
-})
+	contra: Joi.string().min(2).max(1024).required(),
+});
 const schemaLogin = Joi.object({
 	email: Joi.string().min(6).max(255).required().email(),
-	contra: Joi.string().min(2).max(1024).required()
-})
+	contra: Joi.string().min(2).max(1024).required(),
+});
 
 //Añadir usuario por registro
 router.post("/Registro", async (req, res) => {
 	try {
 		// validate user
-		const { error } = schemaRegister.validate(req.body)
+		const { error } = schemaRegister.validate(req.body);
 		if (error) {
-			return res.status(400).json({ error: error.details[0].message })
+			return res.status(400).json({ error: error.details[0].message });
 		}
 		const isEmailExist = await Usuario.findOne({ Email: req.body.email });
 
 		if (isEmailExist) {
-			return res.status(400).json({ error: 'Email ya registrado' })
+			return res.status(400).json({ error: "Email ya registrado" });
 		}
 		// hash contraseña
 		const salt = await bcrypt.genSalt(10);
@@ -50,92 +48,85 @@ router.post("/Registro", async (req, res) => {
 		res.json({
 			error: null,
 			response: "Añadido",
-			data: savedUser
-		})
-
-
+			data: savedUser,
+		});
 	} catch (error) {
-		res.status(400).json({ error })
+		res.status(400).json({ error });
 	}
-
 });
 
 //Añadir usuario por admi
 router.post("/Insertar", async (req, res) => {
 	try {
-		console.log('hola')
+		console.log("hola");
 		const isEmailExist = await Usuario.findOne({ Email: req.body.email });
 
 		if (isEmailExist) {
-			return res.status(400).json({ error: 'Email ya registrado' })
+			return res.status(400).json({ error: "Email ya registrado" });
 		}
-
 
 		const user = new usuario({
 			Nombre: req.body.Nombre,
 			Apellido: req.body.Apellido,
 			Contrasena: req.body.contra,
 			Email: req.body.email,
-			Admi: req.body.admi
+			Admi: req.body.admi,
 		});
 
 		const savedUser = user.save();
-		console.log(savedUser)
+		console.log(savedUser);
 		res.json({
 			error: null,
 			response: "Añadido",
-			data: savedUser
-		})
-
-
+			data: savedUser,
+		});
 	} catch (error) {
-		res.status(400).json({ error })
+		res.status(400).json({ error });
 	}
-
 });
 
 //Login
-router.post('/login', async (req, res) => {
+router.post("/login", async (req, res) => {
 	// validaciones
 	const { error } = schemaLogin.validate(req.body);
-	if (error) return res.status(400).json({ error: error.details[0].message })
+	if (error) return res.status(400).json({ error: error.details[0].message });
 
 	const user = await Usuario.findOne({ Email: req.body.email });
-	if (!user) return res.status(400).json({ error: 'Usuario no encontrado' });
+	if (!user) return res.status(400).json({ error: "Usuario no encontrado" });
 
 	const validPassword = await bcrypt.compare(req.body.contra, user.Contrasena);
-	if (!validPassword) return res.status(400).json({ error: 'contraseña no válida' })
+	if (!validPassword)
+		return res.status(400).json({ error: "contraseña no válida" });
 
 	try {
 		// create token
 
-		const token = jwt.sign({
-			name: user.Nombre,
-			id: user._id
-		}, "secret");
+		const token = jwt.sign(
+			{
+				name: user.Nombre,
+				id: user._id,
+			},
+			"secret"
+		);
 
 		res.json({
 			error: null,
-			data: 'exito bienvenido',
+			data: "exito bienvenido",
 			token: token,
 			id: user._id,
-			admi: user.Admi
-
+			admi: user.Admi,
 		});
-
 	} catch (e) {
-
-		return status(400).json({ error: "Hubo un error en el login, por favor intenta de nuevo" })
+		return status(400).json({
+			error: "Hubo un error en el login, por favor intenta de nuevo",
+		});
 	}
-
-
-
-})
+});
 
 //Ver usuario
 router.get("/Ver/:id", async (req, res) => {
 	const id = req.params.id;
-	const user = await Usuario.findById({ _id: id })
+	const user = await Usuario.findById({ _id: id });
 
 	try {
 		// create token
@@ -149,13 +140,12 @@ router.get("/Ver/:id", async (req, res) => {
 			Email: user.Email,
 			Deseos: user.Deseos,
 			Carrito: user.Carrito,
-			Direccion: user.Direccion
-
+			Direccion: user.Direccion,
 		});
-
 	} catch (e) {
-
-		return status(400).json({ error: "Hubo un error, por favor intenta de nuevo" })
+		return status(400).json({
+			error: "Hubo un error, por favor intenta de nuevo",
+		});
 	}
 });
 
@@ -170,7 +160,15 @@ router.put("/Modificar/:id", (req, res) => {
 
 	Usuario.findByIdAndUpdate(
 		{ _id: id },
-		{ $set: { Nombre: Nom, Apellido: ape, Contrasena: Contra, Email: Ema, Admi: ad } }
+		{
+			$set: {
+				Nombre: Nom,
+				Apellido: ape,
+				Contrasena: Contra,
+				Email: Ema,
+				Admi: ad,
+			},
+		}
 	)
 		.then((doc) => {
 			res.json({ response: "Usuario Modificado" });
@@ -229,7 +227,6 @@ router.put("/InsertarDireccion/:id", (req, res) => {
 
 //Modificar dirección
 router.put("/ModificarDireccion/:id_us/:id_dir", (req, res) => {
-
 	const id = req.params.id_us;
 	const id_dir = mongoose.Types.ObjectId(req.params.id_dir);
 	const pais = req.body.pais;
@@ -241,10 +238,10 @@ router.put("/ModificarDireccion/:id_us/:id_dir", (req, res) => {
 	const codigo = req.body.cod;
 
 	Usuario.updateOne(
-		{ _id: id, 'Direccion._id': id_dir },
+		{ _id: id, "Direccion._id": id_dir },
 		{
 			$set: {
-				'Direccion.$': {
+				"Direccion.$": {
 					Pais: pais,
 					Estado: estado,
 					Ciudad: ciudad,
@@ -253,10 +250,8 @@ router.put("/ModificarDireccion/:id_us/:id_dir", (req, res) => {
 					Numero_int: numero_int,
 					Codigo_postal: codigo,
 				},
-			}
+			},
 		}
-
-
 	)
 		.then((doc) => {
 			res.json({ response: "Direccion modificada" });
@@ -270,10 +265,7 @@ router.put("/ModificarDireccion/:id_us/:id_dir", (req, res) => {
 router.get("/EliminarDireccion/:id_us/:id_dir", (req, res) => {
 	const id = req.params.id_us;
 	const id_dir = req.params.id_dir;
-	Usuario.updateOne(
-		{ _id: id },
-		{ $pull: { Direccion: { _id: id_dir } } }
-	)
+	Usuario.updateOne({ _id: id }, { $pull: { Direccion: { _id: id_dir } } })
 		.then((doc) => {
 			res.json({ response: "Dirección eliminada" });
 		})
@@ -282,36 +274,137 @@ router.get("/EliminarDireccion/:id_us/:id_dir", (req, res) => {
 		});
 });
 
+//Añadir producto a carrito
+router.put("/InsertarCarrito/:id", (req, res) => {
+	const id = req.params.id;
+	const libro = req.body.idLib;
+	const cantidad = req.body.cant;
+	const formato = req.body.format;
+
+	Usuario.findByIdAndUpdate(
+		{ _id: id },
+		{
+			$push: {
+				Carrito: {
+					Cantidad: cantidad,
+					Libro: libro,
+					Formato: formato
+				},
+			},
+		}
+	)
+		.then((doc) => {
+			res.json({ response: "Producto agregado al carrito" });
+		})
+		.catch((err) => {
+			console.log("error al cambiar", err.message);
+		});
+});
+
+//Modificar cantidad de libros del mismo titulo en carrito
+router.put("/ModificarCarrito/:id_us/:id_car", (req, res) => {
+	const id = req.params.id_us;
+	const id_car = mongoose.Types.ObjectId(req.params.id_car);
+	const cantidad = req.body.cant;
+	const libro = req.body.idLib;
+
+	Usuario.updateOne(
+		{ _id: id, "Carrito._id": id_car },
+		{
+			$set: {
+				"Carrito.$": {
+					Cantidad: cantidad,
+					Libro: libro
+				},
+			},
+		}
+	)
+		.then((doc) => {
+			res.json({ response: "Carrito modificada" });
+		})
+		.catch((err) => {
+			console.log("error al cambiar", err);
+		});
+});
+
+//Eliminar producto del carrito
+router.get("/EliminarCarrito/:id_us/:id_car", (req, res) => {
+	const id = req.params.id_us;
+	const id_car = req.params.id_car;
+	Usuario.updateOne({ _id: id }, { $pull: { Carrito: { _id: id_car } } })
+		.then((doc) => {
+			res.json({ response: "Producto eliminado del carrito" });
+		})
+		.catch((err) => {
+			console.log("error al eliminar", err.message);
+		});
+});
+
+//Añadir producto a wish list
+router.put("/InsertarDeseo/:id", (req, res) => {
+  const id = req.params.id;
+  const libro = req.body.idLib;
+
+  Usuario.findByIdAndUpdate(
+    { _id: id },
+    {
+      $push: {
+        Deseos: {
+          Libro: libro,
+        },
+      },
+    }
+  )
+    .then((doc) => {
+      res.json({ response: "Producto agregado a la wish list" });
+    })
+    .catch((err) => {
+      console.log("error al cambiar", err.message);
+    });
+});
+
+//Eliminar producto de la Wish list
+router.get("/EliminarDeseo/:id_us/:id_des", (req, res) => {
+	const id = req.params.id_us;
+	const id_des = req.params.id_des;
+	Usuario.updateOne({ _id: id }, { $pull: { Deseos: { _id: id_des } } })
+		.then((doc) => {
+			res.json({ response: "Producto eliminado de la wish list" });
+		})
+		.catch((err) => {
+			console.log("error al eliminar", err.message);
+		});
+});
+
 //Ver todos los usuarios
 router.get("/MostrarTodos", (req, res) => {
-
 	Usuario.find({}).then((doc) => {
 		res.json({ users: doc, error: null });
-	})
-
+	});
 });
 
 //Ver contenido del carrito
-router.get('/verCar_Wish/:id_us', (req, res) => {
-  const id_us = req.params.id_us;
-  const user = Usuario.findById({ _id: id_us })
+router.get("/verCar_Wish/:id_us", async (req, res) => {
+	const id_us = req.params.id_us;
+	const user = await Usuario.findById({ _id: id_us });
+	console.log("entro");
+	try {
+		// create token
 
-  try {
-    // create token
-
-    res.json({
-      error:null,
-      Id:user._id,
-      Email: user.Email,
-      Deseos: user.Deseos,
-      Carrito: user.Carrito,
-      Direccion: user.Direccion
-    });
-
-}catch(e){
-  
-    return status(400).json({error: "Hubo un error, por favor intenta de nuevo"})
-}
-})
+		res.json({
+			error: null,
+			Id: user._id,
+			Email: user.Email,
+			Deseos: user.Deseos,
+			Carrito: user.Carrito,
+			Direccion: user.Direccion,
+		});
+		console.log(user.Deseos);
+	} catch (e) {
+		return status(400).json({
+			error: "Hubo un error, por favor intenta de nuevo",
+		});
+	}
+});
 
 module.exports = router;

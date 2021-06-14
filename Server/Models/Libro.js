@@ -13,7 +13,7 @@ const libroSchema = new Schema({
     Precio: { type: Number },
     Cantidad_dis: { type:Number },
     Imagen: { type:String },
-    Vendidos: { type:Number, default:0 },
+    Vendidos: { type:Number },
     Fecha_adquision: { type: Date },
     Formato:{type:String}
 });

@@ -1,6 +1,6 @@
 /*Aqui se ven la info de un libro seleccionado, da opcion para meter al carrito (cuantos ejemplares) o a la lista de deseos */
 import React, { useState, useEffect } from "react";
-import { Text, Dimensions, Alert, Image, StyleSheet } from "react-native";
+import { Dimensions, Alert, Image, StyleSheet } from "react-native";
 import {
 	Container, Header, Content, Form, Item, Input,
 	Label,
@@ -11,7 +11,9 @@ import {
 	Right,
 	Title,
 	Textarea,
-	Radio
+	Radio,
+	Toast,
+	Text
 } from "native-base";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -25,6 +27,7 @@ export default class LibroDetailsScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			userId: '',
 			libro: {
 				id: '',
 				titulo: '',
@@ -72,8 +75,74 @@ export default class LibroDetailsScreen extends React.Component {
 	async componentDidMount() {
 		let { libro } = Object.assign({}, this.state);
 		libro.id = this.props.route.params.id;
-		await this.setState({ libro });
+		console.log(this.props.route.params.userId);
+		await this.setState({ libro: libro, userId: this.props.route.params.userId });
 		await this.fetchLibro();
+	}
+
+	Check() {
+		let msg = "";
+		let error = false;
+
+		if (this.state.selectedFormat === "") {
+			msg = "Debes seleccionar un formato primero";
+			error = true;
+		}
+		if (error) {
+			Toast.show({ text: msg, buttonText: 'Okay', type: "warning" });
+		}
+		else {
+			console.log(this.state.selectedFormat);
+			this.agregarAlCarro();
+		}
+	}
+
+	agregarDeseados() {
+		fetch(`http://${IP_DB}:3000/Usuario/InsertarDeseo/${this.state.userId}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({
+				idLib: this.state.libro.id
+			})
+		})
+			.then((res) => res.json())
+			.then((res) => {
+				Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
+			})
+			.finally(() => {
+				this.props.navigation.navigate('Home', { id: this.state.userId });
+			})
+			.catch(error => {
+				Toast.show({ text: 'Hubo un error agregando el producto a su lista de desados', type: 'danger' })
+			})
+	}
+
+	agregarAlCarro() {
+
+		fetch(`http://${IP_DB}:3000/Usuario/InsertarCarrito/${this.state.userId}`,
+			{
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					idLib: this.state.libro.id,
+					cant: 1,
+					format: this.state.selectedFormat
+				})
+			})
+			.then((res) => res.json())
+			.then((data) => {
+				Toast.show({ text: 'Producto agregado al carrito', buttonText: 'Entendido', type: "success" });
+			})
+			.finally(() => {
+				this.props.navigation.navigate('Home', { id: this.state.userId });
+			})
+			.catch((error) => {
+				Toast.show({ text: "Hubo un error agregando su producto al carrito", type: 'danger' });
+			});
 	}
 
 	render() {
@@ -101,8 +170,15 @@ export default class LibroDetailsScreen extends React.Component {
 					</Body>
 					<Right />
 				</Header>
-				<Content style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 30  }}>
-					<Image style={{ alignSelf: 'center', width: 200, height: 200 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
+				<Content style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 30 }}>
+					<Image style={{ alignSelf: 'center', width: 200, height: 300 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
+					<Button transparent block style={styles.Button}
+						onPress={() => {
+							this.agregarDeseados();
+						}}
+					>
+						<Icon name="heart" size={30} />
+					</Button>
 
 					<Item style={styles.Item} floatingLabel disabled>
 						<Label style={styles.Label}>Titulo</Label>
@@ -133,10 +209,25 @@ export default class LibroDetailsScreen extends React.Component {
 						<Input disabled style={styles.Input} value={`$${libro.precio}`} />
 					</Item>
 
-					<Item style={styles.Item} floatingLabel disabled>
-						<Label style={styles.Label}>Disponibles</Label>
-						<Input disabled style={styles.Input} value={`${libro.cantidad}`} />
-					</Item>
+					{
+						libro.cantidad > 0 && (
+
+							<Item style={styles.Item} floatingLabel disabled>
+								<Label style={styles.Label}>Disponibles</Label>
+								<Input disabled style={styles.Input} value={`${libro.cantidad}`} />
+							</Item>
+
+						)
+					}
+					{ libro.cantidad <= 0 &&
+						(
+							<Item style={styles.Item} floatingLabel disabled>
+								<Label style={styles.Label}>Disponibles</Label>
+								<Input disabled style={{ color: 'red', ...styles.Input }} value={"Agotado"} />
+							</Item>
+						)
+					}
+
 
 					<Item style={styles.Item} floatingLabel disabled>
 						<Label style={styles.Label}>Disponible desde:</Label>
@@ -147,21 +238,23 @@ export default class LibroDetailsScreen extends React.Component {
 
 							<Content>
 								<Item
-									onPress={() => { this.setState({ selectedFormat: "Físico" }) }}
+									onPress={async () => { await this.setState({ selectedFormat: "Físico" }) }}
 								>
 									<Text>Físico</Text>
 									<Right>
 										<Radio selected={this.state.selectedFormat === "Físico"}
+											onPress={async () => { await this.setState({ selectedFormat: "Físico" }) }}
 										/>
 									</Right>
 								</Item>
 
 								<Item
-									onPress={() => { this.setState({ selectedFormat: "EPub" }) }}
+									onPress={async () => { await this.setState({ selectedFormat: "EPub" }) }}
 								>
 									<Text>EPub</Text>
 									<Right>
 										<Radio selected={this.state.selectedFormat === "EPub"}
+											onPress={async () => { await this.setState({ selectedFormat: "EPub" }) }}
 										/>
 									</Right>
 								</Item>
@@ -172,11 +265,12 @@ export default class LibroDetailsScreen extends React.Component {
 						libro.formato === "Físico" && (
 							<Content>
 								<Item
-									onPress={() => { this.setState({ selectedFormat: "Físico" }) }}
+									onPress={async () => { await this.setState({ selectedFormat: "Físico" }) }}
 								>
 									<Text>Físico</Text>
 									<Right>
 										<Radio selected={this.state.selectedFormat === 'Físico'}
+											onPress={async () => { await this.setState({ selectedFormat: "Físico" }) }}
 										/>
 									</Right>
 								</Item>
@@ -187,11 +281,12 @@ export default class LibroDetailsScreen extends React.Component {
 						libro.formato === 'EPub' && (
 							<Content>
 								<Item
-									onPress={() => { this.setState({ selectedFormat: "EPub" }) }}
+									onPress={async () => { await this.setState({ selectedFormat: "EPub" }) }}
 								>
 									<Text>EPub</Text>
 									<Right>
 										<Radio selected={this.state.selectedFormat === 'EPub'}
+											onPress={async () => { await this.setState({ selectedFormat: "EPub" }) }}
 										/>
 									</Right>
 								</Item>
@@ -199,8 +294,8 @@ export default class LibroDetailsScreen extends React.Component {
 						)
 					}
 
-					<Button rounded success block style={styles.Button} onPress={() => {
-
+					<Button disabled rounded success block style={styles.Button} onPress={() => {
+						this.Check();
 					}}>
 						<Text>Añadir al carro</Text>
 					</Button>

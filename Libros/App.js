@@ -10,10 +10,12 @@ import RegisterScreen from "./Views/RegistroS";
 import PerfilScreen from "./Views/Usuario/PerfilS";
 import HomeScreen from "./Views/Usuario/HomeS";
 import CarritoScreen from "./Views/Usuario/CarritoS";
+import DeseosScreen from "./Views/Usuario/DeseosS";
 
 //Libro
 import LibroGenero from "./Views/Libro/LibrosGenero";
 import BusquedaScreen from "./Views/Libro/BusquedaS";
+import FiltroScreen from "./Views/Libro/FiltrarBusqueda";
 import LibroDetailsScreen from "./Views/Libro/LibroS";
 
 //Pedidos
@@ -96,6 +98,7 @@ class App extends React.Component {
               <Stack.Screen name="Perfil" component={PerfilScreen} />
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Carrito" component={CarritoScreen} />
+              <Stack.Screen name="Deseos" component={DeseosScreen}/>
               <Stack.Screen name="ADireccion" component={ADireccionScreen} />
               <Stack.Screen name="Direcciones" component={DireccionesScreen} />
               <Stack.Screen name="DirDetalles" component={DirDetalles} />
@@ -103,6 +106,7 @@ class App extends React.Component {
               <Stack.Screen name="Generos" component={LibroGenero} />
               <Stack.Screen name="Buscar" component={BusquedaScreen} />
               <Stack.Screen name="LibroS" component={LibroDetailsScreen} />
+              <Stack.Screen name="Filtrar" component={FiltroScreen} />
 
               {/*Crud*/}
               <Stack.Screen name="HomeAdmi" component={HomeAdmiScreen} />

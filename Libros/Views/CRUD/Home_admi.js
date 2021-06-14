@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, Alert, Image, StyleSheet } from "react-native";
+import { Dimensions, Alert, Image,View, StyleSheet } from "react-native";
 import {
   Container,
   Header,
@@ -9,27 +9,41 @@ import {
   Left,
   Right,
   Body,
-  Text,
-  Item,
-  Toast,
   Footer,
   FooterTab,
+  Text
 } from "native-base";
+
+import { LineChart, BarChart } from "react-native-chart-kit";
 
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import IP_DB from "../../ip_address";
 
-import { LinearGradient } from "expo-linear-gradient";
+const screenWidth = Dimensions.get("window").width;
 
-const windowWidth = Dimensions.get("window").width;
-const windowHeight = Dimensions.get("window").height;
+const data = {
+  labels: ["January", "February", "March", "April", "May", "June"],
+  datasets: [
+    {
+      data: [20, 45, 28, 80, 99, 43],
+    },
+  ],
+};
+
+const chartConfig = {
+  backgroundGradientFrom: "#1E2923",
+  backgroundGradientTo: "#08130D",
+  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+};
 export default class HomeAdmiScreen extends React.Component {
   //Constructor
   constructor(props) {
     super(props);
     this.state = {
       id: "",
+   
+      
     };
   }
   //Montar
@@ -61,7 +75,31 @@ export default class HomeAdmiScreen extends React.Component {
             </Button>
           </Right>
         </Header>
-        <Content />
+        <Content>
+        <Text style={styles.Text3}>Pedidos por día</Text>
+        <LineChart
+            data={data}
+            width={screenWidth}
+            height={220}
+            chartConfig={chartConfig}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+            <LineChart
+            data={data}
+            width={screenWidth}
+            height={220}
+            chartConfig={chartConfig}
+            bezier
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </Content>
         <Footer>
           <FooterTab style={{ backgroundColor: "#FFF" }}>
             <Button

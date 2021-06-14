@@ -28,6 +28,7 @@ router.post("/Insertar", async (req, res) => {
 			Genero: req.body.genero,
 			Imagen: req.body.imagen,
 			Formato: req.body.formato,
+			Vendidos:0
 
 		});
 
@@ -75,11 +76,15 @@ router.get("/VerTodos", async (req, res) => {
 
 });
 
-//Ver libros por precio
-router.get("/VerPrecio/:id", async (req, res) => {
-	const id = req.params.id;
-	libro.find({}).then((doc) => {
-		res.json({ data: doc, error: null });
+//Ver filtrar libros por precio
+router.get("/FiltrarPrecio", async (req, res) => {
+
+	const MinVal = req.query.min;
+	const MaxVal = req.query.max;
+	const Search = req.query.max;
+
+	libro.find({ $and: [{ Precio: { $gte: MinVal } }, { Precio: { $lte: MaxVal } }] }).then((doc) => {
+		res.json({ lib: doc, error: null });
 	})
 
 });
@@ -88,7 +93,7 @@ router.get("/VerPrecio/:id", async (req, res) => {
 router.get("/VerMasVendidos", async (req, res) => {
 	libro.find({}).sort({Vendidos: -1})
 	.then(doc => {
-		console.log(doc);
+		
 		doc.splice(10);
 		res.json({lib: doc, error: null});
 	})
@@ -96,9 +101,9 @@ router.get("/VerMasVendidos", async (req, res) => {
 
 //Ver los 5 libros más novedosos
 router.get("/Novedades", async (req, res) => {
-	libro.find({}).sort({fecha: 1})
+	libro.find({}).sort({Fecha_adquision: -1})
 	.then(doc => {
-		console.log(doc);
+	
 		doc.splice(6);
 		res.json({lib: doc, error: null});
 	});
@@ -109,10 +114,54 @@ router.get("/Buscar", async (req, res) => {
 	if (Object.keys(req.query).length != 0) {
 		if (req.query.name !== undefined) {
 			const Search = req.query.name;
-			libro.find({ $or: [ {Titulo: { $regex: `${Search}`, $options: 'i' }}, {Autor: {$regex: `${Search}`, $options: 'i'}} ]})
-				.then((doc) => {
-					res.json({lib: doc, error: null});
+
+			if (
+				(req.query.min !== undefined && req.query.min !== "") &&
+				(req.query.max !== undefined && req.query.max !== "")
+			) {
+
+				const MinVal = req.query.min;
+				const MaxVal = req.query.max;
+
+				libro.find({
+					$and:
+						[
+							{
+								$or: [
+									{ Titulo: { $regex: `${Search}`, $options: 'i' } },
+									{ Autor: { $regex: `${Search}`, $options: 'i' } }]
+							},
+							{ Precio: { $gte: MinVal } },
+							{ Precio: { $lte: MaxVal } }]
 				})
+					.then((doc) => {
+						res.json({ lib: doc, error: null });
+					});
+			}
+			else {
+				libro.find({ $or: [{ Titulo: { $regex: `${Search}`, $options: 'i' } }, { Autor: { $regex: `${Search}`, $options: 'i' } }] })
+					.then((doc) => {
+						res.json({ lib: doc, error: null });
+					});
+			}
+		}
+		else {
+			if (
+				(req.query.min !== undefined || req.query.min !== "") &&
+				(req.query.max !== undefined || req.query.max !== "")
+			) {
+				const MinVal = req.query.min;
+				const MaxVal = req.query.max;
+				libro.find({ $and: [{ Precio: { $gte: MinVal } }, { Precio: { $lte: MaxVal } }] }).then((doc) => {
+					res.json({ lib: doc, error: null });
+				})
+			}
+			else {
+				libro.find({ $or: [{ Titulo: { $regex: `${Search}`, $options: 'i' } }, { Autor: { $regex: `${Search}`, $options: 'i' } }] })
+					.then((doc) => {
+						res.json({ lib: doc, error: null });
+					});
+			}
 		}
 	}
 	else {
@@ -130,7 +179,7 @@ router.put("/Modificar/:id", (req, res) => {
 	const au = req.body.autor;
 	const sinop = req.body.sinopsis;
 	const gen = req.body.genero;
-	const edit =  mongoose.Types.ObjectId(req.body.editorial);
+	const edit = mongoose.Types.ObjectId(req.body.editorial);
 	const nom_edit = req.body.nombreEditorial;
 	const pre = req.body.precio;
 	const cant = req.body.cantidad;
@@ -157,7 +206,7 @@ router.put("/Modificar/:id", (req, res) => {
 		})
 		.catch((err) => {
 			console.log("error al cambiar", err.message);
-			res.status(400).json({error: err.message});
+			res.status(400).json({ error: err.message });
 		});
 });
 
