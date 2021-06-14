@@ -14,7 +14,7 @@ import {
 	Right,
 	Title, Card, CardItem,
 	Thumbnail,
-  Toast
+	Toast
 } from "native-base";
 
 import IP_DB from "../../ip_address";
@@ -48,13 +48,13 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
 				await setFetchData(false);
 			}
 		}
-    
+
 		fetchLibro();
 		return (() => {
-		});    
+		});
 	}, [])
 	return (
-		<ListItem>
+		<ListItem thumbnail>
 			<Left>
 				<Thumbnail square source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }} />
 			</Left>
@@ -64,16 +64,15 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
 				</Text>
 				<Text note>{libro.Autor}</Text>
 			</Body>
-      <Right>
-        <Button style={styles.Button} onPress={() => {
-          console.log('entro aqui');
-          fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`)
-          Toast.show({ text: "Producto eliminado de la WishList", buttonText: 'Okay', type: "warning" });
-          props.navigation.navigate('Home')
-          }}>
-          <Icon name="trash" size={30} />
-        </Button>
-      </Right>
+			<Right>
+				<Button style={styles.Button} onPress={() => {
+					console.log('entro aqui');
+					fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`)
+					Toast.show({ text: "Producto eliminado de la WishList", buttonText: 'Okay', type: "warning" });
+				}}>
+					<Icon name="trash" size={30} />
+				</Button>
+			</Right>
 		</ListItem>
 	);
 }
@@ -89,21 +88,24 @@ class DeseosScreen extends Component {
 			productos: [],
 			deseos: []
 		}
+		this._isMounted = false;
 	}
 
 	//Montar
 	async componentDidMount() {
-		await this.setState({ id_us: this.props.route.params.id });
-		await this.getWListContent();
-
-		const socket = io.connect(`http://${IP_DB}:3001`)
-		socket.emit('create', `wish:${this.state.id_us}`);
-		socket.on('joined', (res) => {
-			console.log("Se ha ingresado");
-		});
-		socket.on(`update:wish:${this.state.id_us}`, (data) => {
-			this.setState({deseos: [...data.deseos]});
-		})
+		if (!this._isMounted) {
+			await this.setState({ id_us: this.props.route.params.id });
+			await this.getWListContent();
+			const socket = io.connect(`http://${IP_DB}:3001`)
+			socket.emit('create', `wish:${this.state.id_us}`);
+			socket.on('joined', (res) => {
+				console.log("Se ha ingresado");
+			});
+			socket.on(`update:wish:${this.state.id_us}`, (data) => {
+				this.setState({ deseos: [...data.deseos] });
+			})
+			this._isMounted = true;
+		}
 	}
 
 	async getWListContent() {
@@ -141,7 +143,7 @@ class DeseosScreen extends Component {
 			})
 			.catch((error) => console.log(error));
 	}
-  
+
 
 	goDirecciones = () => {
 		this.props.navigation.navigate("Direcciones", { id: this.state.id_us });
@@ -156,11 +158,11 @@ class DeseosScreen extends Component {
 		this.props.navigation.navigate("Deseos", { id: this.state.id_us });
 	}
 
-  //Ir a lista de generos
-  goGeneros = () => {
-    this.props.navigation.navigate("Generos", {userId: this.state.id_us});
-  }
-  
+	//Ir a lista de generos
+	goGeneros = () => {
+		this.props.navigation.navigate("Generos", { userId: this.state.id_us });
+	}
+
 	render() {
 		return (
 			<Container>
@@ -173,18 +175,19 @@ class DeseosScreen extends Component {
 						<Title style={styles.Header}> WIHSLIST </Title>
 					</Body>
 					<Right>
-            
-          </Right>
+
+					</Right>
 				</Header>
 				<List           //Lista de los libros agregados al array state.products (donde deben vasearse los datos de la BD)
 					dataArray={this.state.deseos}
 					keyExtractor={(item) => item._id}
 					renderRow={(item) => (
-						<LibroItem id={item.Libro} id_u={this.state.id_us} id_d={item._id} props={this.props}/>
+						<LibroItem id={item.Libro} id_u={this.state.id_us} id_d={item._id} props={this.props} />
 					)}
 				/>
 				<Footer>
 					<FooterTab style={{ backgroundColor: "#FFF" }}>
+
 						<Button style={styles.Button} onPress={() => {
 							this.props.navigation.navigate("Perfil", { id: this.state.id_us });
 						}}>
