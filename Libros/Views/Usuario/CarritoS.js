@@ -2,6 +2,7 @@
 /*dar la opcion de aumentar el numero por ejemplar pedido*/
 /*al presionar cualquiera de los productos en el carrito debe de llevar a los detalles del producto*/
 import React, { Component, useState } from "react";
+import ReactDom from 'react-dom';
 import { Text, Dimensions, Alert, Image, StyleSheet, SafeAreaView } from "react-native";
 import { Container, Header, Content, Footer, FooterTab, Form, Item, Input,
   Label,
@@ -103,7 +104,7 @@ class CarritoScreen extends Component{
         <Content>
           <Card>
             <SafeAreaView style={{ flex: 1 }}>
-              <List           //Lista de los libros agregados al array products (donde deben vasearse los datos de la BD)
+              <List id='list'           //Lista de los libros agregados al array products (donde deben vasearse los datos de la BD)
                 dataArray={this.state.productos}
                 renderRow={(item) => (
                   <ListItem                  
@@ -126,6 +127,7 @@ class CarritoScreen extends Component{
                                 if (this.state.productos[i].id == item.id) {
                                   item.cant = this.state.productos[i].cant - 1;
                                   console.log(i+' '+item.cant);
+                                  ReactDOM.render(<CarritoScreen />, document.getElementById('list'))
                                   //pendiente actualiza campo cantidad con setState....
                                   if (this.state.productos[i].cant == 0) {
                                     //Hacer algo aqui....

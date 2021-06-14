@@ -37,18 +37,20 @@ class DeseosScreen extends Component{
     super(props)  
     this.state = {
       id_us: "",
-      productos: []
+      productos: [],
+      deseos: []
     }
   }
 
    //Montar
-   componentDidMount() {
+   async componentDidMount() {
     this.setState({ id_us: this.props.route.params.id });
     //this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
-    this.getWListContent(); 
+    await this.getWListContent(); 
+    await this.getWLibro();
   }
 
-  getWListContent = () => {
+  getWListContent() {
     fetch(`http://${IP_DB}:3000/Usuario/Ver/${this.props.route.params.id}`,
       {
         method: "GET",
@@ -60,9 +62,27 @@ class DeseosScreen extends Component{
     .then((res) => res.json())
     .then((data) => {
       this.setState({
-        productos: data.Deseos
+        deseos: data.Deseos
       }) 
       console.log(data.Deseos);
+    })   
+    .catch((error) => console.log(error));    
+  }
+
+  async getWLibro(){
+    fetch(`http://${IP_DB}:3000/Libro/Ver/${this.state.deseos.Libro}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => res.json())
+    .then((dat) => {
+      this.setState({
+        productos: dat
+      }) 
+      console.log(dat + " line 85");
     })   
     .catch((error) => console.log(error));
   }
