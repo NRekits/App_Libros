@@ -184,9 +184,11 @@ class DeseosScreen extends Component {
           androidStatusBarColor="#C0FFC0"
           style={styles.Header}
         >
-          <Left></Left>
+          <Left>
+          <Icon name="heart" size={30} />
+          </Left>
           <Body>
-            <Title style={styles.Header}> WIHSLIST </Title>
+            <Title style={styles.Header}> Deseos </Title>
           </Body>
           <Right></Right>
         </Header>
