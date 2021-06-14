@@ -41,6 +41,8 @@ export default class HomeAdmiScreen extends React.Component {
     super(props);
     this.state = {
       id: "",
+   
+      
     };
   }
   //Montar

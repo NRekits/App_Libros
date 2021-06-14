@@ -102,7 +102,7 @@ export default class LibroDetailsScreen extends React.Component {
 					<Right />
 				</Header>
 				<Content style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 30  }}>
-					<Image style={{ alignSelf: 'center', width: 200, height: 200 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
+					<Image style={{ alignSelf: 'center', width: 200, height: 300 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
 
 					<Item style={styles.Item} floatingLabel disabled>
 						<Label style={styles.Label}>Titulo</Label>
