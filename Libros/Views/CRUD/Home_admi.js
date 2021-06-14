@@ -11,6 +11,7 @@ import {
   Body,
   Footer,
   FooterTab,
+  Text
 } from "native-base";
 
 import { LineChart, BarChart } from "react-native-chart-kit";

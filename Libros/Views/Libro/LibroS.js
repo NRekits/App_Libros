@@ -1,6 +1,6 @@
 /*Aqui se ven la info de un libro seleccionado, da opcion para meter al carrito (cuantos ejemplares) o a la lista de deseos */
 import React, { useState, useEffect } from "react";
-import { Text, Dimensions, Alert, Image, StyleSheet, ToastAndroid } from "react-native";
+import { Dimensions, Alert, Image, StyleSheet } from "react-native";
 import {
 	Container, Header, Content, Form, Item, Input,
 	Label,
@@ -12,7 +12,8 @@ import {
 	Title,
 	Textarea,
 	Radio,
-	Toast
+	Toast,
+	Text
 } from "native-base";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -106,16 +107,16 @@ export default class LibroDetailsScreen extends React.Component {
 				idLib: this.state.libro.id
 			})
 		})
-		.then((res) => res.json())
-		.then((res) => {
-			Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
-		})
-		.finally(() => {
-			this.props.navigation.navigate('Home', { id: this.state.userId });
-		})
-		.catch(error => {
-			Toast.show({ text: 'Hubo un error agregando el producto a su lista de desados', type: 'danger' })
-		})
+			.then((res) => res.json())
+			.then((res) => {
+				Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
+			})
+			.finally(() => {
+				this.props.navigation.navigate('Home', { id: this.state.userId });
+			})
+			.catch(error => {
+				Toast.show({ text: 'Hubo un error agregando el producto a su lista de desados', type: 'danger' })
+			})
 	}
 
 	agregarAlCarro() {
@@ -208,10 +209,25 @@ export default class LibroDetailsScreen extends React.Component {
 						<Input disabled style={styles.Input} value={`$${libro.precio}`} />
 					</Item>
 
-					<Item style={styles.Item} floatingLabel disabled>
-						<Label style={styles.Label}>Disponibles</Label>
-						<Input disabled style={styles.Input} value={`${libro.cantidad}`} />
-					</Item>
+					{
+						libro.cantidad > 0 && (
+
+							<Item style={styles.Item} floatingLabel disabled>
+								<Label style={styles.Label}>Disponibles</Label>
+								<Input disabled style={styles.Input} value={`${libro.cantidad}`} />
+							</Item>
+
+						)
+					}
+					{ libro.cantidad <= 0 &&
+						(
+							<Item style={styles.Item} floatingLabel disabled>
+								<Label style={styles.Label}>Disponibles</Label>
+								<Input disabled style={{ color: 'red', ...styles.Input }} value={"Agotado"} />
+							</Item>
+						)
+					}
+
 
 					<Item style={styles.Item} floatingLabel disabled>
 						<Label style={styles.Label}>Disponible desde:</Label>
@@ -278,7 +294,7 @@ export default class LibroDetailsScreen extends React.Component {
 						)
 					}
 
-					<Button rounded success block style={styles.Button} onPress={() => {
+					<Button disabled rounded success block style={styles.Button} onPress={() => {
 						this.Check();
 					}}>
 						<Text>Añadir al carro</Text>
