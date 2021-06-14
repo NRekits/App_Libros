@@ -279,6 +279,7 @@ router.put("/InsertarCarrito/:id", (req, res) => {
   const id = req.params.id;
   const libro = req.body.idLib;
   const cantidad = req.body.cant;
+  const formato = req.body.format;
 
   Usuario.findByIdAndUpdate(
     { _id: id },
@@ -287,6 +288,7 @@ router.put("/InsertarCarrito/:id", (req, res) => {
         Carrito: {
           Cantidad: cantidad,
           Libro: libro,
+		  Formato: formato
         },
       },
     }

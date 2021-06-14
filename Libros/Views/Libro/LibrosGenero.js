@@ -96,12 +96,11 @@ export default class LibroGenero extends React.Component {
 					<Right />
 				</Header>
 
-				<Tabs tabBarUnderlineStyle={styles.Underline} initialPage={0} renderTabBar={() => <ScrollableTab />}>
+				<Tabs transparent tabBarUnderlineStyle={styles.Underline} initialPage={0} renderTabBar={() => <ScrollableTab />}>
 					<Tab
 						activeTabStyle={{ backgroundColor: 'white' }}
 						activeTextStyle={styles.Header}
 						textStyle={styles.Header}
-						tabStyle={{ backgroundColor: 'white' }}
 						heading="Aventura">
 						<LibrosGenero navigate={this.goToLibro} genero="Aventura" />
 					</Tab>
@@ -109,7 +108,6 @@ export default class LibroGenero extends React.Component {
 						activeTabStyle={{ backgroundColor: 'white' }}
 						activeTextStyle={styles.Header}
 						textStyle={styles.Header}
-						tabStyle={{ backgroundColor: 'white' }}
 						heading="Ciencia ficción">
 							<LibrosGenero navigate={this.goToLibro} genero="Ciencia Ficción" />
 					</Tab>
@@ -117,7 +115,6 @@ export default class LibroGenero extends React.Component {
 						activeTabStyle={{ backgroundColor: 'white' }}
 						activeTextStyle={styles.Header}
 						textStyle={styles.Header}
-						tabStyle={{ backgroundColor: 'white' }}
 						heading="Terror">
 							<LibrosGenero navigate={this.goToLibro} genero="Terror" />
 					</Tab>
@@ -125,7 +122,6 @@ export default class LibroGenero extends React.Component {
 						activeTabStyle={{ backgroundColor: 'white' }}
 						activeTextStyle={styles.Header}
 						textStyle={styles.Header}
-						tabStyle={{ backgroundColor: 'white' }}
 						heading="Romance">
 							<LibrosGenero navigate={this.goToLibro} genero="Romance" />
 					</Tab>
@@ -133,7 +129,6 @@ export default class LibroGenero extends React.Component {
 						activeTabStyle={{ backgroundColor: 'white' }}
 						activeTextStyle={styles.Header}
 						textStyle={styles.Header}
-						tabStyle={{ backgroundColor: 'white' }}
 						heading="Humor">
 							<LibrosGenero navigate={this.goToLibro} genero="Humor" />
 						</Tab>
@@ -141,7 +136,6 @@ export default class LibroGenero extends React.Component {
 						activeTabStyle={{ backgroundColor: 'white' }}
 						activeTextStyle={styles.Header}
 						textStyle={styles.Header}
-						tabStyle={{ backgroundColor: 'white' }}
 						heading="Poesía">
 							<LibrosGenero navigate={this.goToLibro} genero="Poesía" />
 						</Tab>
@@ -149,7 +143,6 @@ export default class LibroGenero extends React.Component {
 						activeTabStyle={{ backgroundColor: 'white' }}
 						activeTextStyle={styles.Header}
 						textStyle={styles.Header}
-						tabStyle={{ backgroundColor: 'white' }}
 						heading="Clásicos">
 							<LibrosGenero navigate={this.goToLibro} genero="Clásico" />
 						</Tab>
