@@ -292,21 +292,22 @@ router.get("/MostrarTodos", (req, res) => {
 });
 
 //Ver contenido del carrito
-router.get('/verCar_Wish/:id_us', (req, res) => {
+router.get('/verCar_Wish/:id_us', async (req, res) => {
   const id_us = req.params.id_us;
-  const user = Usuario.findById({ _id: id_us })
-
+  const user = await Usuario.findById({ _id: id_us })
+  console.log('entro');
   try {
     // create token
 
     res.json({
-      error:null,
-      Id:user._id,
+      error: null,
+      Id: user._id,
       Email: user.Email,
       Deseos: user.Deseos,
       Carrito: user.Carrito,
       Direccion: user.Direccion
     });
+	console.log(user.Deseos);
 
 }catch(e){
   

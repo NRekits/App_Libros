@@ -10,6 +10,7 @@ import RegisterScreen from "./Views/RegistroS";
 import PerfilScreen from "./Views/Usuario/PerfilS";
 import HomeScreen from "./Views/Usuario/HomeS";
 import CarritoScreen from "./Views/Usuario/CarritoS";
+import DeseosScreen from "./Views/Usuario/DeseosS";
 
 //Libro
 import LibroGenero from "./Views/Libro/LibrosGenero";
@@ -96,6 +97,7 @@ class App extends React.Component {
               <Stack.Screen name="Perfil" component={PerfilScreen} />
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Carrito" component={CarritoScreen} />
+              <Stack.Screen name="Deseos" component={DeseosScreen}/>
               <Stack.Screen name="ADireccion" component={ADireccionScreen} />
               <Stack.Screen name="Direcciones" component={DireccionesScreen} />
               <Stack.Screen name="DirDetalles" component={DirDetalles} />
