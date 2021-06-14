@@ -130,7 +130,6 @@ router.get("/Ver/:id", async (req, res) => {
 
 	try {
 		// create token
-
 		res.json({
 			error: null,
 			Id: user._id,
@@ -355,7 +354,9 @@ router.put("/InsertarDeseo/:id", (req, res) => {
       },
     }
   )
-    .then((doc) => {
+    .then(async (doc) => {
+	  const user = await Usuario.findById({_id: id});
+	  req.io.to(`wish:${id}`).emit(`update:wish:${id}`, {deseos: [...user.Deseos]});
       res.json({ response: "Producto agregado a la wish list" });
     })
     .catch((err) => {

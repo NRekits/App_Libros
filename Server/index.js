@@ -5,7 +5,14 @@ const cors = require('cors');
 const app = express();
 const port =3000;
 require('dotenv').config()
+const io = require('socket.io')(3001);
 
+io.sockets.on('connection', (socket) => {
+	socket.on('create', (room) => {
+		socket.join(room);
+		socket.emit('joined', {});
+	})
+});
 
 // Habilitar cors
 app.use(cors());
@@ -13,6 +20,10 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public/'));
+app.use((req, res, next) => {
+	req.io = io;
+	next();
+})
 
 //conexion 
 
