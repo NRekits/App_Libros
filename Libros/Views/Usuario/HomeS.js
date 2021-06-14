@@ -111,11 +111,11 @@ export default class HomeScreen extends React.Component {
 
   //Montar
   goLista() {
-    this.props.navigation.navigate("Buscar");
+    this.props.navigation.navigate("Buscar", {userId: this.state.id});
   }
   //Ir a lista de generos
   goGeneros() {
-    this.props.navigation.navigate("Generos");
+    this.props.navigation.navigate("Generos", {userId: this.state.id});
   }
 
   async componentDidMount() {

@@ -76,7 +76,7 @@ export default class BusquedaScreen extends React.Component {
 						<TouchableOpacity
 							style={{marginBottom: 10}}
 							onPress={async () => {
-								this.props.navigation.navigate('Filtrar', { userId: this.state.id, name: this.state.name })
+								this.props.navigation.navigate('Filtrar', { userId: this.state.userId, name: this.state.name })
 							}}
 						>
 							<Text style={styles.Text}>Filtrar por precio</Text>

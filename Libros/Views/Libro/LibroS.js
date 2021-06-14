@@ -25,6 +25,7 @@ export default class LibroDetailsScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			userId: '',
 			libro: {
 				id: '',
 				titulo: '',
@@ -72,7 +73,8 @@ export default class LibroDetailsScreen extends React.Component {
 	async componentDidMount() {
 		let { libro } = Object.assign({}, this.state);
 		libro.id = this.props.route.params.id;
-		await this.setState({ libro });
+		console.log(this.props.route.params.userId);
+		await this.setState({ libro: libro, userId: this.props.route.params.userId });
 		await this.fetchLibro();
 	}
 

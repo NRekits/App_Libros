@@ -65,10 +65,10 @@ export default class LibroGenero extends React.Component {
 		};
 	}
 	goToLibro(id){
-		this.props.navigation.navigate('LibroS', {id: id});
+		this.props.navigation.navigate('LibroS', {id: id, userId: this.state.userId});
 	}
-	componentDidMount(){
-
+	async componentDidMount(){
+		await this.setState({userId: this.props.route.params.userId})
 	}
 	render() {
 		return (
