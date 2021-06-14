@@ -12,7 +12,7 @@ const Direccion = new Schema({
 });
 const Carrito = new Schema({
   Libro: {  type: Schema.Types.ObjectId, ref: "Libro", default: undefined },
-  Cantidad: { type: Number, default: 0 },
+  Cantidad: { type: Number, default: 1 },
 });
 //Usuario esquema
 const usuarioSchema = new Schema({
