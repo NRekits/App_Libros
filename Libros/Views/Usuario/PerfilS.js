@@ -104,7 +104,7 @@ export default class PerfilScreen extends React.Component {
             style={styles.Header}
           >
             <Left>
-              
+            <Icon name="user-circle-o" size={30} />
             </Left>
             <Body>
               <Title style={styles.Header}> PERFIL </Title>
