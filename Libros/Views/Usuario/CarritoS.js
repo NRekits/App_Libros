@@ -26,13 +26,13 @@ import { LinearGradient } from 'expo-linear-gradient';
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-const productos = [{
-  id: Number,
-  title: String, 
-  price: Number,
-  cant: Number
-  }
-];
+// const productos = [{
+//   id: Number,
+//   title: String, 
+//   price: Number,
+//   cant: Number
+//   }
+// ];
 
 class CarritoScreen extends Component{
   constructor(props){
@@ -47,11 +47,11 @@ class CarritoScreen extends Component{
   componentDidMount() {
     this.setState({ id_us: this.props.route.params.id });
     //this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
-    this.getCarritoContent();
+    this.getCarritoContent(); 
   }
 
   getCarritoContent = () => {
-    fetch(`http://${IP_DB}:3000/Usuario/varCar_Wish/${this.state.id_us}`,
+    fetch(`http://${IP_DB}:3000/Usuario/verCar_Wish/${this.props.route.params.id}`,
       {
         method: "GET",
         headers: {
@@ -136,14 +136,15 @@ class CarritoScreen extends Component{
                             }}>
                               <Text>-</Text>
                           </Button>
-                          <Text id={item.id} style={styles.Text1}>{item.cant}</Text>
+                          <Text  style={styles.Text1}>{item.Cant}</Text>
                           <Button style={styles.Button1}
                             onPress={() => { //aumentar cantidad de libros en el carrito
                               for (let i = 0; i < this.state.productos.length; i++) {
                                 if (this.state.productos[i].id == item.id) {
-                                  item.cant = this.state.productos[i].cant + 1;
-                                  console.log(i+' '+item.cant);  
-                                  document.getElementById(item.id).innerHTML = item.cant;                         
+                                  this.setState({productos })
+                                  item.Cant = this.state.productos[i].Cant + 1;
+                                  console.log(i+' '+item.Cant);  
+                                  //document.getElementById(item.id).innerHTML = item.cant;                         
                                 }                                
                               }
                             }}>

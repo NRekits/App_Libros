@@ -21,12 +21,12 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
 
-const productos = [{
-  id: Number,
-  title: String, 
-  price: Number
-  }
-];
+// const productos = [{
+//   id: Number,
+//   title: String, 
+//   price: Number
+//   }
+// ];
 
 
 const windowWidth = Dimensions.get('window').width;
@@ -41,8 +41,15 @@ class DeseosScreen extends Component{
     }
   }
 
+   //Montar
+   componentDidMount() {
+    this.setState({ id_us: this.props.route.params.id });
+    //this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
+    this.getWListContent(); 
+  }
+
   getWListContent = () => {
-    fetch(`http://${IP_DB}:3000/Usuario/varCar_Wish/${this.state.id_us}`,
+    fetch(`http://${IP_DB}:3000/Usuario/verCar_Wish/${this.props.route.params.id}`,
       {
         method: "GET",
         headers: {
@@ -55,6 +62,7 @@ class DeseosScreen extends Component{
       this.setState({
         productos: data.Deseos
       }) 
+      console.log(data.Deseos);
     })   
     .catch((error) => console.log(error));
   }
@@ -81,15 +89,15 @@ class DeseosScreen extends Component{
         style={styles.Header}>
           <Left></Left>
           <Body>
-            <Title style={styles.Header}> WishList </Title>
+            <Title style={styles.Header}> WIHSLIST </Title>
           </Body>
           <Right></Right>
         </Header>
         <Content>
           <Card>
             <SafeAreaView style={{ flex: 1 }}>
-              <List           //Lista de los libros agregados al array products (donde deben vasearse los datos de la BD)
-                dataArray={productos}
+              <List           //Lista de los libros agregados al array state.products (donde deben vasearse los datos de la BD)
+                dataArray={this.state.productos}
                 renderRow={(item) => (
                   <ListItem                  
                     button
@@ -97,12 +105,12 @@ class DeseosScreen extends Component{
                     <Image source={require('../../assets/libro.png')} style={styles.Image}/>
                     <View style={styles.Flex1}>
                       <Text style={styles.Text2}>
-                        {item.title}
+                        {item.Title}
                       </Text>
                       <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: 200}}>
 
                         <Text style={styles.Text3}>$ 
-                          {item.price}
+                          {item.Precio}
                         </Text>
                         <View style={{flexDirection: 'row', justifyContent: ''}}>
                         </View>
