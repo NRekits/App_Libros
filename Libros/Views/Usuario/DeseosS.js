@@ -49,7 +49,7 @@ class DeseosScreen extends Component{
   }
 
   getWListContent = () => {
-    fetch(`http://${IP_DB}:3000/Usuario/verCar_Wish/${this.props.route.params.id}`,
+    fetch(`http://${IP_DB}:3000/Usuario/Ver/${this.props.route.params.id}`,
       {
         method: "GET",
         headers: {
