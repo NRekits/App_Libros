@@ -1,6 +1,6 @@
 /*Aqui se ven la info de un libro seleccionado, da opcion para meter al carrito (cuantos ejemplares) o a la lista de deseos */
 import React, { useState, useEffect } from "react";
-import { Text, Dimensions, Alert, Image, StyleSheet } from "react-native";
+import { Text, Dimensions, Alert, Image, StyleSheet, ToastAndroid } from "react-native";
 import {
 	Container, Header, Content, Form, Item, Input,
 	Label,
@@ -11,7 +11,8 @@ import {
 	Right,
 	Title,
 	Textarea,
-	Radio
+	Radio,
+	Toast
 } from "native-base";
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
@@ -76,6 +77,30 @@ export default class LibroDetailsScreen extends React.Component {
 		console.log(this.props.route.params.userId);
 		await this.setState({ libro: libro, userId: this.props.route.params.userId });
 		await this.fetchLibro();
+	}
+	
+	agregarAlCarro() {
+		fetch(`http://${IP_DB}:3000/Usuario/InsertarCarrito/${this.state.userId}`, 
+		{
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: {
+				idLib: this.state.libro.id,
+				cant: 1
+			}
+		})
+		.then((res) => res.json())
+		.then((data) => {
+			Toast.show({ text: 'Producto agregado al carrito', buttonText: 'Entendido', type: "success"});
+		})
+		.finally(() => {
+			this.props.navigation.navigate('Home', {id: this.state.userId});
+		})
+		.catch((error) => {
+			Toast.show({text: "Hubo un error agregando su producto al carrito", type:'danger'});
+		});
 	}
 
 	render() {
@@ -202,7 +227,7 @@ export default class LibroDetailsScreen extends React.Component {
 					}
 
 					<Button rounded success block style={styles.Button} onPress={() => {
-
+						this.agregarAlCarro();
 					}}>
 						<Text>Añadir al carro</Text>
 					</Button>
