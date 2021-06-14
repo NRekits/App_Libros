@@ -89,7 +89,7 @@ class App extends React.Component {
               screenOptions={{
                 headerShown: false,
               }}
-              initialRouteName="HomeAdmi"
+              initialRouteName="Login"
             >
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
@@ -121,10 +121,14 @@ class App extends React.Component {
               <Stack.Screen name="ModUsuario" component={MUsuarioScreen} />
               <Stack.Screen name="ListUsuario" component={LUsuarioScreen} />
               <Stack.Screen name="VerUsuario" component={UsuarioScreen} />
-              {/*Pedidos*/}
+              {/*Pedidos CRUD*/}
               <Stack.Screen name="ModPedido" component={MPedidosScreen} />
               <Stack.Screen name="ListPedido" component={LPedidosScreen} />
               <Stack.Screen name="VerPedido" component={VPedidoScreen} />
+              {/*Pedidos*/}
+              <Stack.Screen name="APedido" component={APedidoScreen} />
+              <Stack.Screen name="Pedidos" component={PedidosScreen} />
+              <Stack.Screen name="PedDetalles" component={PedidoScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </Root>
