@@ -15,6 +15,7 @@ import DeseosScreen from "./Views/Usuario/DeseosS";
 //Libro
 import LibroGenero from "./Views/Libro/LibrosGenero";
 import BusquedaScreen from "./Views/Libro/BusquedaS";
+import FiltroScreen from "./Views/Libro/FiltrarBusqueda";
 import LibroDetailsScreen from "./Views/Libro/LibroS";
 
 //Pedidos
@@ -105,6 +106,7 @@ class App extends React.Component {
               <Stack.Screen name="Generos" component={LibroGenero} />
               <Stack.Screen name="Buscar" component={BusquedaScreen} />
               <Stack.Screen name="LibroS" component={LibroDetailsScreen} />
+              <Stack.Screen name="Filtrar" component={FiltroScreen} />
 
               {/*Crud*/}
               <Stack.Screen name="HomeAdmi" component={HomeAdmiScreen} />

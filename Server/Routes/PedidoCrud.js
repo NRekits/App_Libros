@@ -2,6 +2,17 @@ const router = require('express').Router();
 const puppeteer = require('puppeteer');
 const ejs = require('ejs');
 const path = require('path');
+const server = require('http').createServer(router);
+const io = require('socket.io')(server);
+
+io.on('connection', (socket) => {
+	socket.on('sales:update', async () => {
+		socket.broadcast.emit('update', {msg: "Se habla a todos"});
+	});
+	socket.on('sales:init', async () => {
+		socket.emit('update', {msg: "hola"});
+	})
+});
 
 router.get('/TicketPDF', async (req, res) => {
 	const browser = await puppeteer.launch();
