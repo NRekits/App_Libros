@@ -22,6 +22,7 @@ import {
   Right,
   Title,
   Thumbnail,
+  Toast
 } from "native-base";
 
 import IP_DB from "../../ip_address";
