@@ -292,7 +292,11 @@ router.put("/InsertarCarrito/:id", (req, res) => {
 			},
 		}
 	)
-		.then((doc) => {
+		.then( async (doc) => {
+
+			const user = await Usuario.findById({_id: id});
+			req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
+
 			res.json({ response: "Producto agregado al carrito" });
 		})
 		.catch((err) => {
@@ -318,7 +322,9 @@ router.put("/ModificarCarrito/:id_us/:id_car", (req, res) => {
 			},
 		}
 	)
-		.then((doc) => {
+		.then(async(doc) => {
+			const user = await Usuario.findById({_id: id});
+			req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
 			res.json({ response: "Carrito modificada" });
 		})
 		.catch((err) => {
@@ -331,7 +337,9 @@ router.get("/EliminarCarrito/:id_us/:id_car", (req, res) => {
 	const id = req.params.id_us;
 	const id_car = req.params.id_car;
 	Usuario.updateOne({ _id: id }, { $pull: { Carrito: { _id: id_car } } })
-		.then((doc) => {
+		.then(async (doc) => {
+			const user = await Usuario.findById({_id: id});
+			req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
 			res.json({ response: "Producto eliminado del carrito" });
 		})
 		.catch((err) => {
@@ -361,9 +369,12 @@ router.put("/InsertarDeseo/:id", async (req, res) => {
     }
   )
     .then(async (doc) => {
+
 	  const user = await Usuario.findById({_id: id});
 	  req.io.to(`wish:${id}`).emit(`update:wish:${id}`, {deseos: [...user.Deseos]});
+	  
       res.json({ response: "Producto agregado a la wish list" });
+
     })
     .catch((err) => {
       console.log("error al cambiar", err.message);
@@ -375,7 +386,10 @@ router.get("/EliminarDeseo/:id_us/:id_des", (req, res) => {
 	const id = req.params.id_us;
 	const id_des = req.params.id_des;
 	Usuario.updateOne({ _id: id }, { $pull: { Deseos: { _id: id_des } } })
-		.then((doc) => {
+		.then( async (doc) => {
+
+			const user = await Usuario.findById({_id: id});
+			req.io.to(`wish:${id}`).emit(`update:wish:${id}`, {deseos: [...user.Deseos]});
 			res.json({ response: "Producto eliminado de la wish list" });
 		})
 		.catch((err) => {

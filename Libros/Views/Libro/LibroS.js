@@ -304,7 +304,7 @@ export default class LibroDetailsScreen extends React.Component {
 						)
 					}
 
-					<Button rounded success block style={styles.Button} onPress={() => {
+					<Button disabled={libro.cantidad <= 0} rounded success block style={styles.Button} onPress={() => {
 						this.Check();
 					}}>
 						<Text>Añadir al carro</Text>

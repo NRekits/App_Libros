@@ -11,27 +11,17 @@ import {
 } from "react-native";
 import {
   Container,
-  View,
   Header,
   Footer,
   FooterTab,
-  Content,
-  Form,
-  Item,
-  Input,
-  Label,
   Button,
-  H1,
   List,
   ListItem,
   Left,
   Body,
   Right,
   Title,
-  Card,
-  CardItem,
   Thumbnail,
-  Toast,
 } from "native-base";
 
 import IP_DB from "../../ip_address";
@@ -70,7 +60,7 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
     return () => {};
   }, []);
   return (
-    <ListItem>
+    <ListItem thumbnail>
       <Left>
         <Thumbnail
           square
@@ -83,16 +73,15 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
       </Body>
       <Right>
         <Button
-          transparent
           style={styles.Button}
           onPress={() => {
+            console.log("entro aqui");
             fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`);
             Toast.show({
               text: "Producto eliminado de la WishList",
               buttonText: "Okay",
               type: "warning",
             });
-            props.navigation.navigate("Home", { id: id_u });
           }}
         >
           <Icon name="trash" size={30} />
@@ -113,21 +102,24 @@ class DeseosScreen extends Component {
       productos: [],
       deseos: [],
     };
+    this._isMounted = false;
   }
 
   //Montar
   async componentDidMount() {
-    await this.setState({ id_us: this.props.route.params.id });
-    await this.getWListContent();
-
-    const socket = io.connect(`http://${IP_DB}:3001`);
-    socket.emit("create", `wish:${this.state.id_us}`);
-    socket.on("joined", (res) => {
-      console.log("Se ha ingresado");
-    });
-    socket.on(`update:wish:${this.state.id_us}`, (data) => {
-      this.setState({ deseos: [...data.deseos] });
-    });
+    if (!this._isMounted) {
+      await this.setState({ id_us: this.props.route.params.id });
+      await this.getWListContent();
+      const socket = io.connect(`http://${IP_DB}:3001`);
+      socket.emit("create", `wish:${this.state.id_us}`);
+      socket.on("joined", (res) => {
+        console.log("Se ha ingresado");
+      });
+      socket.on(`update:wish:${this.state.id_us}`, (data) => {
+        this.setState({ deseos: [...data.deseos] });
+      });
+      this._isMounted = true;
+    }
   }
 
   async getWListContent() {
@@ -192,11 +184,9 @@ class DeseosScreen extends Component {
           androidStatusBarColor="#C0FFC0"
           style={styles.Header}
         >
-          <Left>
-            <Icon name="heart" size={30} />
-          </Left>
+          <Left></Left>
           <Body>
-            <Title style={styles.Header}> WISH </Title>
+            <Title style={styles.Header}> WIHSLIST </Title>
           </Body>
           <Right></Right>
         </Header>
