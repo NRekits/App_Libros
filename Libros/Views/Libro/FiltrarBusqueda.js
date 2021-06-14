@@ -1,6 +1,6 @@
 /*Aqui debe mostrar resultados de una busqueda, se debe permitir hacer un filtro por rango de precios  y genero*/
 import React from "react";
-import { Dimensions, Alert, Image, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { Dimensions, Alert, Image, StyleSheet, ScrollView } from "react-native";
 import {
 	Container, Header, Item, Input,
 	Button,
@@ -22,12 +22,14 @@ import LibroItem from "./LibroItem";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
-export default class BusquedaScreen extends React.Component {
+export default class FiltroScreen extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			data: [],
 			name: "",
+			min: 0,
+			max: 600,
 			userId: ''
 		}
 		this.goToLibro = this.goToLibro.bind(this);
@@ -37,8 +39,8 @@ export default class BusquedaScreen extends React.Component {
 		this.props.navigation.navigate('LibroS', { id: id, userId: this.state.userId });
 	}
 
-	async loadLibros(name) {
-		await fetch(`http://${IP_DB}:3000/Libro/Buscar?name=${name}`)
+	async filtrarLibros(name, minVal, maxVal) {
+		await fetch(`http://${IP_DB}:3000/Libro/Buscar?name=${name}&min=${minVal}&max=${maxVal}`)
 			.then((res) => res.json())
 			.then((res) => res.lib)
 			.then(async (data) => {
@@ -48,8 +50,8 @@ export default class BusquedaScreen extends React.Component {
 	}
 
 	async componentDidMount() {
-		await this.setState({ userId: this.props.route.params.userId });
-		await this.loadLibros("");
+		await this.setState({ userId: this.props.route.params.userId, name: this.props.route.params.name });
+		await this.filtrarLibros("", 0, 600);
 	}
 
 	render() {
@@ -60,6 +62,7 @@ export default class BusquedaScreen extends React.Component {
 					transparent
 					style={styles.Header}
 					noLeft
+					span
 				>
 					<Body>
 						<Item rounded>
@@ -69,19 +72,32 @@ export default class BusquedaScreen extends React.Component {
 								value={this.state.name}
 								onChangeText={async (text) => {
 									await this.setState({ name: text });
-									await this.loadLibros(this.state.name, this.state.min, this.state.max);
+									await this.filtrarLibros(this.state.name, this.state.min, this.state.max);
 								}}
 							/>
 						</Item>
-						<TouchableOpacity
-							style={{marginBottom: 10}}
-							onPress={async () => {
-								this.props.navigation.navigate('Filtrar', { userId: this.state.id, name: this.state.name })
-							}}
-						>
-							<Text style={styles.Text}>Filtrar por precio</Text>
-						</TouchableOpacity>
-
+						<Text style={styles.Text}
+						>Precio</Text>
+						<Item picker>
+							<Picker
+								mode="dropdown"
+								placeholder="Precio"
+								style={{ width: undefined, height: 30, marginBottom: 0, paddingBottom: 0 }}
+								selectedValue={`${this.state.min}.${this.state.max}`}
+								onValueChange={async (value) => {
+									const res = value.split(".");
+									const min = Number(res[0]);
+									const max = Number(res[1]);
+									await this.setState({ min: min, max: max });
+									await this.filtrarLibros(this.state.name, this.state.min, this.state.max);
+								}}
+							>
+								<Picker.Item label="< $600" value="0.600" />
+								<Picker.Item label="$600 a $800" value="600.800" />
+								<Picker.Item label="$800 a $1000" value="800.1000" />
+								<Picker.Item label="$1000 > " value="1000.10000000000000000" />
+							</Picker>
+						</Item>
 					</Body>
 				</Header>
 				<List
@@ -152,7 +168,7 @@ const styles = StyleSheet.create({
 		fontFamily: "Dosis",
 		fontSize: 20,
 		fontWeight: "600",
-		marginTop: 30,
+		marginTop: 50,
 		borderBottomWidth: 1,
 	},
 });
