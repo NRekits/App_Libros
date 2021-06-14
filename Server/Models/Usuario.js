@@ -20,7 +20,7 @@ const usuarioSchema = new Schema({
   Apellido: { type: String },
   Contrasena: { type: String },
   Email: { type: String, unique: true },
-  Deseos: [{ type: Schema.Types.ObjectId, ref: "Libro", default: undefined }],
+  Deseos: [{ type: Schema.Types.ObjectId, ref: "Libro", default: undefined,unique: true}],
   Carrito: [{
     type: Carrito,
     default: () => ({}) 
