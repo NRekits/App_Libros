@@ -50,7 +50,7 @@ class DeseosScreen extends Component{
     await this.getWLibro();
   }
 
-  getWListContent() {
+  async getWListContent() {
     fetch(`http://${IP_DB}:3000/Usuario/Ver/${this.props.route.params.id}`,
       {
         method: "GET",
@@ -93,6 +93,10 @@ class DeseosScreen extends Component{
 
   goHome = () =>{
     this.props.navigation.navigate("Home",{id: this.state.id_us});
+  }
+
+  goGeneros = () => {
+    this.props.navigation.navigate("Generos", {userId: this.state.id_us});
   }
 
   //WishList
@@ -160,7 +164,7 @@ class DeseosScreen extends Component{
             <Button active style={styles.Button} onPress={this.goHome}>
               <Icon name="home" size={30} />
             </Button>
-            <Button  style={styles.Button} onPress={this.goPerfil}>
+            <Button  style={styles.Button} onPress={this.goGeneros}>
               <Icon name="list-ul" size={30} />
             </Button>
             <Button style={styles.Button} onPress={this.goWishL}>

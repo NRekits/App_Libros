@@ -238,7 +238,7 @@ export default class HomeScreen extends React.Component {
               <Button
                 style={styles.Button}
                 onPress={() => {
-                  this.props.navigation.navigate("WishList", {
+                  this.props.navigation.navigate("Deseos", {
                     id: this.state.id,
                   });
                 }}

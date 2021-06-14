@@ -83,7 +83,7 @@ export default class LibroDetailsScreen extends React.Component {
 	Check() {
 		let msg = "";
 		let error = false;
-
+		console.log('entro');
 		if (this.state.selectedFormat === "") {
 			msg = "Debes seleccionar un formato primero";
 			error = true;
@@ -294,7 +294,7 @@ export default class LibroDetailsScreen extends React.Component {
 						)
 					}
 
-					<Button disabled rounded success block style={styles.Button} onPress={() => {
+					<Button rounded success block style={styles.Button} onPress={() => {
 						this.Check();
 					}}>
 						<Text>Añadir al carro</Text>
