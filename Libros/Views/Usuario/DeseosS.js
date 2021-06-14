@@ -21,6 +21,8 @@ import IP_DB from "../../ip_address";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome";
 
+const io = require('socket.io-client');
+
 import * as SecureStore from "expo-secure-store";
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -42,7 +44,6 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
 					.then((res) => res.data)
 					.then((res) => {
 						setLibro(Object.assign({}, res));
-						console.log(res);
 					});
 				await setFetchData(false);
 			}
@@ -93,8 +94,16 @@ class DeseosScreen extends Component {
 	//Montar
 	async componentDidMount() {
 		await this.setState({ id_us: this.props.route.params.id });
-		//this.setState({id_us: ObjectId("60c520c7bc582f49023b7bad")})
 		await this.getWListContent();
+
+		const socket = io.connect(`http://${IP_DB}:3001`)
+		socket.emit('create', `wish:${this.state.id_us}`);
+		socket.on('joined', (res) => {
+			console.log("Se ha ingresado");
+		});
+		socket.on(`update:wish:${this.state.id_us}`, (data) => {
+			this.setState({deseos: [...data.deseos]});
+		})
 	}
 
 	async getWListContent() {
@@ -111,7 +120,6 @@ class DeseosScreen extends Component {
 				await this.setState({
 					deseos: [...data.Deseos]
 				})
-				console.log(this.state.deseos);
 			})
 			.catch((error) => console.log(error));
 	}
