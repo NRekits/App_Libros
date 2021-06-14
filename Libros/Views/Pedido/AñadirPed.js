@@ -39,6 +39,7 @@ export default class APedidoScreen extends React.Component{
       carrito: [],
       direcciones: [],
       dirSelect: 'id1',
+      pago: 'tienda',
       notas: ''
     }
   }
@@ -66,7 +67,7 @@ export default class APedidoScreen extends React.Component{
   render(){
     let dirItems = this.state.direcciones.map((direcciones,index) =>{
       return(
-        <Picker.Item label={`${direcciones.Ciudad}: ${direcciones.Calle} #${direcciones.Numero_int}`} value={direcciones._id}/>
+        <Picker.Item key={index.toString()} label={`${direcciones.Ciudad}: ${direcciones.Calle} #${direcciones.Numero_int}`} value={direcciones._id}/>
       );
     })
 
@@ -142,6 +143,23 @@ export default class APedidoScreen extends React.Component{
                 onChangeText={(notas) => this.setState({notas})}
                 placeholder={'Notas sobre envio'}
               />
+            </Row>
+            <Row style={{height:50, borderWidth:4, margin:5}}>
+              <Col style={{width:100}}>
+                <Text>Pago</Text>
+              </Col>
+              <Col>
+                <Picker
+                  note
+                  mode="dropdown"
+                  style={{height: 60}}
+                  selectedValue={this.state.pago}
+                  onValueChange={(value)=> this.setState({pago:value})}
+                >
+                  <Picker.Item label={"Pago en Tienda"} value={"tienda"}/>
+                  <Picker.Item label={"Pago en Oxxo"} value={"oxxo"}/>
+                </Picker>
+              </Col>
             </Row>
             <Row>
               <Text style={styles.Text2}>Total: $5000</Text>
