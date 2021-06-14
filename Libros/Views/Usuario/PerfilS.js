@@ -76,6 +76,9 @@ export default class PerfilScreen extends React.Component {
   goDirecciones = () =>{
     this.props.navigation.navigate("Direcciones",{id: this.state.id});
   }
+  goPedidos = () =>{
+    this.props.navigation.navigate("Pedidos",{id: this.state.id});
+  }
   goHome = () =>{
     this.props.navigation.navigate("Home",{id: this.state.id});
   }
@@ -156,7 +159,7 @@ export default class PerfilScreen extends React.Component {
                   <Button
                     transparent
                     style={styles.Button}
-                    onPress={this.goLista}
+                    onPress={this.goPedidos}
                   >
                     <Icon name="angle-right" size={30} />
                   </Button>
