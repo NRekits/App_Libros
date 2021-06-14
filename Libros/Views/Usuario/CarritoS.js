@@ -1,7 +1,7 @@
 /*mostrar los libros que el usuario ha agregado a su carrito*/
 /*dar la opcion de aumentar el numero por ejemplar pedido*/
 /*al presionar cualquiera de los productos en el carrito debe de llevar a los detalles del producto*/
-import React, { Component, useState } from "react";
+import React, { Component, useState, useEffect } from "react";
 import ReactDom from 'react-dom';
 import { Text, Dimensions, Alert, Image, StyleSheet, SafeAreaView } from "react-native";
 import { Container, Header, Content, Footer, FooterTab, Form, Item, Input,
@@ -17,6 +17,7 @@ import { Container, Header, Content, Footer, FooterTab, Form, Item, Input,
   Card,
   CardItem,
   Title,
+  Thumbnail
 } from "native-base";
 import IP_DB from "../../ip_address";
 import Ionicons from "react-native-vector-icons/Ionicons";
@@ -34,6 +35,79 @@ const windowHeight = Dimensions.get('window').height;
 //   cant: Number
 //   }
 // ];
+
+const LibroItem = ({ id }) => {
+	const [libro, setLibro] = useState({});
+	const [fetchData, setFetchData] = useState(true);
+	useEffect(() => {
+		async function fetchLibro() {
+			if (fetchData) {
+				await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
+					.then((res) => res.json())
+					.then((res) => res.data)
+					.then((res) => {
+						setLibro(Object.assign({}, res));
+						console.log(res);
+					});
+				await setFetchData(false);
+			}
+		}
+		fetchLibro();
+		return (() => {
+		});
+	}, [])
+	return (
+		<ListItem>
+				<Thumbnail square source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }} />
+			<Body>
+        <View style={styles.Flex1}>
+          <Text style={styles.Text2}>
+            {libro.Titulo}
+          </Text>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: 225}}>            
+            <Text style={styles.Text3}>$ 
+              {libro.Precio}
+            </Text>
+            <View style={{flexDirection: 'row', justifyContent: ''}}>
+              <Button style={styles.Button1}
+                onPress={() => { //reducir cantidad de libros en el carrito
+                  for (let i = 0; i < this.state.productos.length; i++) {
+                    if (this.state.productos[i].id == libro.id) {
+                      libro.cant = this.state.productos[i].cant - 1;
+                      console.log(i+' '+libro.cant);
+                      ReactDOM.render(<CarritoScreen />, document.getElementById('list'))
+                      //pendiente actualiza campo cantidad con setState....
+                      if (this.state.productos[i].cant == 0) {
+                        //Hacer algo aqui....
+
+                      }
+                    }                                
+                  }
+                }}>
+                  <Text>-</Text>
+              </Button>
+              <Text  style={styles.Text1}>{libro.Cant}</Text>
+              <Button style={styles.Button1}
+                onPress={() => { //aumentar cantidad de libros en el carrito
+                  for (let i = 0; i < this.state.productos.length; i++) {
+                    if (this.state.productos[i].id == libro.id) {
+                      this.setState({productos })
+                      libro.Cant = this.state.productos[i].Cant + 1;
+                      console.log(i+' '+libro.Cant);  
+                      //document.getElementById(item.id).innerHTML = item.cant;                         
+                    }                                
+                  }
+                }}>
+                  <Text>+</Text>
+              </Button>
+            </View>
+            
+          </View>
+        </View>
+			</Body>
+		</ListItem>
+	);
+}
 
 class CarritoScreen extends Component{
   constructor(props){
@@ -106,63 +180,14 @@ class CarritoScreen extends Component{
             <SafeAreaView style={{ flex: 1 }}>
               <List id='list'           //Lista de los libros agregados al array products (donde deben vasearse los datos de la BD)
                 dataArray={this.state.productos}
+                keyExtractor={(item) => item._id}
                 renderRow={(item) => (
-                  <ListItem                  
-                    button
-                  >
-                    <Image source={require('../../assets/libro.png')} style={styles.Image}/>
-                    <View style={styles.Flex1}>
-                      <Text style={styles.Text2}>
-                        {item.Title}
-                      </Text>
-                      <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: 200}}>
-
-                        <Text style={styles.Text3}>$ 
-                          {item.Precio}
-                        </Text>
-                        <View style={{flexDirection: 'row', justifyContent: ''}}>
-                          <Button style={styles.Button1}
-                            onPress={() => { //reducir cantidad de libros en el carrito
-                              for (let i = 0; i < this.state.productos.length; i++) {
-                                if (this.state.productos[i].id == item.id) {
-                                  item.cant = this.state.productos[i].cant - 1;
-                                  console.log(i+' '+item.cant);
-                                  ReactDOM.render(<CarritoScreen />, document.getElementById('list'))
-                                  //pendiente actualiza campo cantidad con setState....
-                                  if (this.state.productos[i].cant == 0) {
-                                    //Hacer algo aqui....
-
-                                  }
-                                }                                
-                              }
-                            }}>
-                              <Text>-</Text>
-                          </Button>
-                          <Text  style={styles.Text1}>{item.Cant}</Text>
-                          <Button style={styles.Button1}
-                            onPress={() => { //aumentar cantidad de libros en el carrito
-                              for (let i = 0; i < this.state.productos.length; i++) {
-                                if (this.state.productos[i].id == item.id) {
-                                  this.setState({productos })
-                                  item.Cant = this.state.productos[i].Cant + 1;
-                                  console.log(i+' '+item.Cant);  
-                                  //document.getElementById(item.id).innerHTML = item.cant;                         
-                                }                                
-                              }
-                            }}>
-                              <Text>+</Text>
-                          </Button>
-                        </View>
-                        
-                      </View>
-                    </View>
-                    
-                    
-                  </ListItem>
+                  <LibroItem id={item.Libro}/>
+                  
                 )}    
               />
             </SafeAreaView>
-          </Card>
+          </Card>          
         </Content>
         <Footer>
           <FooterTab style={{ backgroundColor: "#FFF" }}>
@@ -188,7 +213,14 @@ class CarritoScreen extends Component{
 
           </FooterTab>
         </Footer>
+        <Button rounded success style={styles.ButtonF}>
+          <Text style={{
+            color: '#fff',}}>
+              Comprar
+          </Text>
+        </Button>
       </Container>
+      
     );
   }
 }
@@ -265,6 +297,15 @@ const styles = StyleSheet.create({
   Flex1: {
     display: 'flex',
     flexDirection: 'column'
+  }, 
+  ButtonF: {
+    position: 'absolute',
+    bottom: 65,
+    alignSelf: 'center',
+    padding: 50,
+    shadowColor: 'black',
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 0.5
   }
 });
 

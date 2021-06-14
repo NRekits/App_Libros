@@ -13,7 +13,8 @@ import {
 	Body,
 	Right,
 	Title, Card, CardItem,
-	Thumbnail
+	Thumbnail,
+  Toast
 } from "native-base";
 
 import IP_DB from "../../ip_address";
@@ -30,7 +31,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 //   }
 // ];
 
-const LibroItem = ({ id }) => {
+const LibroItem = ({ id, id_u, id_d, props }) => {
 	const [libro, setLibro] = useState({});
 	const [fetchData, setFetchData] = useState(true);
 	useEffect(() => {
@@ -46,9 +47,10 @@ const LibroItem = ({ id }) => {
 				await setFetchData(false);
 			}
 		}
+    
 		fetchLibro();
 		return (() => {
-		});
+		});    
 	}, [])
 	return (
 		<ListItem>
@@ -61,6 +63,16 @@ const LibroItem = ({ id }) => {
 				</Text>
 				<Text note>{libro.Autor}</Text>
 			</Body>
+      <Right>
+        <Button style={styles.Button} onPress={() => {
+          console.log('entro aqui');
+          fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`)
+          Toast.show({ text: "Producto eliminado de la WishList", buttonText: 'Okay', type: "warning" });
+          props.navigation.navigate('Home')
+          }}>
+          <Icon name="trash" size={30} />
+        </Button>
+      </Right>
 		</ListItem>
 	);
 }
@@ -121,6 +133,7 @@ class DeseosScreen extends Component {
 			})
 			.catch((error) => console.log(error));
 	}
+  
 
 	goDirecciones = () => {
 		this.props.navigation.navigate("Direcciones", { id: this.state.id_us });
@@ -135,6 +148,11 @@ class DeseosScreen extends Component {
 		this.props.navigation.navigate("Deseos", { id: this.state.id_us });
 	}
 
+  //Ir a lista de generos
+  goGeneros = () => {
+    this.props.navigation.navigate("Generos", {userId: this.state.id_us});
+  }
+  
 	render() {
 		return (
 			<Container>
@@ -146,13 +164,15 @@ class DeseosScreen extends Component {
 					<Body>
 						<Title style={styles.Header}> WIHSLIST </Title>
 					</Body>
-					<Right></Right>
+					<Right>
+            
+          </Right>
 				</Header>
 				<List           //Lista de los libros agregados al array state.products (donde deben vasearse los datos de la BD)
 					dataArray={this.state.deseos}
 					keyExtractor={(item) => item._id}
 					renderRow={(item) => (
-						<LibroItem id={item.Libro} />
+						<LibroItem id={item.Libro} id_u={this.state.id_us} id_d={item._id} props={this.props}/>
 					)}
 				/>
 				<Footer>
@@ -171,7 +191,7 @@ class DeseosScreen extends Component {
 						<Button active style={styles.Button} onPress={this.goHome}>
 							<Icon name="home" size={30} />
 						</Button>
-						<Button style={styles.Button} onPress={this.goPerfil}>
+						<Button style={styles.Button} onPress={this.goGeneros}>
 							<Icon name="list-ul" size={30} />
 						</Button>
 						<Button style={styles.Button} onPress={this.goWishL}>
