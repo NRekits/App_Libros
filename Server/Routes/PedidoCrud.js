@@ -6,7 +6,7 @@ const libro = require("../Models/Libro");
 const ejs = require("ejs");
 const path = require("path");
 
-router.get("/TicketPDF/:id_ped", async (req, res) => {
+router.get("/TicketPDF/:id_ped?.pdf", async (req, res) => {
 	const p = await pedido.findById({_id: req.params.id_ped});
 	const nombre = await usuario.findById({_id: p.Id_usuario});
 	let lista_lib = [];

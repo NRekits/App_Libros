@@ -81,7 +81,7 @@ export default class PedidoScreen extends React.Component {
   }
 
   obtenerPDF = async () => {
-	  WebBrowser.openBrowserAsync(`http://${IP_DB}:3000/Pedido/TicketPDF/${this.state.pedId}`)
+	  WebBrowser.openBrowserAsync(`http://${IP_DB}:3000/Pedido/TicketPDF/${this.state.pedId}.pdf`)
   }
 
   cancelarPedido= (est) => {
