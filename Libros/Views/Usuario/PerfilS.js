@@ -45,6 +45,7 @@ export default class PerfilScreen extends React.Component {
       direccion: [],
       cargar: false,
     };
+	this.goGeneros = this.goGeneros.bind(this);
   }
   //Montar
   componentDidMount() {
@@ -81,6 +82,9 @@ export default class PerfilScreen extends React.Component {
   }
   goHome = () =>{
     this.props.navigation.navigate("Home",{id: this.state.id});
+  }
+  goGeneros = () => {
+	  this.props.navigation.navigate("Generos", {id: this.state.id});
   }
 
   //WishList

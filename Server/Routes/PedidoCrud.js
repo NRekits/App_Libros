@@ -49,28 +49,27 @@ router.get("/GenerarPaginaTicket", async (req, res) => {
 router.put("/Insertar/:id_us", async (req, res) => {
 	try {
 	
-	const id_usuario = req.params.id_us;
-	//   const isEmailExist = await Usuario.findOne({ Email: req.body.email });
+	  const isEmailExist = await Usuario.findOne({ Email: req.body.email });
   
-	//   if (isEmailExist) {
-	// 	return res.status(400).json({ error: "Email ya registrado" });
-	//   }
+	  if (isEmailExist) {
+		return res.status(400).json({ error: "Email ya registrado" });
+	  }
   
-	//   const user = new usuario({
-	// 	Nombre: req.body.Nombre,
-	// 	Apellido: req.body.Apellido,
-	// 	Contrasena: req.body.contra,
-	// 	Email: req.body.email,
-	// 	Admi: req.body.admi,
-	//   });
+	  const user = new usuario({
+		Nombre: req.body.Nombre,
+		Apellido: req.body.Apellido,
+		Contrasena: req.body.contra,
+		Email: req.body.email,
+		Admi: req.body.admi,
+	  });
   
-	//   const savedUser = user.save();
-	//   console.log(savedUser);
-	//   res.json({
-	// 	error: null,
-	// 	response: "Añadido",
-	// 	data: savedUser,
-	//   });
+	  const savedUser = user.save();
+	  console.log(savedUser);
+	  res.json({
+		error: null,
+		response: "Añadido",
+		data: savedUser,
+	  });
 
 	} catch (error) {
 	  res.status(400).json({ error });
