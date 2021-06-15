@@ -14,6 +14,7 @@ router.get("/TicketPDF/:id_ped.pdf", async (req, res) => {
 		const lib = await libro.findById({_id: p.Lista_lib[i].Libro});
 		lista_lib.push({
 			Titulo: lib.Titulo,
+			Precio: lib.Precio,
 			Cantidad: p.Lista_lib[i].Cantidad,
 			Formato: p.Lista_lib[i].Formato,
 			Submonto: p.Lista_lib[i].Submonto 

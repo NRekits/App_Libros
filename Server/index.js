@@ -47,6 +47,7 @@ app.use('/Usuario',UserRoutes);
 app.use('/Libro', BookRoutes);
 app.use('/Editorial',EditRoutes);
 app.use('/Pedido', DeliRoutes);
+app.use('/logo', express.static('template'));
 
 app.listen(port, function() {
   console.log(`Servidor web escuchando en el puerto ${port}`);

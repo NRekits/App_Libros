@@ -18,7 +18,7 @@
 			<div class="col-md-8 offset-md-2 container">
 				<div class="row">
 					<div class="col-md-12 align-self-center">
-						<img src="libro.png" width="200" height="200" alt="Logo" class="float-start">
+						<img src="http://localhost:3000/logo/libro.png" width="200" height="200" alt="Logo" class="float-start">
 						<p class="text-center mt-5 display-1">Recibo</p>
 						<p class="text-center h5">
 							<span class="text-muted">Ticket de compra</span>
@@ -30,32 +30,32 @@
 						<table class="table">
 							<tbody>
 								<tr>
-									<th scope="row">Nombre</th>
-									<td class="text-center"><%= pedido.nombre %></td>
+									<th colspan="2" scope="row">Nombre</th>
+									<td colspan="3" class="text-center"><%= pedido.nombre %></td>
 								</tr>
 
 								<tr>
-									<th scope="row">Direccion</th>
-									<td class="text-center"><%= pedido.Destino %></td>
+									<th colspan="2" scope="row">Direccion</th>
+									<td colspan="3" class="text-center"><%= pedido.Destino %></td>
 								</tr>
 
 								<tr>
-									<th scope="row">Fecha Pedido</th>
-									<td class="text-center"><%= pedido.Fecha_pedido %></td>
+									<th colspan="2" scope="row">Fecha Pedido</th>
+									<td colspan="3" class="text-center"><%= pedido.Fecha_pedido %></td>
 								</tr>
 
 								<tr>
-									<th scope="row">Fecha Llegada</th>
-									<td class="text-center"><%= pedido.Fecha_llegada %></td>
+									<th colspan="2" scope="row">Fecha Llegada</th>
+									<td colspan="3" class="text-center"><%= pedido.Fecha_llegada %></td>
 								</tr>
 
 								<tr>
-									<th scope="row">Pago en</th>
-									<td class="text-center"><%= pedido.Sucursal %></td>
+									<th colspan="2" scope="row">Pago en</th>
+									<td colspan="3" class="text-center"><%= pedido.Sucursal %></td>
 								</tr>
 								<tr>
-									<th scope="row">Código de compra</th>
-									<td class="text-center"><%= pedido.Codigo %></td>
+									<th colspan="2" scope="row">Código de compra</th>
+									<td colspan="3" class="text-center"><%= pedido.Codigo %></td>
 								</tr>
 								<tr>
 									<th scope="row">Productos</th>
@@ -67,16 +67,18 @@
 								<% if(pedido.productos.length > 0) { %>
 									<% pedido.productos.forEach(producto => { %>
 										<tr>
-											<td><%= producto.Titulo %></td>
-											<td><%= producto.Formato %></td>
-											<td><%= producto.Cantidad %></td>
-											<td><%= producto.Submonto %></td>
+											
+											<td class="text-center"><%= producto.Titulo %></td>
+											<td class="text-center"><%= producto.Formato %></td>
+											<td class="text-center">$<%= producto.Precio %></td>
+											<td class="text-center"><%= producto.Cantidad %></td>
+											<td class="text-end">$<%= producto.Submonto %></td>
 										</tr>
 									<% }) %>
 								<% } %>
 								<tr>
-									<th scope="row">Importe total</th>
-									<td><%= pedido.Monto %></td>
+									<th colspan="2" scope="row">Importe total</th>
+									<td colspan="3" class="text-end">$<%= pedido.Monto %></td>
 								</tr>
 							</tbody>
 						</table>
