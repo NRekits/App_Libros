@@ -113,7 +113,7 @@ export default class HomeScreen extends React.Component {
               />
             </CardItem>
             <CardItem style={{ borderRadius:8}} >
-                  <Icon name="heart" size={20} style={{ color: '#ED4A6A' }} />   
+                  <Icon name="heart" size={30} style={{ color: '#ED4A6A' }} />   
                   <Text style={styles.Text}>{' ' , item.Titulo}</Text>
                 </CardItem>
           </Card>
@@ -209,9 +209,20 @@ export default class HomeScreen extends React.Component {
               sliderWidth={windowWidth}
               itemWidth={300}
             />
+              <H3 style={styles.Text2}>Más vendidos</H3>
+                  <Carousel
+              ref={(c) => {
+                this._carousel = c;
+              }}
+              layout="tinder"
+              data={this.state.top}
+              renderItem={this.renderItem}
+              sliderWidth={windowWidth}
+              itemWidth={300}
+            />
            
           </Content>
-          <ListaTop top={this.state.top}/>
+     
          
           <Footer>
             <FooterTab style={{ backgroundColor: "#FFF" }}>
