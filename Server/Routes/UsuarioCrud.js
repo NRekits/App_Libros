@@ -64,11 +64,13 @@ router.post("/Insertar", async (req, res) => {
 		if (isEmailExist) {
 			return res.status(400).json({ error: "Email ya registrado" });
 		}
+		const salt = await bcrypt.genSalt(10);
+		const password = await bcrypt.hash(req.body.contra, salt);
 
 		const user = new usuario({
 			Nombre: req.body.Nombre,
 			Apellido: req.body.Apellido,
-			Contrasena: req.body.contra,
+			Contrasena: password,
 			Email: req.body.email,
 			Admi: req.body.admi,
 		});

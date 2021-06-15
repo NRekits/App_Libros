@@ -64,13 +64,13 @@ export default class PedidoScreen extends React.Component {
       cargar: false,
       pedId: "",
       carrito: [],
+      est:''
     };
   }
-  
   // Montar
-  async componentDidMount() {
+  componentDidMount() {
     
-    await this.setState({
+  this.setState({
       cargar: true,
       pedido: this.props.route.params.pedd,
       id: this.props.route.params.id,
@@ -78,88 +78,29 @@ export default class PedidoScreen extends React.Component {
       carrito: this.props.route.params.pedd.Lista_lib,
     });
   }
-  showAlertCancelar = () => {
-    Alert.alert(
-      "Precaucion",
-      "¿Estas seguro de cancelar este pedido?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Confirmar",
-          onPress: () => {
-            this.cancelarPedido();
-          },
-          style: "default",
-        },
-      ],
-      {
-        cancelable: true,
-      }
-    );
-  };
-  cancelarPedido() {
- console.log(this.props.route.params.id)
+
+  cancelarPedido= (Est)=> {
+ 
     fetch(
-      `http://${IP_DB}:3000/Pedido/Cancelar/${this.props.route.params.id}/${this.state.pedId}`,
+      `http://${IP_DB}:3000/Pedido/Estado/${this.props.route.params.id}/${this.state.pedId}/${this.state.est}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify({
+          Nombre: nombre,
+          Apellido: apellido,
+          email: email.toLowerCase().trimEnd(),
+          contra: contra,
+          admi: admi,
+        }),
       }
     )
       .then((res) => res.json())
       .then((data) => {
         Toast.show({
           text: "Pedido cancelado",
-          buttonText: "Okay",
-          type: "danger",
-        });
-        this.props.navigation.navigate("Home", { id: this.state.id });
-      })
-      .catch((error) => console.error(error));
-  };
-
-  showAlertDevolver = () => {
-    Alert.alert(
-      "Precaucion",
-      "¿Estas seguro de hacer la devolución este pedido?",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Confirmar",
-          onPress: () => {
-            this.devolverPedido();
-          },
-          style: "default",
-        },
-      ],
-      {
-        cancelable: true,
-      }
-    );
-  };
-
-  devolverPedido = () => {
-    console.log(this.state.id);
-    fetch(`http://${IP_DB}:3000/Pedido/Devolver/${this.state.id}/${this.state.pedId}`,
-      {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        Toast.show({
-          text: "Pedido en devolución",
           buttonText: "Okay",
           type: "danger",
         });
@@ -249,7 +190,9 @@ export default class PedidoScreen extends React.Component {
                 {this.state.pedido.Estado != "Cancelado" &&
                 this.state.pedido.Estado != "Devuelto" &&
                 this.state.pedido.Estado != "Enviado" ? (
-                  <Button danger block rounded onPress={this.showAlertCancelar}>
+                  <Button danger block rounded   onPress={()=>{
+                    this.setState({est:'Cancelado'})
+                    this.cancelarPedido}}>
                     <Text>Cancelar</Text>
                   </Button>
                 ) : (
@@ -268,7 +211,9 @@ export default class PedidoScreen extends React.Component {
                     warning
                     block
                     rounded
-                    onPress={this.devolverPedido}
+                    onPress={()=>{
+                      this.setState({est:'Devuelto'})
+                      this.cancelarPedido()}}
                   >
                     <Text>Devolver</Text>
                   </Button>

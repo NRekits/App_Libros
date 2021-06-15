@@ -129,10 +129,10 @@ router.get("/VerEstado/:id_us/:est", async (req, res) => {
 });
 
 //Cancelar pedido
-router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
+router.put("/Estado/:id_us/:id_ped/:est", (req, res) => {
   const idus = req.params.id_us;
   const idped = req.params.id_ped;
-  const est = "Cancelado";
+  const est = req.params.est;
   const num = 0;
   //pendiente hacerla null
   const fechal = req.body.fechal;
@@ -156,34 +156,7 @@ router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
     });
 });
 
-//Devolver pedido
-router.put("/Devolver/:id_us/:id_ped", (req, res) => {
-  console.log('hola')
-  const idus = req.params.id_us;
-  const idped = req.params.id_ped;
-  const est = "Devuelto";
-  const num = 0;
-  //pendiente hacerla null
-  const fechal = req.body.fechal;
 
-  pedido
-    .findOneAndUpdate(
-      { _id: idped, Id_usuario: idus },
-      {
-        $set: {
-          Estado: est,
-          No_rastreo: num,
-          //Fecha_llegada: fechal,
-        },
-      }
-    )
-    .then((doc) => {
-      res.json({ response: "pedido Modificado" });
-    })
-    .catch((err) => {
-      console.log("error al cambiar", err.message);
-    });
-});
 
 //Admi crud
 
