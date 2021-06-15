@@ -42,55 +42,49 @@ import { LinearGradient } from "expo-linear-gradient";
 // ];
 
 const LibroItem = ({ id, id_u, id_d, props }) => {
-  const [libro, setLibro] = useState({});
-  const [fetchData, setFetchData] = useState(true);
-  useEffect(() => {
-    async function fetchLibro() {
-      if (fetchData) {
-        await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
-          .then((res) => res.json())
-          .then((res) => res.data)
-          .then((res) => {
-            setLibro(Object.assign({}, res));
-          });
-        await setFetchData(false);
-      }
-    }
-
-    fetchLibro();
-    return () => {};
-  }, []);
-  return (
-    <ListItem thumbnail>
-      <Left>
-        <Thumbnail
-          square
-          source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }}
-        />
-      </Left>
-      <Body>
-        <Text>{libro.Titulo}</Text>
-        <Text note>{libro.Autor}</Text>
-      </Body>
+	const [libro, setLibro] = useState({});
+	const [fetchData, setFetchData] = useState(true);
+	useEffect(() => {
+		async function fetchLibro() {
+			if (fetchData) {
+				await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
+					.then((res) => res.json())
+					.then((res) => res.data)
+					.then((res) => {
+						setLibro(Object.assign({}, res));
+					});
+				await setFetchData(false);
+			}
+		}
+    
+		fetchLibro();
+		return (() => {
+		});    
+	}, [])
+	return (
+		<ListItem>
+			<Left>
+				<Thumbnail square source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }} />
+			</Left>
+			<Body>
+				<Text>
+					{libro.Titulo}
+				</Text>
+				<Text note>{libro.Autor}</Text>
+			</Body>
       <Right>
-        <Button
-          style={styles.Button}
-          onPress={() => {
-            console.log("entro aqui");
-            fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`);
-            Toast.show({
-              text: "Producto eliminado de la WishList",
-              buttonText: "Okay",
-              type: "warning",
-            });
-          }}
-        >
+        <Button style={styles.Button} onPress={() => {
+          console.log('entro aqui');
+          fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`)
+          Toast.show({ text: "Producto eliminado de la WishList", buttonText: 'Okay', type: "warning" });
+          props.navigation.navigate('Home')
+          }}>
           <Icon name="trash" size={30} />
         </Button>
       </Right>
-    </ListItem>
-  );
-};
+		</ListItem>
+	);
+}
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;

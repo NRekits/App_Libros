@@ -39,165 +39,158 @@ import IP_DB from "../../ip_address";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-const io = require("socket.io-client");
 
-const LibroItem = ({ id, cant, car, user }) => {
-  const [libro, setLibro] = useState({});
+const io = require('socket.io-client'); 
+
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+
+
+const LibroItem = ({ id, cant, car, user, format, props }) => {
+	const [libro, setLibro] = useState({});
   const [cantidad, setCantidad] = useState(cant);
-  const [fetchData, setFetchData] = useState(true);
-  useEffect(() => {
-    async function fetchLibro() {
-      if (fetchData) {
-        await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
-          .then((res) => res.json())
-          .then((res) => res.data)
-          .then((res) => {
-            setLibro(Object.assign({}, res));
-            console.log(res);
-          });
-        await setFetchData(false);
-      }
-    }
-    fetchLibro();
-    return () => {};
-  }, []);
-
-  return (
-    <ListItem thumbnail>
-      <Left>
-        <Thumbnail
-          square
-          source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }}
-        />
-      </Left>
-      <Body style={{ paddingLeft: 0, paddingStart: 0 }}>
-        <Text>{libro.Titulo}</Text>
-        <Text>${libro.Precio}</Text>
-      </Body>
-      <Right>
-        <Item>
-          <Button
-            transparent
-            onPress={async () => {
-              if (cantidad > 1) {
-                await setCantidad({ cantidad: cantidad - 1 });
-                return await fetch(
-                  `http://${IP_DB}:3000/Usuario/ModificarCarrito/${user}/${car}`,
-                  {
-                    method: "PUT",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      cant: cantidad,
-                      libro: id,
-                    }),
+	const [fetchData, setFetchData] = useState(true);
+	useEffect(() => {
+		async function fetchLibro() {
+			if (fetchData) {
+				await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
+					.then((res) => res.json())
+					.then((res) => res.data)
+					.then((res) => {
+						setLibro(Object.assign({}, res));
+						console.log(res);
+					});
+				await setFetchData(false);
+			}
+		}
+		fetchLibro();
+		return (() => {
+		});
+	}, [])
+	return (
+		<ListItem thumbnail>
+				<Thumbnail square source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }} />
+			<Body>
+        <View style={styles.Flex1}>
+          <Text style={styles.Text2}>
+            {libro.Titulo} {}
+          </Text>
+          <View style={{flex: 1, flexDirection: 'row', justifyContent:'space-between', width: 225}}>            
+            <Text style={styles.Text3}>$ 
+              {libro.Precio}
+            </Text>
+            <View style={{flexDirection: 'row', justifyContent: ''}}>
+              <Button style={styles.Button1}
+                onPress={async () => {
+                  if (cantidad > 1) {
+                    await setCantidad({ cantidad: cantidad-1});
+                    return await fetch(`http://${IP_DB}:3000/Usuario/ModificarCarrito/${user}/${car}`, {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        cant: cantidad,
+                        libro: id,
+                        format: format
+                      })
+                    })
+                      .then((res) => {
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
+                  }else{
+                    Toast.show({text: 'De preferencia elimine el producto', type:'warning'});
                   }
-                )
-                  .then((res) => {})
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              } else if(cantidad== 1){
-                return await fetch(
-                  `http://${IP_DB}:3000/Usuario/EliminarCarrito/${user}/${car}`
-                )
-                  .then((res) => {})
-                  .catch((erro) => {
-                    console.error(erro);
-                  });
-              }
-            }}
-          >
-            <Icon name="minus" size={20} color={"red"} />
-          </Button>
-          <Text style={styles.Text1}>{cantidad}</Text>
-          <Button
-            transparent
-            onPress={async () => {
-				console.log(cantidad)
-              if (cantidad < Number(libro.Cantidad_dis)) {
-                await setCantidad({ cantidad: cantidad + 1 });
-                return await fetch(
-                  `http://${IP_DB}:3000/Usuario/ModificarCarrito/${user}/${car}`,
-                  {
-                    method: "PUT",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      cant: cantidad,
-                      libro: id,
-                    }),
+                }}>
+                <Icon name="minus" size={20} color={'white'} />
+              </Button>
+              <Text  style={styles.Text1}>{cantidad}</Text>
+              <Button style={styles.Button1}
+                onPress={async () => {
+
+                  if (cantidad < libro.cant) {
+                    await setCantidad({ cantidad: cantidad+1});
+                    return await fetch(`http://${IP_DB}:3000/Usuario/ModificarCarrito/${user}/${car}`, {
+                      method: 'PUT',
+                      headers: {
+                        'Content-Type': 'application/json'
+                      },
+                      body: JSON.stringify({
+                        cant: cantidad,
+                        libro: id,
+                        format: format
+                      })
+                    })
+                      .then((res) => {
+                      })
+                      .catch((error) => {
+                        console.error(error);
+                      });
                   }
-                )
-                  .then((res) => {})
-                  .catch((error) => {
-                    console.error(error);
-                  });
-              } else {
-                console.log(Number(libro.Cantidad_dis));
-                Toast.show({
-                  text: "El ejemplar no se encuentra disponible",
-                  type: "warning",
-                });
-              }
-            }}
-          >
-            <Icon name="plus" size={20} color={"green"} />
-          </Button>
+                  else{
+    
+                    Toast.show({text: 'Yo no hay más disponibilidad del producto', type:'warning'});
+                  }
+                }}>
+                <Icon name="plus" size={20} color={'white'} />
+              </Button>
+              <Button transparent style={{ marginLeft: 10, marginRight: 10 }}
+						onPress={async () => {
+							fetch(`http://${IP_DB}:3000/Usuario/EliminarCarrito/${user}/${car}`)
+							.then((res) => {
+							})
+							.catch((erro) => {
+								console.error(erro);
+							});
+              props.navigation.navigate('Home')
+						}} 
+					>
+						<Icon size={30} color={'black'} name="trash" />
+					</Button>
+            </View>
+            
+          </View>
+        </View>
+			</Body>
+		</ListItem>
+	);
+}
 
-          <Button
-            transparent
-            style={{ marginLeft: 30 }}
-            onPress={async () => {
-              return await fetch(
-                `http://${IP_DB}:3000/Usuario/EliminarCarrito/${user}/${car}`
-              )
-                .then((res) => {})
-                .catch((erro) => {
-                  console.error(erro);
-                });
-            }}
-          >
-            <Icon size={20} color={"red"} name="remove" />
-          </Button>
-        </Item>
-      </Right>
-    </ListItem>
-  );
-};
-
-class CarritoScreen extends Component {
-  constructor(props) {
+class CarritoScreen extends Component{
+  constructor(props){
     super(props);
     this.state = {
       id_us: "",
-      productos: [],
-    };
+      productos: [], 
+      total: 0
+    }
     this._Mounted = false;
   }
 
+
+
   //Montar
-  async componentDidMount() {
+  componentDidMount() {
     if (!this._Mounted) {
-      await this.setState({ id_us: this.props.route.params.id });
-      await this.getCarritoContent();
-      const socket = io.connect(`http://${IP_DB}:3001`);
-      socket.emit("create", `shop:${this.state.id_us}`);
-      socket.on("joined", (res) => {
-        console.log("Se ha ingresado");
-      });
-      socket.on(`update:shop:${this.state.id_us}`, (data) => {
-        this.setState({ productos: [...data.productos] });
-      });
-      this._Mounted = true;
-    }
+			this.setState({ id_us: this.props.route.params.id });
+			this.getCarritoContent();
+      
+			const socket = io.connect(`http://${IP_DB}:3001`);
+			socket.emit('create', `shop:${this.state.id_us}`);
+			socket.on('joined', res => {
+				console.log("Se ha ingresado");
+			});
+			socket.on(`update:shop:${this.state.id_us}`, data => {
+				this.setState({ productos: [...data.productos] });
+			})
+			this._Mounted = true;
+		}
   }
 
-  getCarritoContent = async () => {
-    await fetch(
-      `http://${IP_DB}:3000/Usuario/Ver/${this.props.route.params.id}`,
+  getCarritoContent = async() => {
+    fetch(`http://${IP_DB}:3000/Usuario/Ver/${this.props.route.params.id}`,
       {
         method: "GET",
         headers: {
@@ -205,102 +198,110 @@ class CarritoScreen extends Component {
         },
       }
     )
-      .then((res) => res.json())
-      .then(async (data) => {
-        await this.setState({
-          productos: [...data.Carrito],
-        });
+    .then((res) => res.json())
+    .then((data) => {
+      this.setState({
+        productos: data.Carrito        
       })
-      .catch((error) => console.log(error));
-  };
+      this.getTotal() 
+    })   
+    .catch((error) => console.log(error));    
+  }
 
-  goDirecciones = () => {
-    this.props.navigation.navigate("Direcciones", { id: this.state.id_us });
-  };
-  goHome = () => {
-    this.props.navigation.navigate("Home", { id: this.state.id_us });
-  };
+  getTotal = async () =>{
+    let tot = 0;
+    for (let i = 0; i < this.state.productos.length; i++) {
+      tot = tot + + this.state.productos[i].Subtotal;
+      this.setState({
+        total: tot
+      }) 
+      console.log(tot);
+    }
+  }
+
+  goDirecciones = () =>{
+    this.props.navigation.navigate("Direcciones",{id: this.state.id_us});
+  }
+  goHome = () =>{
+    this.props.navigation.navigate("Home",{id: this.state.id_us});
+  }
   //WishList
   goWishL = () => {
-    this.props.navigation.navigate("Deseos", { id: this.state.id_us });
-  };
+    this.props.navigation.navigate("Deseos", {id: this.state.id_us});
+  }
 
-  render() {
-    return (
+  render_item = ({item}) => (
+    <Card>
+      <CardItem>
+        <Text>{item.title}</Text>
+      </CardItem>
+    </Card>);
+
+  render(){
+    return(
       <Container>
         <Header
-          transparent
-          androidStatusBarColor="#C0FFC0"
-          style={styles.Header}
-        >
-          <Left>
-            <Ionicons name="cart" size={30} />
-          </Left>
+        transparent
+        androidStatusBarColor="#C0FFC0"
+        style={styles.Header}>
+          <Left></Left>
           <Body>
             <Title style={styles.Header}> CARRITO </Title>
           </Body>
           <Right></Right>
         </Header>
-
-        <List
-          dataArray={this.state.productos}
-          keyExtractor={(item) => item._id}
-          renderRow={(item) => (
-            <LibroItem
-              id={item.Libro}
-              car={item._id}
-              user={this.state.id_us}
-              cant={item.Cantidad}
-            />
-          )}
-        />
+        <Content>
+          <Card>
+            <SafeAreaView style={{ flex: 1 }}>
+              <List id='list'           //Lista de los libros agregados al array products (donde deben vasearse los datos de la BD)
+                dataArray={this.state.productos}
+                keyExtractor={(item) => item._id}
+                renderRow={(item) => (
+                  <LibroItem id={item.Libro}
+                  car={item._id}
+                  user={this.state.id_us}
+                  cant={item.Cantidad}
+                  format={item.Formato}
+                  props={this.props}/>
+                  
+                )}    
+              />
+            </SafeAreaView>
+          </Card>          
+        </Content>
         <Footer>
           <FooterTab style={{ backgroundColor: "#FFF" }}>
-            <Button block rounded success style={styles.ButtonF}>
-              <Text
-                style={{
-                  color: "#fff",
-                }}
-              >
-                Comprar
-              </Text>
-            </Button>
-          </FooterTab>
-        </Footer>
-        <Footer>
-          <FooterTab style={{ backgroundColor: "#FFF" }}>
-            <Button
-              style={styles.Button}
-              onPress={() => {
-                this.props.navigation.navigate("Perfil", {
-                  id: this.state.id_us,
-                });
-              }}
-            >
+            <Button style={styles.Button} onPress={()=>{
+                  this.props.navigation.navigate("Perfil",{id:this.state.id_us});
+            }}>
               <Icon name="user-circle-o" size={30} />
             </Button>
-            <Button
-              style={styles.Button}
-              onPress={() => {
-                this.props.navigation.navigate("Carrito", {
-                  id: this.state.id_us,
-                });
-              }}
-            >
+            <Button  style={styles.Button} onPress={ ()=>{
+              this.props.navigation.navigate("Carrito",{id:this.state.id})}
+              }>
               <Ionicons name="cart" size={30} />
             </Button>
             <Button active style={styles.Button} onPress={this.goHome}>
               <Icon name="home" size={30} />
             </Button>
-            <Button style={styles.Button} onPress={this.goGeneros}>
+            <Button  style={styles.Button} onPress={this.goPerfil}>
               <Icon name="list-ul" size={30} />
             </Button>
             <Button style={styles.Button} onPress={this.goWishL}>
               <Icon name="heart" size={30} />
             </Button>
+
           </FooterTab>
-        </Footer>
+        </Footer>        
+        <Text style={styles.Text4}>Total: {this.state.total}</Text>
+        <Button rounded success style={styles.ButtonF}>
+          <Text style={{
+            color: '#fff',}}>
+              Comprar
+          </Text>
+        </Button>
       </Container>
+      
     );
   }
 }
@@ -310,7 +311,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: "column",
     alignItems: "flex-start",
-    justifyContent: "flex-start",
+    justifyContent: 'flex-start',
     fontFamily: "Dosis",
     color: "white",
   },
@@ -323,18 +324,18 @@ const styles = StyleSheet.create({
   },
 
   Text2: {
-    display: "flex",
-    flexDirection: "column",
-    alignSelf: "flex-start",
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
     fontSize: 18,
     color: "black",
     fontFamily: "Dosis",
   },
   Text3: {
-    display: "flex",
-    flexDirection: "column",
-    alignSelf: "flex-start",
-    justifyContent: "flex-end",
+    display: 'flex',
+    flexDirection: 'column',
+    alignSelf: 'flex-start',
+    justifyContent: 'flex-end',
     fontSize: 20,
     color: "black",
     fontFamily: "Dosis",
@@ -346,7 +347,7 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     fontWeight: "100",
   },
-
+  
   background: {
     position: "absolute",
     left: 0,
@@ -389,6 +390,39 @@ const styles = StyleSheet.create({
   ButtonHeader: {
     alignSelf: "center",
   },
+  Header: {
+    fontFamily: "Dosis",
+    color: "black",
+    fontSize: 40,
+    fontWeight: "600",
+    alignSelf: "center",
+  },
+  Image: {
+    alignSelf: 'flex-start',
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    width: 60, 
+    height: 60
+  },
+  Flex1: {
+    display: 'flex',
+    flexDirection: 'column'
+  }, 
+  ButtonF: {
+    position: 'absolute',
+    bottom: 65,
+    alignSelf: 'center',
+    padding: 50,
+    shadowColor: 'black',
+    shadowOffset: {width: 2, height: 2},
+    shadowOpacity: 0.5
+  }, 
+  Text4: {position: 'absolute',
+  bottom: 110, 
+  alignSelf: "center",
+  fontFamily: 'Dosis',
+  fontSize: 24
+  }
 });
 
 export default CarritoScreen;
