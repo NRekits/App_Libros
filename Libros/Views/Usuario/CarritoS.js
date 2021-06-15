@@ -19,7 +19,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const io = require("socket.io-client");
 
-const LibroItem = ({ id, cant, car, user, monto }) => {
+const LibroItem = ({ id, cant, car, user, monto, formato }) => {
 	const [libro, setLibro] = useState({});
 	const [cantidad, setCantidad] = useState(cant);
 	const [fetchData, setFetchData] = useState(true);
@@ -70,7 +70,8 @@ const LibroItem = ({ id, cant, car, user, monto }) => {
 										body: JSON.stringify({
 											cant: cant,
 											idLib: libro._id,
-											monto: (cant * libro.Precio)
+											monto: (cant * libro.Precio),
+											format: formato
 										}),
 									}
 								)
@@ -109,7 +110,8 @@ const LibroItem = ({ id, cant, car, user, monto }) => {
 											cant: cant,
 											idLib: id,
                       // enviar tambien el formato del libro format:libro.Formato,
-											monto: (cant * libro.Precio)
+											monto: (cant * libro.Precio),
+											format: formato
 										}),
 									}
 								)
