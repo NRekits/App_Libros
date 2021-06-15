@@ -31,7 +31,7 @@ export default function MPedidosScreen({ route, navigation }) {
 	const pedId = route.params.pedId;
 	var data = route.params.ped;
 
-	const [nome, setNome] = useState(data.No_rastreo);
+	const [nome, setNome] = useState(data.No_rastreo.toString());
 	const [est, setEst] = useState(data.Estado);
 	const [fechal, setFechal] = useState(new Date(data.Fecha_llegada));
 	const [show, setShow] = useState(false);
@@ -68,7 +68,7 @@ export default function MPedidosScreen({ route, navigation }) {
 				.then((res) => res.json())
 				.then((data) => {
 					Toast.show({
-						text: "Editorial modificada",
+						text: "Pedido modificado",
 						buttonText: "Okay",
 						type: "success",
 					});

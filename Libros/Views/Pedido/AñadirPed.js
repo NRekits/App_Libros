@@ -89,7 +89,23 @@ export default class APedidoScreen extends React.Component {
     });
     this.obtenerDatosPerfil();
   }
+	 Check = () => {
+		var msg = "";
+		var error = false;
 
+		if (this.state.dirSelect=== "" ) {
+			msg = "Direccion es un campo requerido";
+			error = true;
+		}
+
+		if (error) {
+			Toast.show({ text: msg, buttonText: "Okay", type: "warning" });
+		} else {
+
+      this.agregarPedido
+    }
+
+  }
   obtenerDatosPerfil = () => {
     fetch(`http://${IP_DB}:3000/Usuario/Ver/${this.props.route.params.id}`, {
       method: "GET",
@@ -255,7 +271,7 @@ export default class APedidoScreen extends React.Component {
             <Row>
               <Col></Col>
               <Col>
-                <Button success block rounded onPress={this.agregarPedido}>
+                <Button success block rounded onPress={this.Check}>
                   <Text>Aceptar</Text>
                 </Button>
               </Col>
