@@ -98,7 +98,7 @@ class App extends React.Component {
               <Stack.Screen name="Perfil" component={PerfilScreen} />
               <Stack.Screen name="Home" component={HomeScreen} />
               <Stack.Screen name="Carrito" component={CarritoScreen} />
-              <Stack.Screen name="Deseos" component={DeseosScreen}/>
+              <Stack.Screen name="Deseos" component={DeseosScreen} />
               <Stack.Screen name="ADireccion" component={ADireccionScreen} />
               <Stack.Screen name="Direcciones" component={DireccionesScreen} />
               <Stack.Screen name="DirDetalles" component={DirDetalles} />
@@ -107,7 +107,10 @@ class App extends React.Component {
               <Stack.Screen name="Buscar" component={BusquedaScreen} />
               <Stack.Screen name="LibroS" component={LibroDetailsScreen} />
               <Stack.Screen name="Filtrar" component={FiltroScreen} />
-
+              {/*Pedidos*/}
+              <Stack.Screen name="APedido" component={APedidoScreen} />
+              <Stack.Screen name="Pedidos" component={PedidosScreen} />
+              <Stack.Screen name="PedDetalles" component={PedidoScreen} />
               {/*Crud*/}
               <Stack.Screen name="HomeAdmi" component={HomeAdmiScreen} />
               {/*Libro*/}
@@ -129,10 +132,6 @@ class App extends React.Component {
               <Stack.Screen name="ModPedido" component={MPedidosScreen} />
               <Stack.Screen name="ListPedido" component={LPedidosScreen} />
               <Stack.Screen name="VerPedido" component={VPedidoScreen} />
-              {/*Pedidos*/}
-              <Stack.Screen name="APedido" component={APedidoScreen} />
-              <Stack.Screen name="Pedidos" component={PedidosScreen} />
-              <Stack.Screen name="PedDetalles" component={PedidoScreen} />
             </Stack.Navigator>
           </NavigationContainer>
         </Root>

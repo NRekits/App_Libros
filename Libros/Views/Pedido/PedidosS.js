@@ -37,17 +37,7 @@ export default function PedidosScreen ({route, navigation}) {
   const [idUs, setIdUs] = useState('');
   const [fetching, setFetching] = useState(true);
 
-  // datos de prueba
-  const prueba = [
-    {_id:1, No_rastreo:123, Fecha_pedido:"2021-06-01", Monto:100, Estado:"Procesado"},
-    {_id:2, No_rastreo:456, Fecha_pedido:"2021-06-03", Monto:200, Estado:"Procesado"},
-    {_id:3, No_rastreo:789, Fecha_pedido:"2021-06-05", Monto:300, Estado:"Enviado"},
-    {_id:4, No_rastreo:147, Fecha_pedido:"2021-06-07", Monto:400, Estado:"Enviado"},
-    {_id:5, No_rastreo:258, Fecha_pedido:"2021-06-09", Monto:400, Estado:"Cancelado"},
-    {_id:6, No_rastreo:369, Fecha_pedido:"2021-06-11", Monto:300, Estado:"Cancelado"},
-    {_id:7, No_rastreo:159, Fecha_pedido:"2021-06-13", Monto:200, Estado:"Devolucion"},
-    {_id:8, No_rastreo:357, Fecha_pedido:"2021-06-15", Monto:100, Estado:"Devolucion"},
-  ]
+ 
 
   // Funcion de renderizado de Pestañas. "Arregla" un bug de NativeBase
   // Creo no se pueden poner estilos sin provocar el error otra vez.
@@ -57,27 +47,83 @@ export default function PedidosScreen ({route, navigation}) {
   }
 
   useEffect(() => {
-	async function fetchPedidos(){
-		if(fetching){
-			await fetch();
-			await setFetching(false);
-		}
-		fetchPedidos();
-
-		return (() => {
-		});
-	}
+    obtenerDatosPedidos()
+    obtenerPedidosP()
+    obtenerPedidosE()
+    obtenerPedidosC()
+    obtenerPedidosD()
     setIdUs(route.params.id);
-    // Carga de datos.
-    setPedidos(prueba);
-    // Lo deje para hacer varias llamadas, algo como getPedidos/enviados, getPedidos/cancelados
-    // React tiene problemas manejando objetos Date, asi que seria conveniente traerlos ya como string
-    setProcesados([prueba[0],prueba[1]]);
-    setEnviados([prueba[2],prueba[3]]);
-    setCancelados([prueba[4],prueba[5]]);
-    setDevoluciones([prueba[6],prueba[7]]);
+  
+    
+    
+
   },[]);
 
+  const obtenerDatosPedidos = () => {
+    fetch(`http://${IP_DB}:3000/Pedido/Ver/${route.params.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+       setPedidos(data.ped)
+      })
+      .catch((error) => console.error(error));
+  };
+  const obtenerPedidosP = () => {
+    fetch(`http://${IP_DB}:3000/Pedido/VerEstado/${route.params.id}/Procesado`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+       setProcesados(data.ped)
+      })
+      .catch((error) => console.error(error));
+  };
+  const obtenerPedidosE = () => {
+    fetch(`http://${IP_DB}:3000/Pedido/VerEstado/${route.params.id}/Enviado`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setEnviados(data.ped)
+      })
+      .catch((error) => console.error(error));
+  };
+  const obtenerPedidosC = () => {
+    fetch(`http://${IP_DB}:3000/Pedido/VerEstado/${route.params.id}/Cancelado`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setCancelados(data.ped)
+      })
+      .catch((error) => console.error(error));
+  };
+  const obtenerPedidosD = () => {
+    fetch(`http://${IP_DB}:3000/Pedido/VerEstado/${route.params.id}/Devuelto`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        setDevoluciones(data.ped)
+      })
+      .catch((error) => console.error(error));
+  };
   return(
     <Container style={styles.Container}>
       <Header transparent androidStatusBarColor="#C0FFC0" style={styles.Header}>
@@ -86,7 +132,7 @@ export default function PedidosScreen ({route, navigation}) {
             transparent
             style={styles.Button}
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate("Perfil",{id: idUs});
             }}
           >
             <Icon name="chevron-left" size={30} />
@@ -112,7 +158,7 @@ export default function PedidosScreen ({route, navigation}) {
                   }}
                 >
                   <Text style={styles.Text2}>
-                    No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\t'}${item.Monto}
+                    No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\n'}${item.Monto}
                   </Text>
                 </ListItem>
               )}
@@ -132,7 +178,7 @@ export default function PedidosScreen ({route, navigation}) {
                   }}
                 >
                   <Text style={styles.Text2}>
-                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\t'}${item.Monto}
+                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\n'}${item.Monto}
                   </Text>
                 </ListItem>
               )}
@@ -152,7 +198,7 @@ export default function PedidosScreen ({route, navigation}) {
                   }}
                 >
                   <Text style={styles.Text2}>
-                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\t'}${item.Monto}
+                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\n'}${item.Monto}
                   </Text>
                 </ListItem>
               )}
@@ -172,7 +218,7 @@ export default function PedidosScreen ({route, navigation}) {
                   }}
                 >
                   <Text style={styles.Text2}>
-                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\t'}${item.Monto}
+                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\n'}${item.Monto}
                   </Text>
                 </ListItem>
               )}
@@ -192,7 +238,7 @@ export default function PedidosScreen ({route, navigation}) {
                   }}
                 >
                   <Text style={styles.Text2}>
-                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\t'}${item.Monto}
+                  No:{item.No_rastreo}{'\n'} Fecha:{item.Fecha_pedido}{'\t\t\n'}${item.Monto}
                   </Text>
                 </ListItem>
               )}

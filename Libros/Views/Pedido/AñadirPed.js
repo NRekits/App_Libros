@@ -1,7 +1,7 @@
 /*cuando se confirme la compra del carrito, 
 se debe venir a esta pantalla donde se listaran 
 los detalles del envio para confirmar o cancelar*/
-import React from "react";
+import React ,{useState,useEffect}from "react";
 import { Text, Dimensions, StyleSheet, Alert, SafeAreaView, TextInput } from "react-native";
 import {
   Container,
@@ -28,7 +28,33 @@ import IP_DB from "../../ip_address";
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 
+const LibroItem = ({ id, Cantidad, Formato, id_u, id_d, props }) => {
+	const [libro, setLibro] = useState({});
+	const [fetchData, setFetchData] = useState(true);
+	useEffect(() => {
+		async function fetchLibro() {
+				await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
+					.then((res) => res.json())
+					.then((res) => res.data)
+					.then((res) => {
+						if(fetchData)
+							setLibro(Object.assign({}, res));
+					});
+		}
 
+		fetchLibro();
+		return (() => { setFetchData(false) });
+	}, []);
+	return (
+		<ListItem >
+	
+        <Text style={styles.Text2}>
+        {libro.Titulo}{'\n'} Cantidad: {Cantidad}{'\t'} Formato: {Formato}
+                    </Text>
+		
+		</ListItem>
+	);
+};
 
 export default class APedidoScreen extends React.Component{
   constructor(props){
@@ -38,30 +64,70 @@ export default class APedidoScreen extends React.Component{
       cargar: false,
       carrito: [],
       direcciones: [],
-      dirSelect: 'id1',
+      direccion:{},
+      Fecha:new Date(),
+      dirSelect: '',
       pago: 'tienda',
+      monto:0,
       notas: ''
     }
   }
   // Montar
   componentDidMount(){
     this.setState({
-      // id:this.props.route.params.id,
-      cargar:true,
-      carrito:[
-        {libro:"libro 1", cantidad:5},
-        {libro:"libro 2", cantidad:2},
-        {libro:"libro 3", cantidad:3},
-        {libro:"libro 4", cantidad:6}
-      ],
-      direcciones:[
-        {_id:"id1",Ciudad:"Vancouver",Calle:"Calle1",Numero_int:123},
-        {_id:"id2",Ciudad:"Alaska",Calle:"Calle2",Numero_int:456},
-        {_id:"id3",Ciudad:"Bosnia",Calle:"Calle3",Numero_int:789}
-      ]
+      id:this.props.route.params.id,
+      carrito:this.props.route.params.car,
     });
+    this.obtenerDatosPerfil()
   }
-  
+
+  obtenerDatosPerfil = () => {
+    fetch(`http://${IP_DB}:3000/Usuario/Ver/${this.props.route.params.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        this.setState({
+          direcciones: data.Direccion,
+          cargar: true,
+        });
+      })
+      .catch((error) => console.error(error));
+  };
+
+ agregarPedido = async () => {
+  await this.setState({
+    direccion: this.state.direcciones.find((dir) => dir._id == this.state.dirSelect),
+  });
+
+    fetch(`http://${IP_DB}:3000/Pedido/Insertar/${this.props.route.params.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        fechap:this.state.Fecha.toISOString(),
+        fechal: this.state.Fecha.toISOString(),
+        rastreo: Math.floor(Math.random() * 100000000) + 10000 ,
+        estado:'Procesado',
+        suc:this.state.pago,
+        cod: Math.floor(Math.random() * 100000000) + 10000 ,
+        carrito: this.state.carrito,
+        destino: this.state.direccion,
+        monto: this.state.monto,
+        det: this.state.notas,
+     
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        this.props.navigation.navigate("Pedidos", { id: this.state.id });
+      })
+      .catch((error) => console.error(error));
+  };
 
 
   render(){
@@ -112,13 +178,14 @@ export default class APedidoScreen extends React.Component{
                   selectedValue={this.state.dirSelect}
                   onValueChange={(value)=> this.setState({dirSelect:value})}
                 >
+                  <Picker.Item label="Selecciona un destino" value="" />
                   {dirItems}
                 </Picker>
               </Col>
             </Row>
 
             <Row style={{height:60,margin:5, borderWidth:4}}>
-              <Text style={styles.Text2}>Fecha: 2021-06-13</Text>
+              <Text style={styles.Text2}>Fecha: {this.state.Fecha.toDateString()}</Text>
             </Row>
             
             <Row style={{height:200, borderWidth:4, margin:5}}>
@@ -127,11 +194,7 @@ export default class APedidoScreen extends React.Component{
                 dataArray={this.state.carrito}
                 keyExtractor={(item, index) => index.toString()}
                 renderRow={(item) => (
-                  <ListItem>
-                    <Text style={styles.Text2}>
-                      {item.libro}{'\t'} Cantidad:{item.cantidad}
-                    </Text>
-                  </ListItem>
+                  <LibroItem id={item.Libro} id_u={this.state.id} id_d={item._id} Cantidad={item.Cantidad} Formato={item.Formato} props={this.props} />
                 )}
               />
             </Row>
@@ -140,7 +203,7 @@ export default class APedidoScreen extends React.Component{
                 multiline={true}
                 style={{borderColor:'black', borderWidth:4, flex:1}}
                 numberOfLines={4}
-                onChangeText={(notas) => this.setState({notas})}
+                onChangeText={(notas) => this.setState({notas:notas})}
                 placeholder={'Notas sobre envio'}
               />
             </Row>
@@ -166,10 +229,12 @@ export default class APedidoScreen extends React.Component{
             </Row>
             <Row>
               <Col>
-                <Button light block rounded><Text>Regresar</Text></Button>
+              
               </Col>
               <Col>
-                <Button success block rounded><Text>Aceptar</Text></Button>
+                <Button success block rounded
+              onPress={this.agregarPedido}
+              ><Text>Aceptar</Text></Button>
               </Col>
             </Row>
           </Grid>

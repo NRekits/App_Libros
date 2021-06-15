@@ -46,7 +46,7 @@ const DeliRoutes = require('./Routes/PedidoCrud.js');
 app.use('/Usuario',UserRoutes);
 app.use('/Libro', BookRoutes);
 app.use('/Editorial',EditRoutes);
-//app.use('/Pedido', DeliRoutes);
+app.use('/Pedido', DeliRoutes);
 
 app.listen(port, function() {
   console.log(`Servidor web escuchando en el puerto ${port}`);

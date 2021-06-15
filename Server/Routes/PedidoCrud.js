@@ -53,11 +53,15 @@ router.put("/Insertar/:id_us", async (req, res) => {
       Id_usuario: idus,
       Fecha_pedido: req.body.fechap,
       Fecha_llegada: req.body.fechal,
+      No_rastreo: req.body.rastreo,
       Estado: req.body.estado,
-      Pago: req.body.pago,
+      Sucursal: req.body.suc,
+      Codigo: req.body.cod,
       Lista_lib: req.body.carrito,
+      Destino:req.body.destino,
       Monto: req.body.monto,
       Detalle_entrega: req.body.det,
+
     });
 
     const savedPed = ped.save();
@@ -91,7 +95,6 @@ router.get("/Ver/:id_us/id_ped", async (req, res) => {
   });
 });
 
-
 //Ver todos los pedidos de un usuario
 router.get("/Ver/:id_us", async (req, res) => {
   const idus = req.params.id_us;
@@ -99,6 +102,15 @@ router.get("/Ver/:id_us", async (req, res) => {
     res.json({ ped: doc, error: null });
   });
 });
+
+router.get("/VerEstado/:id_us/:est", async (req, res) => {
+  const idus = req.params.id_us;
+  const est = req.params.est;
+  pedido.find({ Id_usuario: idus, Estado:est }).then((doc) => {
+    res.json({ ped: doc, error: null });
+  });
+});
+
 
 //Cancelar pedido
 router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
@@ -116,7 +128,7 @@ router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
         $set: {
           Estado: est,
           No_rastreo: num,
-          Fecha_llegada: fechal,
+         // Fecha_llegada: fechal,
         },
       }
     )
@@ -132,18 +144,19 @@ router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
 router.put("/Devolver/:id_us/:id_ped", (req, res) => {
   const idus = req.params.id_us;
   const idped = req.params.id_ped;
-  const est = "Devolucion";
+  const est = "Devuelto";
   const num = 0;
   //pendiente hacerla null
   const fechal = req.body.fechal;
 
-  pedido.findOneAndUpdate(
+  pedido
+    .findOneAndUpdate(
       { _id: idped, Id_usuario: idus },
       {
         $set: {
           Estado: est,
           No_rastreo: num,
-          Fecha_llegada: fechal,
+          //Fecha_llegada: fechal,
         },
       }
     )
@@ -159,10 +172,9 @@ router.put("/Devolver/:id_us/:id_ped", (req, res) => {
 
 //Ver un pedido
 router.get("/VerPedido/:idped", async (req, res) => {
-  
   const idped = req.params.id_ped;
 
-  pedido.findById({_id: idped}).then((doc) => {
+  pedido.findById({ _id: idped }).then((doc) => {
     res.json({ ped: doc, error: null });
   });
 });
@@ -176,7 +188,6 @@ router.get("/VerPedidoTodos", async (req, res) => {
 
 //Modificar pedido
 router.put("/Modificar/:id_ped", (req, res) => {
-
   const idped = req.params.id_ped;
   const est = req.body.estado;
   const num = req.body.rastreo;
@@ -184,7 +195,7 @@ router.put("/Modificar/:id_ped", (req, res) => {
 
   pedido
     .findByIdAndUpdate(
-      { _id: idped},
+      { _id: idped },
       {
         $set: {
           Estado: est,
@@ -204,7 +215,8 @@ router.put("/Modificar/:id_ped", (req, res) => {
 //Eliminar pedido
 router.get("/Eliminar/:id_ped", (req, res) => {
   const idped = req.params.id_ped;
-  pedido.findByIdAndDelete({ _id: idped })
+  pedido
+    .findByIdAndDelete({ _id: idped })
     .then((doc) => {
       res.json({ response: "Eliminado" });
     })
