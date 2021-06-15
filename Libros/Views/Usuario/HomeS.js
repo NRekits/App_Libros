@@ -69,7 +69,7 @@ export default class HomeScreen extends React.Component {
           }}
         >
           <Card style={{ elevation: 3, borderRadius:8}} key={index}>
-            <CardItem cardBody>
+            <CardItem style={{ borderRadius:8}} cardBody>
               <Image
                 style={{ height: 300, width: 100, flex: 1, borderRadius:8}}
                 source={{
@@ -77,7 +77,7 @@ export default class HomeScreen extends React.Component {
                 }}
               />
             </CardItem>
-            <CardItem >
+            <CardItem style={{ borderRadius:8}} >
                   <Icon name="book" style={{ color: '#ED4A6A' }} size={30}/>
                   
                   <Text style={styles.Text}>{' ' , 'Ver más'}</Text>
@@ -90,7 +90,7 @@ export default class HomeScreen extends React.Component {
 
   renderItem = ({ item, index }) => {
     return (
-      <View style={styles.slide}>
+      <View>
         <TouchableOpacity
           onPress={() => {
             this.props.navigation.navigate("LibroS", {
@@ -99,17 +99,17 @@ export default class HomeScreen extends React.Component {
             });
           }}
         >
-          <Card style={{ elevation: 3 }} key={index}>
-            <CardItem cardBody>
+          <Card style={{ elevation: 3, borderRadius:8 }} key={index}>
+            <CardItem style={{ borderRadius:8}} cardBody>
               <Image
-                style={{ height: 300, width: 100, flex: 1 }}
+                style={{ height: 300, width: 100, flex: 1, borderRadius:8}}
                 source={{
                   uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
                 }}
               />
             </CardItem>
-            <CardItem >
-                  <Icon name="heart" style={{ color: '#ED4A6A' }} />   
+            <CardItem style={{ borderRadius:8}} >
+                  <Icon name="heart" size={20} style={{ color: '#ED4A6A' }} />   
                   <Text style={styles.Text}>{' ' , item.Titulo}</Text>
                 </CardItem>
           </Card>
@@ -305,7 +305,7 @@ const styles = StyleSheet.create({
   },
   Text: {
     marginTop: 10,
-    fontSize: 15,
+    fontSize: 20,
     marginLeft: 5,
     fontFamily: "Dosis",
   },
@@ -339,9 +339,6 @@ const styles = StyleSheet.create({
 		padding:10,
     fontWeight: "600",
     alignSelf: "center",
-  },
-  slide: {
-    borderRadius:8,
   },
 	ButtonHeader: {
 		alignSelf: "center",
