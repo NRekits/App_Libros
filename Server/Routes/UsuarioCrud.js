@@ -279,30 +279,94 @@ router.put("/InsertarCarrito/:id", (req, res) => {
 	const libro = req.body.idLib;
 	const cantidad = req.body.cant;
 	const formato = req.body.format;
+	const precio = req.body.precio;
+	//db.Usuario.find({"Carrito._id": ObjectId("60c79819fdc058193679617c")}).pretty()
 
-	Usuario.findByIdAndUpdate(
-		{ _id: id },
-		{
-			$push: {
-				Carrito: {
-					Cantidad: cantidad,
-					Libro: libro,
-					Formato: formato
-				},
-			},
+	var carVacio = true;
+
+	const agregar = () => {
+		if(id_lcar != libro || carVacio){
+			console.log('lentoo!');
+			Usuario.findByIdAndUpdate(
+				{ _id: id },
+				{
+					$push: {
+						Carrito: {
+							Cantidad: cantidad,
+							Libro: libro,
+							Formato: formato,
+							Subtotal: cantidad * precio
+						},
+					},
+				}
+			)
+				.then((doc) => {
+					res.json({ response: "Producto agregado al carrito" });
+				})
+				.catch((err) => {
+					console.log("error al cambiar", err.message);
+				});
 		}
-	)
-		.then( async (doc) => {
+		else if (libro == id_lcar){
+			console.log('Son iguales');
+			Usuario.findByIdAndUpdate(
+				{_id: id, 'Carrito.Libro': libro},
+				{
+					$set: {
+						Carrito: {
+							Cantidad: cant + cantidad,
+							Libro: libro, 
+							Formato: formato,
+							Subtotal: (cant + cantidad) * precio 
+						},
+					},
+				}
+			)
+				.then((doc) => {
+					res.json({ response: "Producto agregado al carrito" });
+				})
+				.catch((err) => {
+					console.log("error al cambiar", err.message);
+				});
+		}
+	}
 
-			const user = await Usuario.findById({_id: id});
-			req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
-
-			res.json({ response: "Producto agregado al carrito" });
+	const ncarVacio = () => {
+		Usuario.findById({_id: id,'Carrito.Libro': libro}, {'Carrito.Libro': 1, 'Carrito.Cantidad': 1})
+		.then((doc) => {
+			if(doc != null){
+				id_lcar = doc.Carrito[0].Libro
+				cant = doc.Carrito[0].Cantidad
+				console.log(id_lcar + ' ' +cant);
+				agregar();
+			}
 		})
 		.catch((err) => {
-			console.log("error al cambiar", err.message);
+			console.log("error ", err.message);
 		});
+	}
+	var id_lcar = '';
+	var cant = 0;
+	console.log(libro);
+	Usuario.findById({_id: id}, {Carrito: 1})
+		.then((dat) => {
+			console.log(dat.Carrito[0]);
+			if(dat.Carrito[0] == undefined) {
+				carVacio = true;
+				console.log('nulo');
+				agregar();
+			} 
+			else {
+				carVacio = false;
+				ncarVacio();
+			}})
+		.catch((error) => console.log("error ", error.message));
+	
+
+	
 });
+
+
 
 //Modificar cantidad de libros del mismo titulo en carrito
 router.put("/ModificarCarrito/:id_us/:id_car", (req, res) => {
@@ -310,6 +374,7 @@ router.put("/ModificarCarrito/:id_us/:id_car", (req, res) => {
 	const id_car = mongoose.Types.ObjectId(req.params.id_car);
 	const cantidad = req.body.cant;
 	const libro = req.body.idLib;
+	const format = req.body.format;
 
 	Usuario.updateOne(
 		{ _id: id, "Carrito._id": id_car },
@@ -317,19 +382,20 @@ router.put("/ModificarCarrito/:id_us/:id_car", (req, res) => {
 			$set: {
 				"Carrito.$": {
 					Cantidad: cantidad,
-					Libro: libro
+					Libro: libro, 
+					Formato: format,
 				},
 			},
 		}
 	)
-		.then(async(doc) => {
-			const user = await Usuario.findById({_id: id});
-			req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
-			res.json({ response: "Carrito modificada" });
-		})
-		.catch((err) => {
-			console.log("error al cambiar", err);
-		});
+	.then(async(doc) => {
+		const user = await Usuario.findById({_id: id});
+		req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
+			res.json({ response: "Carrito modificado" });
+	})
+	.catch((err) => {
+		console.log("error al cambiar", err);
+	});
 });
 
 //Eliminar producto del carrito
@@ -338,8 +404,8 @@ router.get("/EliminarCarrito/:id_us/:id_car", (req, res) => {
 	const id_car = req.params.id_car;
 	Usuario.updateOne({ _id: id }, { $pull: { Carrito: { _id: id_car } } })
 		.then(async (doc) => {
-			const user = await Usuario.findById({_id: id});
-			req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
+		const user = await Usuario.findById({_id: id});
+		req.io.to(`shop:${id}`).emit(`update:shop:${id}`, {productos: user.Carrito});
 			res.json({ response: "Producto eliminado del carrito" });
 		})
 		.catch((err) => {
@@ -348,15 +414,9 @@ router.get("/EliminarCarrito/:id_us/:id_car", (req, res) => {
 });
 
 //Añadir producto a wish list
-router.put("/InsertarDeseo/:id", async (req, res) => {
+router.put("/InsertarDeseo/:id", (req, res) => {
   const id = req.params.id;
   const libro = req.body.idLib;
-
-  const isLibroExist = await Usuario.findOne({ _id: id, "Deseos.Libro": libro });
-
-  if (isLibroExist) {
-	  return res.status(400).json({ error: "Libro ya esta en la lista" });
-  }
 
   Usuario.findByIdAndUpdate(
     { _id: id },
@@ -369,12 +429,9 @@ router.put("/InsertarDeseo/:id", async (req, res) => {
     }
   )
     .then(async (doc) => {
-
 	  const user = await Usuario.findById({_id: id});
 	  req.io.to(`wish:${id}`).emit(`update:wish:${id}`, {deseos: [...user.Deseos]});
-	  
       res.json({ response: "Producto agregado a la wish list" });
-
     })
     .catch((err) => {
       console.log("error al cambiar", err.message);
