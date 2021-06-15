@@ -35,6 +35,7 @@ export default function PedidosScreen ({route, navigation}) {
   const [cancelados, setCancelados] = useState([]);
   const [devoluciones, setDevoluciones] = useState([]);
   const [idUs, setIdUs] = useState('');
+  const [fetching, setFetching] = useState(true);
 
   // datos de prueba
   const prueba = [
@@ -56,6 +57,16 @@ export default function PedidosScreen ({route, navigation}) {
   }
 
   useEffect(() => {
+	async function fetchPediodos(){
+		if(fetching){
+			await fetch();
+			await setFetching(false);
+		}
+		fetchPedidos();
+
+		return (() => {
+		});
+	}
     setIdUs(route.params.id);
     // Carga de datos.
     setPedidos(prueba);
