@@ -45,38 +45,6 @@ const windowHeight = Dimensions.get("window").height;
 const SLIDER_WIDTH = Dimensions.get("window").width + 80;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
-const ListaTop = (props)=>{
-  const renderItem = ({ item }) => {
-    let { Titulo, Autor } = item;
-    return (
-      <Card>
-        <CardItem>
-          <Left>
-            <Thumbnail
-              source={{
-                uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
-              }}
-            />
-            <Body>
-              <Text>{Titulo}</Text>
-              <Text note>{Autor}</Text>
-            </Body>
-          </Left>
-        </CardItem>
-      </Card>
-    );
-  };
-  return(
-    <SafeAreaView style={styles.View}>
-    <H3 style={styles.Text2}>Más vendidos</H3>
-    <FlatList
-      data={props.top}
-      renderItem={renderItem}
-      keyExtractor={(item) => item._id}
-    />
-  </SafeAreaView>
-  );
-}
 
 export default class HomeScreen extends React.Component {
   //Constructor
