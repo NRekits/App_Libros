@@ -372,7 +372,7 @@ router.put("/InsertarDeseo/:id", async (req, res) => {
 	  const user = await Usuario.findById({_id: id});
 	  req.io.to(`wish:${id}`).emit(`update:wish:${id}`, {deseos: [...user.Deseos]});
 	  
-      res.json({ response: "Producto agregado a la wish list" });
+      res.json({ error:null, response: "Producto agregado a la wish list" });
 
     })
     .catch((err) => {

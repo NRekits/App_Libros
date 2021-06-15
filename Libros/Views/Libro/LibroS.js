@@ -15,11 +15,9 @@ import {
 	Toast,
 	Text
 } from "native-base";
-import * as SecureStore from "expo-secure-store";
-import { LinearGradient } from 'expo-linear-gradient';
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 import IP_DB from '../../ip_address';
-import { isLoading } from "expo-font";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -109,10 +107,12 @@ export default class LibroDetailsScreen extends React.Component {
 		})
 			.then((res) => res.json())
 			.then((res) => {
+				if(res.error==null){
 				Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
+				}
 			})
 			.finally(() => {
-				this.props.navigation.navigate('WishL', { id: this.state.userId });
+				this.props.navigation.navigate('Deseos', { id: this.state.userId });
 			})
 			.catch(error => {
 				Toast.show({ text: 'Hubo un error agregando el producto a su lista de desados', type: 'danger' })
@@ -157,7 +157,7 @@ export default class LibroDetailsScreen extends React.Component {
 					<Left>
 						<Button
 							transparent
-							style={styles.Button}
+							style={styles.ButtonHeader}
 							onPress={() => {
 								this.props.navigation.goBack();
 							}}
