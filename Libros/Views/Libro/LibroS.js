@@ -112,7 +112,7 @@ export default class LibroDetailsScreen extends React.Component {
 				Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
 			})
 			.finally(() => {
-				this.props.navigation.navigate('Home', { id: this.state.userId });
+				this.props.navigation.navigate('WishL', { id: this.state.userId });
 			})
 			.catch(error => {
 				Toast.show({ text: 'Hubo un error agregando el producto a su lista de desados', type: 'danger' })

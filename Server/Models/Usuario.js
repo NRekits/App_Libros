@@ -20,7 +20,6 @@ const Deseos = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Libro",
     default: undefined,
-    unique: true,
   },
 });
 //Usuario esquema
