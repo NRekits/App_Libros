@@ -134,15 +134,16 @@ export default function MPedidosScreen({ route, navigation }) {
 					<Button full bock rounded success style={styles.Button} onPress={() => {
 						setShow(true)
 					}}>
-						<Text style={styles.Text2}>Seleccionar fecha: { fechal.toLocaleDateString('es-MX')}</Text>
+						<Text style={styles.Text2}>Seleccionar fecha: {fechal.toLocaleDateString('es-MX')}</Text>
 					</Button>
 
 					{ show && (
 						<DateTimePicker
-							value={new Date(fechal)}
+							value={fechal}
 							mode={"date"}
 							onChange={(event, date) => {
-								setFechal(date);
+								const currentDate = date || fechal;
+								setFechal(currentDate);
 								setShow(false);
 							}}
 						/>

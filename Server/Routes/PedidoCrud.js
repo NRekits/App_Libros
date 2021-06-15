@@ -59,23 +59,27 @@ router.put("/Insertar/:id_us", async (req, res) => {
       Sucursal: req.body.suc,
       Codigo: req.body.cod,
       Lista_lib: req.body.carrito,
-      Destino: req.body.destino,
+      Destino:req.body.destino,
       Monto: req.body.monto,
       Detalle_entrega: req.body.det,
+
     });
+
+	
 
     const savedPed = ped.save();
     console.log(savedPed);
 
-    const carr = [...req.body.carrito];
-    carr.forEach((value) => {
-      libro
-        .updateOne(
-          { _id: value.Libro },
-          { $inc: { Vendidos: value.Cantidad, Cantidad_dis: -value.Cantidad } }
-        )
-        .then((doc) => {});
-    });
+	const carr = [...req.body.carrito];
+	carr.forEach((value) => {
+		libro.updateOne({_id: value.Libro},
+			{$inc:
+				{Vendidos: value.Cantidad,
+				Cantidad_dis: -(value.Cantidad)}})
+		.then((doc) => {
+
+		})
+	})
 
     // para borrar el carrito
 
@@ -86,7 +90,7 @@ router.put("/Insertar/:id_us", async (req, res) => {
 		const libros = await libro.find({}).sort({Vendidos: -1})
 		.then(doc => {
 			doc.splice(10);
-			req.io.to('admin').emit(`admint:update:sales`, {vendidos: [...doc]})
+			req.io.to('admin').emit(`admin:update:most`, {vendidos: [...doc]})
 		})
 		req.io.to(`shop:${idus}`).emit(`update:shop:${idus}`, {productos: [...user.Carrito]})
 	});
@@ -124,16 +128,16 @@ router.get("/Ver/:id_us", async (req, res) => {
 router.get("/VerEstado/:id_us/:est", async (req, res) => {
   const idus = req.params.id_us;
   const est = req.params.est;
-  pedido.find({ Id_usuario: idus, Estado: est }).then((doc) => {
+  pedido.find({ Id_usuario: idus, Estado:est }).then((doc) => {
     res.json({ ped: doc, error: null });
   });
 });
 
 //Cancelar pedido
-router.put("/Estado/:id_us/:id_ped", (req, res) => {
+router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
   const idus = req.params.id_us;
   const idped = req.params.id_ped;
-  const est = req.body.est;
+  const est = "Cancelado";
   const num = 0;
   //pendiente hacerla null
   const fechal = req.body.fechal;
@@ -145,7 +149,36 @@ router.put("/Estado/:id_us/:id_ped", (req, res) => {
         $set: {
           Estado: est,
           No_rastreo: num,
-          // Fecha_llegada: fechal,
+         // Fecha_llegada: fechal,
+        },
+      }
+    )
+    .then((doc) => {
+      res.json({ response: "pedido Modificado" });
+    })
+    .catch((err) => {
+      console.log("error al cambiar", err.message);
+    });
+});
+
+//Devolver pedido
+router.put("/Devolver/:id_us/:id_ped", (req, res) => {
+  console.log('hola')
+  const idus = req.params.id_us;
+  const idped = req.params.id_ped;
+  const est = "Devuelto";
+  const num = 0;
+  //pendiente hacerla null
+  const fechal = req.body.fechal;
+
+  pedido
+    .findOneAndUpdate(
+      { _id: idped, Id_usuario: idus },
+      {
+        $set: {
+          Estado: est,
+          No_rastreo: num,
+          //Fecha_llegada: fechal,
         },
       }
     )
@@ -191,7 +224,7 @@ router.put("/Modificar/:id_ped", (req, res) => {
           Estado: est,
           No_rastreo: num,
           Fecha_llegada: fechal,
-          Destino: des,
+          Destino: des
         },
       }
     )
