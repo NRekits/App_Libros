@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   View,
   FlatList,
+  TouchableOpacity,
 } from "react-native";
 import {
   Container,
@@ -30,10 +31,7 @@ import {
   Footer,
   FooterTab,
 } from "native-base";
-import Carousel, {
-  Pagination,
-  ParallaxImage,
-} from "react-native-snap-carousel";
+import Carousel from "react-native-snap-carousel";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from "../../ip_address";
@@ -43,39 +41,6 @@ const windowHeight = Dimensions.get("window").height;
 
 const SLIDER_WIDTH = Dimensions.get("window").width + 80;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
-
-ListaTop=(props)=>{
-  const renderItem = ({ item }) => {
-    let { Titulo, Autor } = item;
-    return (
-      <Card>
-        <CardItem>
-          <Left>
-            <Thumbnail
-              source={{
-                uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
-              }}
-            />
-            <Body>
-              <Text>{Titulo}</Text>
-              <Text note>{Autor}</Text>
-            </Body>
-          </Left>
-        </CardItem>
-      </Card>
-    );
-  };
-  return(
-    <SafeAreaView style={styles.View}>
-    <H3 style={styles.Text2}>Más vendidos</H3>
-    <FlatList
-      data={props.top}
-      renderItem={renderItem}
-      keyExtractor={(item) => item._id}
-    />
-  </SafeAreaView>
-  );
-}
 
 export default class HomeScreen extends React.Component {
   //Constructor
@@ -95,27 +60,70 @@ export default class HomeScreen extends React.Component {
   _renderItem = ({ item, index }) => {
     return (
       <View style={styles.slide}>
-        <Card style={{ elevation: 3 }} key={index}>
-          <CardItem cardBody>
-            <Image
-              style={{ height: 300, width: 100, flex: 1 }}
-              source={{
-                uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
-              }}
-            />
-          </CardItem>
-        </Card>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("LibroS", {
+              id: item._id,
+              userId: this.state.id,
+            });
+          }}
+        >
+          <Card style={{ elevation: 3, borderRadius:8}} key={index}>
+            <CardItem cardBody>
+              <Image
+                style={{ height: 300, width: 100, flex: 1, borderRadius:8}}
+                source={{
+                  uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
+                }}
+              />
+            </CardItem>
+            <CardItem >
+                  <Icon name="book" style={{ color: '#ED4A6A' }} size={30}/>
+                  
+                  <Text style={styles.Text}>{' ' , 'Ver más'}</Text>
+                </CardItem>
+          </Card>
+        </TouchableOpacity>
       </View>
     );
   };
 
+  renderItem = ({ item, index }) => {
+    return (
+      <View style={styles.slide}>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("LibroS", {
+              id: item._id,
+              userId: this.state.id,
+            });
+          }}
+        >
+          <Card style={{ elevation: 3 }} key={index}>
+            <CardItem cardBody>
+              <Image
+                style={{ height: 300, width: 100, flex: 1 }}
+                source={{
+                  uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
+                }}
+              />
+            </CardItem>
+            <CardItem >
+                  <Icon name="heart" style={{ color: '#ED4A6A' }} />   
+                  <Text style={styles.Text}>{' ' , item.Titulo}</Text>
+                </CardItem>
+          </Card>
+        </TouchableOpacity>
+      </View>
+    );
+  };
   //Montar
   goLista() {
-    this.props.navigation.navigate("Buscar", {userId: this.state.id});
+    this.props.navigation.navigate("Buscar", { userId: this.state.id });
   }
   //Ir a lista de generos
   goGeneros() {
-    this.props.navigation.navigate("Generos", {userId: this.state.id});
+    this.props.navigation.navigate("Generos", { userId: this.state.id });
   }
 
   async componentDidMount() {
@@ -152,8 +160,6 @@ export default class HomeScreen extends React.Component {
       .catch((error) => console.error(error));
   }
 
-  
-
   render() {
     if (this.state.cargar == false) {
       return (
@@ -172,7 +178,7 @@ export default class HomeScreen extends React.Component {
             <Left>
               <Button
                 transparent
-                style={styles.Button}
+                style={styles.ButtonHeader}
                 onPress={() => {
                   this.goLista();
                 }}
@@ -197,10 +203,19 @@ export default class HomeScreen extends React.Component {
               sliderWidth={windowWidth}
               itemWidth={300}
             />
-           
+            <H3 style={styles.Text2}>Más vendidos</H3>
+            <Carousel
+              ref={(c) => {
+                this._carousel = c;
+              }}
+              layout="tinder"
+              data={this.state.novedades}
+              renderItem={this.renderItem}
+              sliderWidth={windowWidth}
+              itemWidth={300}
+            />
           </Content>
-          <ListaTop top={this.state.top}/>
-         
+
           <Footer>
             <FooterTab style={{ backgroundColor: "#FFF" }}>
               <Button
@@ -265,7 +280,11 @@ const styles = StyleSheet.create({
   View: {
     flex: 1,
     flexDirection: "column",
-    height: 600,
+    height: 400,
+  },
+  View2: {
+    flex: 1,
+    flexDirection: "column",
   },
   Text2: {
     fontWeight: "300",
@@ -281,6 +300,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     fontSize: 15,
     color: "#C4EFFF",
+    marginLeft: 5,
+    fontFamily: "Dosis",
+  },
+  Text: {
+    marginTop: 10,
+    fontSize: 15,
     marginLeft: 5,
     fontFamily: "Dosis",
   },
@@ -310,10 +335,15 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     color: "black",
     fontSize: 40,
+    marginTop:10,
+		padding:10,
     fontWeight: "600",
     alignSelf: "center",
   },
-  scrollview: {
-    flex: 1,
+  slide: {
+    borderRadius:8,
   },
+	ButtonHeader: {
+		alignSelf: "center",
+	},
 });
