@@ -108,6 +108,7 @@ const LibroItem = ({ id, cant, car, user, monto }) => {
 										body: JSON.stringify({
 											cant: cant,
 											idLib: id,
+                      // enviar tambien el formato del libro format:libro.Formato,
 											monto: (cant * libro.Precio)
 										}),
 									}
@@ -264,6 +265,7 @@ class CarritoScreen extends Component {
 						style={styles.Button1}
 						onPress={() => {
 							if (this.state.productos.length > 0) {
+                console.log(this.state.productos)
 								this.props.navigation.navigate("APedido", {
 									id: this.state.id_us, car: this.state.productos,
 									monto: this.state.total

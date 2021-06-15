@@ -322,6 +322,7 @@ router.put("/ModificarCarrito/:id_us/:id_car", (req, res) => {
 	const id = req.params.id_us;
 	const id_car = mongoose.Types.ObjectId(req.params.id_car);
 	const cantidad = req.body.cant;
+	const formato = req.body.format;
 	const submonto = req.body.monto;
 	const libro = req.body.idLib;
 
@@ -332,6 +333,7 @@ router.put("/ModificarCarrito/:id_us/:id_car", (req, res) => {
 				"Carrito.$": {
 					Cantidad: cantidad,
 					Libro: libro,
+					Formato: formato,
 					Submonto: submonto
 				},
 			},
