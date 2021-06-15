@@ -84,7 +84,7 @@ export default class PerfilScreen extends React.Component {
     this.props.navigation.navigate("Home",{id: this.state.id});
   }
   goGeneros = () => {
-	  this.props.navigation.navigate("Generos", {id: this.state.id});
+	  this.props.navigation.navigate("Generos", {userId: this.state.id});
   }
 
   //WishList
