@@ -112,7 +112,7 @@ export default class LibroDetailsScreen extends React.Component {
 				Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
 			})
 			.finally(() => {
-				this.props.navigation.navigate('Deseos', { id: this.state.userId });
+				this.props.navigation.navigate('Home', { id: this.state.userId });
 			})
 			.catch(error => {
 				Toast.show({ text: 'Hubo un error agregando el producto a su lista de desados', type: 'danger' })
@@ -157,37 +157,27 @@ export default class LibroDetailsScreen extends React.Component {
 					<Left>
 						<Button
 							transparent
-							style={styles.ButtonHeader}
+							style={styles.Button}
 							onPress={() => {
 								this.props.navigation.goBack();
 							}}
 						>
-							<Icon size={20} name="chevron-left" />
+							<Icon size={30} name="chevron-left" />
 						</Button>
 					</Left>
 					<Body>
 						<Title style={styles.Header}>{libro.titulo}</Title>
 					</Body>
-					<Right>
-					<Button rounded block style={styles.Button}
-						onPress={() => {
-							this.agregarDeseados();
-						}}
-					>
-				
-						<Icon name="heart" size={30} style={{ color: '#ED4A6A' }}/>
-					</Button>
-					</Right>
+					<Right />
 				</Header>
 				<Content style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 30 }}>
 					<Image style={{ alignSelf: 'center', width: 200, height: 300 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
-					<Button rounded block style={styles.Button}
+					<Button transparent block style={styles.Button}
 						onPress={() => {
 							this.agregarDeseados();
 						}}
 					>
-						<Text>Agregar a deseos</Text>
-						<Icon name="heart" size={30} style={{ color: '#ED4A6A' }}/>
+						<Icon name="heart" size={30} />
 					</Button>
 
 					<Item style={styles.Item} floatingLabel disabled>
@@ -366,12 +356,6 @@ const styles = StyleSheet.create({
 		color: "#0D7C0D",
 		fontFamily: "Dosis",
 		fontSize: 20,
-		marginTop:10,
-		padding:10,
 		fontWeight: "600"
-	},
-	ButtonHeader: {
-		alignSelf: "center",
-		borderColor: "#9BFFA3",
 	},
 });
