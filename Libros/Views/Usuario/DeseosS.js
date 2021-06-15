@@ -29,19 +29,17 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
 	const [fetchData, setFetchData] = useState(true);
 	useEffect(() => {
 		async function fetchLibro() {
-			if (fetchData) {
 				await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
 					.then((res) => res.json())
 					.then((res) => res.data)
 					.then((res) => {
-						setLibro(Object.assign({}, res));
+						if(fetchData)
+							setLibro(Object.assign({}, res));
 					});
-				await setFetchData(false);
-			}
 		}
 
 		fetchLibro();
-		return () => { };
+		return (() => { setFetchData(false) });
 	}, []);
 	return (
 		<ListItem thumbnail>
@@ -85,21 +83,32 @@ class DeseosScreen extends Component {
 			productos: [],
 			deseos: []
 		}
+		this._IsMounted = true;
 	}
 
-	//Montar
-	async componentDidMount() {
-		await this.setState({ id_us: this.props.route.params.id });
+	async fetchData() {
+		if(this._IsMounted)
+			await this.setState({ id_us: this.props.route.params.id });
 		await this.getWListContent();
-
 		const socket = io.connect(`http://${IP_DB}:3001`)
 		socket.emit('create', `wish:${this.state.id_us}`);
 		socket.on('joined', (res) => {
 			//console.log("Se ha ingresado");
 		});
 		socket.on(`update:wish:${this.state.id_us}`, (data) => {
-			this.setState({ deseos: [...data.deseos] });
+			if(this._IsMounted)
+				this.setState({ deseos: [...data.deseos] });
 		})
+	}
+
+	//Montar
+	componentDidMount() {
+		this.fetchData();
+
+	}
+
+	componentWillUnmount() {
+		this._IsMounted = false;
 	}
 
 	async getWListContent() {
@@ -119,25 +128,6 @@ class DeseosScreen extends Component {
 			})
 			.catch((error) => console.log(error));
 	}
-
-	async getWLibro() {
-		fetch(`http://${IP_DB}:3000/Libro/Ver/${this.state.deseos.Libro}`,
-			{
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			})
-			.then((res) => res.json())
-			.then((dat) => {
-				this.setState({
-					productos: dat
-				})
-				console.log(dat + " line 85");
-			})
-			.catch((error) => console.log(error));
-	}
-
 
 	goDirecciones = () => {
 		this.props.navigation.navigate("Direcciones", { id: this.state.id_us });

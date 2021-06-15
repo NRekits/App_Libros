@@ -43,6 +43,7 @@ export default class LibroDetailsScreen extends React.Component {
 			},
 			selectedFormat: ''
 		}
+		this._IsMounted = false;
 	}
 
 	async fetchLibro() {
@@ -71,11 +72,18 @@ export default class LibroDetailsScreen extends React.Component {
 	}
 
 	async componentDidMount() {
-		let { libro } = Object.assign({}, this.state);
-		libro.id = this.props.route.params.id;
-		console.log(this.props.route.params.userId);
-		await this.setState({ libro: libro, userId: this.props.route.params.userId });
-		await this.fetchLibro();
+		if (!this._IsMounted) {
+			let { libro } = Object.assign({}, this.state);
+			libro.id = this.props.route.params.id;
+			console.log(this.props.route.params.userId);
+			await this.setState({ libro: libro, userId: this.props.route.params.userId });
+			await this.fetchLibro();
+			this._IsMounted = true;
+		}
+	}
+
+	componentWillUnmount(){
+
 	}
 
 	Check() {
@@ -106,8 +114,8 @@ export default class LibroDetailsScreen extends React.Component {
 		})
 			.then((res) => res.json())
 			.then((res) => {
-				if(res.error==null){
-				Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
+				if (res.error == null) {
+					Toast.show({ text: "El producto se ha agregado a su lista de deseados", type: 'success', buttonText: 'Okay' })
 				}
 			})
 			.finally(() => {
@@ -171,14 +179,14 @@ export default class LibroDetailsScreen extends React.Component {
 				</Header>
 				<Content style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 30 }}>
 					<Image style={{ alignSelf: 'center', width: 200, height: 300 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
-					<Button  rounded bordered style={styles.Button}
+					<Button rounded bordered style={styles.Button}
 						onPress={() => {
 							this.agregarDeseados();
 						}}
 					>
 						<Icon name="heart" style={{ color: '#ED4A6A' }} size={30} />
 						<Text>Agregar a favoritos</Text>
-						
+
 
 					</Button>
 
@@ -221,7 +229,7 @@ export default class LibroDetailsScreen extends React.Component {
 
 						)
 					}
-					{ libro.cantidad <= 0 &&
+					{libro.cantidad <= 0 &&
 						(
 							<Item style={styles.Item} floatingLabel disabled>
 								<Label style={styles.Label}>Disponibles</Label>
@@ -334,7 +342,7 @@ const styles = StyleSheet.create({
 	Button: {
 		alignSelf: "center",
 		marginTop: 40,
-		padding:10,
+		padding: 10,
 		borderColor: "#9BFFA3",
 	},
 	ButtonHeader: {
