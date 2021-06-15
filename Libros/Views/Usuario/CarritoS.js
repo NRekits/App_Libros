@@ -2,30 +2,43 @@
 /*dar la opcion de aumentar el numero por ejemplar pedido*/
 /*al presionar cualquiera de los productos en el carrito debe de llevar a los detalles del producto*/
 import React, { Component, useState, useEffect } from "react";
-import ReactDom from 'react-dom';
-import { Text, Dimensions, Alert, Image, StyleSheet, SafeAreaView } from "react-native";
+import ReactDom from "react-dom";
 import {
-	Container, Header, Content, Footer, FooterTab, Form, Item, Input,
-	Label,
-	Button,
-	H1,
-	View,
-	List,
-	ListItem,
-	Left,
-	Right,
-	Body,
-	Card,
-	CardItem,
-	Title,
-	Thumbnail,
-	Toast
+  Text,
+  Dimensions,
+  Alert,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+} from "react-native";
+import {
+  Container,
+  Header,
+  Content,
+  Footer,
+  FooterTab,
+  Form,
+  Item,
+  Input,
+  Label,
+  Button,
+  H1,
+  View,
+  List,
+  ListItem,
+  Left,
+  Right,
+  Body,
+  Card,
+  CardItem,
+  Title,
+  Thumbnail,
+  Toast,
 } from "native-base";
 import IP_DB from "../../ip_address";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome";
-import * as SecureStore from "expo-secure-store";
-import { LinearGradient } from 'expo-linear-gradient';
+
 
 const io = require('socket.io-client'); 
 
@@ -347,6 +360,35 @@ const styles = StyleSheet.create({
     fontFamily: "Dosis",
     backgroundColor: "white",
     fontWeight: "400",
+  },
+  Image: {
+    alignSelf: "flex-start",
+    justifyContent: "flex-start",
+    alignItems: "flex-start",
+    width: 60,
+    height: 60,
+  },
+  Flex1: {
+    display: "flex",
+    flexDirection: "column",
+  },
+  ButtonF: {
+    alignSelf: "center",
+    shadowColor: "black",
+    shadowOffset: { width: 2, height: 2 },
+    shadowOpacity: 0.5,
+  },
+  Header: {
+    fontFamily: "Dosis",
+    color: "black",
+    fontSize: 30,
+    marginTop: 10,
+    padding: 10,
+    fontWeight: "600",
+    alignSelf: "center",
+  },
+  ButtonHeader: {
+    alignSelf: "center",
   },
   Header: {
     fontFamily: "Dosis",

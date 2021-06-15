@@ -95,20 +95,63 @@ export default class HomeScreen extends React.Component {
   _renderItem = ({ item, index }) => {
     return (
       <View style={styles.slide}>
-        <Card style={{ elevation: 3 }} key={index}>
-          <CardItem cardBody>
-            <Image
-              style={{ height: 300, width: 100, flex: 1 }}
-              source={{
-                uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
-              }}
-            />
-          </CardItem>
-        </Card>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("LibroS", {
+              id: item._id,
+              userId: this.state.id,
+            });
+          }}
+        >
+          <Card style={{ elevation: 3, borderRadius:8}} key={index}>
+            <CardItem style={{ borderRadius:8}} cardBody>
+              <Image
+                style={{ height: 300, width: 100, flex: 1, borderRadius:8}}
+                source={{
+                  uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
+                }}
+              />
+            </CardItem>
+            <CardItem style={{ borderRadius:8}} >
+                  <Icon name="book" style={{ color: '#ED4A6A' }} size={30}/>
+                  
+                  <Text style={styles.Text}>{' ' , 'Ver más'}</Text>
+                </CardItem>
+          </Card>
+        </TouchableOpacity>
       </View>
     );
   };
 
+  renderItem = ({ item, index }) => {
+    return (
+      <View>
+        <TouchableOpacity
+          onPress={() => {
+            this.props.navigation.navigate("LibroS", {
+              id: item._id,
+              userId: this.state.id,
+            });
+          }}
+        >
+          <Card style={{ elevation: 3, borderRadius:8 }} key={index}>
+            <CardItem style={{ borderRadius:8}} cardBody>
+              <Image
+                style={{ height: 300, width: 100, flex: 1, borderRadius:8}}
+                source={{
+                  uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
+                }}
+              />
+            </CardItem>
+            <CardItem style={{ borderRadius:8}} >
+                  <Icon name="heart" size={20} style={{ color: '#ED4A6A' }} />   
+                  <Text style={styles.Text}>{' ' , item.Titulo}</Text>
+                </CardItem>
+          </Card>
+        </TouchableOpacity>
+      </View>
+    );
+  };
   //Montar
   goLista() {
     this.props.navigation.navigate("Buscar", {userId: this.state.id});
@@ -284,6 +327,12 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: "Dosis",
   },
+  Text: {
+    marginTop: 10,
+    fontSize: 20,
+    marginLeft: 5,
+    fontFamily: "Dosis",
+  },
   Button: {
     alignSelf: "center",
     backgroundColor: "#BB8FCE",
@@ -313,7 +362,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     alignSelf: "center",
   },
-  scrollview: {
-    flex: 1,
-  },
+	ButtonHeader: {
+		alignSelf: "center",
+	},
 });
