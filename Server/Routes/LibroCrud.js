@@ -99,7 +99,7 @@ router.get("/VerMasVendidos", async (req, res) => {
 	})
 });
 
-//Ver los 5 libros más novedosos
+//Ver los 6 libros más novedosos
 router.get("/Novedades", async (req, res) => {
 	libro.find({}).sort({Fecha_adquision: -1})
 	.then(doc => {

@@ -19,6 +19,7 @@ import { LineChart, BarChart } from "react-native-chart-kit";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import IP_DB from "../../ip_address";
+const io = require('socket.io-client');
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -35,6 +36,11 @@ const chartConfig = {
   backgroundGradientFrom: "#1E2923",
   backgroundGradientTo: "#08130D",
   color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  propsForVerticalLabels: {
+	fontSize: 10,
+	height: 300,
+	width: screenWidth
+  }
 };
 export default class HomeAdmiScreen extends React.Component {
   //Constructor
@@ -42,13 +48,62 @@ export default class HomeAdmiScreen extends React.Component {
     super(props);
     this.state = {
       id: "",
-   
-      
+      libros: {
+		  labels: ["January", "February", "March", "April", "May", "June"],
+		  datasets: [{data:[20, 45, 28, 80, 99, 43]}]
+	  },
+	  ventas: {
+		  labels: [],
+		  datasets: [{data:[]}]
+	  }
     };
+	this._IsMounted = true;
+  }
+  fetchLibrosVendidos = async () => {
+	await fetch(`http://${IP_DB}:3000/Libro/VerMasVendidos`)
+	.then(res => res.json())
+	.then(res => res.lib)
+	.then(data => {
+		data.splice(5);
+		let titulos = [];
+		let ventas = [];
+		data.forEach((value) => {
+			titulos.push(value.Titulo);
+			ventas.push(value.Vendidos);
+		});
+		if(this._IsMounted){
+			this.setState({libros: {
+				labels: [...titulos],
+				datasets: [{
+					data: [...ventas]
+				}]
+			}});
+		}
+	});
   }
   //Montar
   componentDidMount() {
     console.log(this.state.id);
+	const socket = io.connect(`http://${IP_DB}:3001`);
+	socket.emit('create', 'admin');
+	socket.on('admin:update:most', data => {
+		const vendidos = [...data.vendidos];
+		let titulos = [];
+		let ventas = [];
+		vendidos.forEach((value) => {
+			titulos.push(value.Titulo);
+			ventas.push(value.Vendidos);
+		});
+		if(this._IsMounted){
+			this.setState({libros: {
+				labels: [...titulos],
+				datasets: [{
+					data: [...ventas]
+				}]
+			}});
+		}
+	})
+	this.fetchLibrosVendidos();
   }
 
   render() {
@@ -80,7 +135,7 @@ export default class HomeAdmiScreen extends React.Component {
         <LineChart
             data={data}
             width={screenWidth}
-            height={220}
+            height={300}
             chartConfig={chartConfig}
             bezier
             style={{
@@ -89,7 +144,9 @@ export default class HomeAdmiScreen extends React.Component {
             }}
           />
             <LineChart
-            data={data}
+			withVerticalLabels={true}
+			verticalLabelRotation={90}
+            data={this.state.libros}
             width={screenWidth}
             height={220}
             chartConfig={chartConfig}
