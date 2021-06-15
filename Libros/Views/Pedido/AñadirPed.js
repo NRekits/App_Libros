@@ -1,8 +1,15 @@
 /*cuando se confirme la compra del carrito, 
 se debe venir a esta pantalla donde se listaran 
 los detalles del envio para confirmar o cancelar*/
-import React ,{useState,useEffect}from "react";
-import { Text, Dimensions, StyleSheet, Alert, SafeAreaView, TextInput } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  Text,
+  Dimensions,
+  StyleSheet,
+  Alert,
+  SafeAreaView,
+  TextInput,
+} from "react-native";
 import {
   Container,
   Header,
@@ -20,65 +27,67 @@ import {
   Spinner,
   List,
   ListItem,
-  Picker
+  Picker,
 } from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from "../../ip_address";
 
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
+const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const LibroItem = ({ id, Cantidad, Formato, id_u, id_d, props }) => {
-	const [libro, setLibro] = useState({});
-	const [fetchData, setFetchData] = useState(true);
-	useEffect(() => {
-		async function fetchLibro() {
-				await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
-					.then((res) => res.json())
-					.then((res) => res.data)
-					.then((res) => {
-						if(fetchData)
-							setLibro(Object.assign({}, res));
-					});
-		}
+  const [libro, setLibro] = useState({});
+  const [fetchData, setFetchData] = useState(true);
+  useEffect(() => {
+    async function fetchLibro() {
+      await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
+        .then((res) => res.json())
+        .then((res) => res.data)
+        .then((res) => {
+          if (fetchData) setLibro(Object.assign({}, res));
+        });
+    }
 
-		fetchLibro();
-		return (() => { setFetchData(false) });
-	}, []);
-	return (
-		<ListItem >
-	
-        <Text style={styles.Text2}>
-        {libro.Titulo}{'\n'} Cantidad: {Cantidad}{'\t'} Formato: {Formato}
-                    </Text>
-		
-		</ListItem>
-	);
+    fetchLibro();
+    return () => {
+      setFetchData(false);
+    };
+  }, []);
+  return (
+    <ListItem>
+      <Text style={styles.Text2}>
+        {libro.Titulo}
+        {"\n"} Cantidad: {Cantidad}
+        {"\t"} Formato: {Formato}
+      </Text>
+    </ListItem>
+  );
 };
 
-export default class APedidoScreen extends React.Component{
-  constructor(props){
+export default class APedidoScreen extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
-      id:"",
+      id: "",
       cargar: false,
       carrito: [],
       direcciones: [],
-      direccion:{},
-      Fecha:new Date(),
-      dirSelect: '',
-      pago: 'tienda',
-      monto:0,
-      notas: ''
-    }
+      direccion: {},
+      Fecha: new Date(),
+      dirSelect: "",
+      pago: "tienda",
+      monto: 0,
+      notas: "",
+    };
   }
   // Montar
-  componentDidMount(){
+  componentDidMount() {
     this.setState({
-      id:this.props.route.params.id,
-      carrito:this.props.route.params.car,
+      id: this.props.route.params.id,
+      carrito: this.props.route.params.car,
+      monto: this.props.route.params.monto,
     });
-    this.obtenerDatosPerfil()
+    this.obtenerDatosPerfil();
   }
 
   obtenerDatosPerfil = () => {
@@ -98,30 +107,34 @@ export default class APedidoScreen extends React.Component{
       .catch((error) => console.error(error));
   };
 
- agregarPedido = async () => {
-  await this.setState({
-    direccion: this.state.direcciones.find((dir) => dir._id == this.state.dirSelect),
-  });
+  agregarPedido = async () => {
+    await this.setState({
+      direccion: this.state.direcciones.find(
+        (dir) => dir._id == this.state.dirSelect
+      ),
+    });
 
-    fetch(`http://${IP_DB}:3000/Pedido/Insertar/${this.props.route.params.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        fechap:this.state.Fecha.toISOString(),
-        fechal: this.state.Fecha.toISOString(),
-        rastreo: Math.floor(Math.random() * 100000000) + 10000 ,
-        estado:'Procesado',
-        suc:this.state.pago,
-        cod: Math.floor(Math.random() * 100000000) + 10000 ,
-        carrito: this.state.carrito,
-        destino: this.state.direccion,
-        monto: this.state.monto,
-        det: this.state.notas,
-     
-      }),
-    })
+    fetch(
+      `http://${IP_DB}:3000/Pedido/Insertar/${this.props.route.params.id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fechap: this.state.Fecha.toISOString(),
+          fechal: this.state.Fecha.toISOString(),
+          rastreo: Math.floor(Math.random() * 100000000) + 10000,
+          estado: "Procesado",
+          suc: this.state.pago,
+          cod: Math.floor(Math.random() * 100000000) + 10000,
+          carrito: this.state.carrito,
+          destino: this.state.direccion,
+          monto: this.state.monto,
+          det: this.state.notas,
+        }),
+      }
+    )
       .then((res) => res.json())
       .then((data) => {
         this.props.navigation.navigate("Pedidos", { id: this.state.id });
@@ -129,22 +142,25 @@ export default class APedidoScreen extends React.Component{
       .catch((error) => console.error(error));
   };
 
-
-  render(){
-    let dirItems = this.state.direcciones.map((direcciones,index) =>{
-      return(
-        <Picker.Item key={index.toString()} label={`${direcciones.Ciudad}: ${direcciones.Calle} #${direcciones.Numero_int}`} value={direcciones._id}/>
+  render() {
+    let dirItems = this.state.direcciones.map((direcciones, index) => {
+      return (
+        <Picker.Item
+          key={index.toString()}
+          label={`${direcciones.Ciudad}: ${direcciones.Calle} #${direcciones.Numero_int}`}
+          value={direcciones._id}
+        />
       );
-    })
+    });
 
-    if(this.state.cargar == false){
-      return(
+    if (this.state.cargar == false) {
+      return (
         <Container>
           <Spinner color="green" />
         </Container>
       );
     } else {
-      return(
+      return (
         <Container style={styles.Container}>
           <Header transparent androidStatusBarColor="#C0FFC0">
             <Left>
@@ -166,17 +182,17 @@ export default class APedidoScreen extends React.Component{
 
           <Grid>
             {/* Para seleccionar direccion */}
-            <Row style={{height:50, borderWidth:4, margin:5}}>
-              <Col style={{width:80}}>
+            <Row style={{ height: 50, borderWidth: 4, margin: 5 }}>
+              <Col style={{ width: 80 }}>
                 <Text>Direccion de envio</Text>
               </Col>
               <Col>
                 <Picker
                   note
                   mode="dropdown"
-                  style={{height: 60}}
+                  style={{ height: 60 }}
                   selectedValue={this.state.dirSelect}
-                  onValueChange={(value)=> this.setState({dirSelect:value})}
+                  onValueChange={(value) => this.setState({ dirSelect: value })}
                 >
                   <Picker.Item label="Selecciona un destino" value="" />
                   {dirItems}
@@ -184,62 +200,69 @@ export default class APedidoScreen extends React.Component{
               </Col>
             </Row>
 
-            <Row style={{height:60,margin:5, borderWidth:4}}>
-              <Text style={styles.Text2}>Fecha: {this.state.Fecha.toDateString()}</Text>
+            <Row style={{ height: 60, margin: 5, borderWidth: 4 }}>
+              <Text style={styles.Text2}>
+                Fecha: {this.state.Fecha.toDateString()}
+              </Text>
             </Row>
-            
-            <Row style={{height:200, borderWidth:4, margin:5}}>
+
+            <Row style={{ height: 200, borderWidth: 4, margin: 5 }}>
               <Text>Pedido</Text>
               <List
                 dataArray={this.state.carrito}
                 keyExtractor={(item, index) => index.toString()}
                 renderRow={(item) => (
-                  <LibroItem id={item.Libro} id_u={this.state.id} id_d={item._id} Cantidad={item.Cantidad} Formato={item.Formato} props={this.props} />
+                  <LibroItem
+                    id={item.Libro}
+                    id_u={this.state.id}
+                    id_d={item._id}
+                    Cantidad={item.Cantidad}
+                    Formato={item.Formato}
+                    props={this.props}
+                  />
                 )}
               />
             </Row>
-            <Row style={{margin:5}}>
+            <Row style={{ margin: 5 }}>
               <TextInput
                 multiline={true}
-                style={{borderColor:'black', borderWidth:4, flex:1}}
+                style={{ borderColor: "black", borderWidth: 4, flex: 1 }}
                 numberOfLines={4}
-                onChangeText={(notas) => this.setState({notas:notas})}
-                placeholder={'Notas sobre envio'}
+                onChangeText={(notas) => this.setState({ notas: notas })}
+                placeholder={"Notas sobre envio"}
               />
             </Row>
-            <Row style={{height:50, borderWidth:4, margin:5}}>
-              <Col style={{width:100}}>
+            <Row style={{ height: 50, borderWidth: 4, margin: 5 }}>
+              <Col style={{ width: 100 }}>
                 <Text>Pago</Text>
               </Col>
               <Col>
                 <Picker
                   note
                   mode="dropdown"
-                  style={{height: 60}}
+                  style={{ height: 60 }}
                   selectedValue={this.state.pago}
-                  onValueChange={(value)=> this.setState({pago:value})}
+                  onValueChange={(value) => this.setState({ pago: value })}
                 >
-                  <Picker.Item label={"Pago en Tienda"} value={"tienda"}/>
-                  <Picker.Item label={"Pago en Oxxo"} value={"oxxo"}/>
+                  <Picker.Item label={"Pago en Tienda"} value={"tienda"} />
+                  <Picker.Item label={"Pago en Oxxo"} value={"oxxo"} />
                 </Picker>
               </Col>
             </Row>
             <Row>
-              <Text style={styles.Text2}>Total: $5000</Text>
+              <Text style={styles.Text2}>Total: {this.state.monto}</Text>
             </Row>
             <Row>
+              <Col></Col>
               <Col>
-              
-              </Col>
-              <Col>
-                <Button success block rounded
-              onPress={this.agregarPedido}
-              ><Text>Aceptar</Text></Button>
+                <Button success block rounded onPress={this.agregarPedido}>
+                  <Text>Aceptar</Text>
+                </Button>
               </Col>
             </Row>
           </Grid>
         </Container>
-      )
+      );
     }
   }
 }

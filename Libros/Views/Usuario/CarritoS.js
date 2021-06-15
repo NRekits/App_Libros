@@ -252,8 +252,8 @@ class CarritoScreen extends Component {
               car={item._id}
               user={this.state.id_us}
               cant={item.Cantidad}
-			  monto={item.Submonto}
-			  formato={item.Formato}
+			        monto={item.Submonto}
+			        formato={item.Formato}
             />
           )}
         />
@@ -265,7 +265,7 @@ class CarritoScreen extends Component {
               onPress={() => {
                 this.props.navigation.navigate("APedido", {
                   id: this.state.id_us, car: this.state.productos,
-				  monto: this.state.total
+				          monto: this.state.total
                 });
               }}
             >
