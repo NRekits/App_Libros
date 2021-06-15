@@ -66,6 +66,7 @@ export default class PedidoScreen extends React.Component {
       carrito: [],
     };
   }
+  
   // Montar
   async componentDidMount() {
     
@@ -100,7 +101,7 @@ export default class PedidoScreen extends React.Component {
     );
   };
   cancelarPedido() {
- 
+ console.log(this.props.route.params.id)
     fetch(
       `http://${IP_DB}:3000/Pedido/Cancelar/${this.props.route.params.id}/${this.state.pedId}`,
       {

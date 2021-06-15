@@ -2,6 +2,7 @@ const router = require("express").Router();
 const puppeteer = require("puppeteer");
 const pedido = require("../Models/Pedido");
 const usuario = require("../Models/Usuario");
+const libro = require("../Models/Libro");
 const ejs = require("ejs");
 const path = require("path");
 
