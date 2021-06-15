@@ -79,19 +79,18 @@ router.put("/Insertar/:id_us", async (req, res) => {
 
     // para borrar el carrito
 
-    usuario
-      .updateOne(
-        { _id: idus },
-        {
-          $pull: { Carrito: {} },
-        }
-      )
-      .then(async (doc) => {
-        const user = await usuario.findById({ _id: idus });
-        req.io
-          .to(`shop:${idus}`)
-          .emit(`update:shop:${idus}`, { productos: user.Carrito });
-      });
+	usuario.updateOne({_id: idus}, {
+		$pull: {Carrito: {}}
+	}).then(async (doc) => {
+		const user = await usuario.findById({_id: idus});
+		const libros = await libro.find({}).sort({Vendidos: -1})
+		.then(doc => {
+			doc.splice(10);
+			req.io.to('admin').emit(`admint:update:sales`, {vendidos: [...doc]})
+		})
+		req.io.to(`shop:${idus}`).emit(`update:shop:${idus}`, {productos: [...user.Carrito]})
+	});
+
 
     res.json({
       error: null,
