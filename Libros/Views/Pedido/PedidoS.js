@@ -22,6 +22,7 @@ import {
 } from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from "../../ip_address";
+import download from 'downloadjs';
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -77,6 +78,21 @@ export default class PedidoScreen extends React.Component {
       pedId: this.props.route.params.pedId,
       carrito: this.props.route.params.pedd.Lista_lib,
     });
+  }
+
+  obtenerPDF = () => {
+	  fetch(`http://${IP_DB}:3000/Pedido/TicketPDF/${this.state.pedId}`, {
+		  method: 'GET',
+
+	  }).then((result) => {
+		  if(result.ok){
+			  console.log("Ok");
+			  return result.blob()
+		  }
+	  })
+	  .then((result) => {
+		  download(result, 'file.pdf', 'application/pdf');
+	  })
   }
 
   cancelarPedido= (est) => {
@@ -178,7 +194,9 @@ export default class PedidoScreen extends React.Component {
 
             <Row style={{ margin: 5 }}>
               <Col>
-                <Button primary block rounded>
+                <Button primary block rounded onPress={() => {
+					this.obtenerPDF();				
+				}}>
                   <Text>Ver ticket</Text>
                 </Button>
               </Col>
@@ -217,6 +235,8 @@ export default class PedidoScreen extends React.Component {
               </Col>
             </Row>
           </Grid>
+
+
         </Container>
       );
     }

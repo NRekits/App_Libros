@@ -18,7 +18,7 @@
 			<div class="col-md-8 offset-md-2 container">
 				<div class="row">
 					<div class="col-md-12 align-self-center">
-						<img src="./template/libro.png" width="200" height="200" alt="Logo" class="float-start">
+						<img src="libro.png" width="200" height="200" alt="Logo" class="float-start">
 						<p class="text-center mt-5 display-1">Recibo</p>
 						<p class="text-center h5">
 							<span class="text-muted">Ticket de compra</span>
@@ -36,33 +36,47 @@
 
 								<tr>
 									<th scope="row">Direccion</th>
-									<td class="text-center"><%= pedido.direccion %></td>
+									<td class="text-center"><%= pedido.Destino %></td>
 								</tr>
 
 								<tr>
-									<th scope="row">Fecha</th>
-									<td class="text-center"><%= pedido.fecha %></td>
+									<th scope="row">Fecha Pedido</th>
+									<td class="text-center"><%= pedido.Fecha_pedido %></td>
 								</tr>
+
+								<tr>
+									<th scope="row">Fecha Llegada</th>
+									<td class="text-center"><%= pedido.Fecha_llegada %></td>
+								</tr>
+
 								<tr>
 									<th scope="row">Pago en</th>
-									<td class="text-center"><%= pedido.pago %></td>
+									<td class="text-center"><%= pedido.Sucursal %></td>
 								</tr>
 								<tr>
 									<th scope="row">Código de compra</th>
-									<td class="text-center"><%= pedido.codigo %></td>
+									<td class="text-center"><%= pedido.Codigo %></td>
 								</tr>
 								<tr>
 									<th scope="row">Productos</th>
-									<td></td>
+									<td>Formato</td>
+									<td>Precio unidad</td>
+									<td>Cantidad</td>
+									<td>Monto de la compra</td>
 								</tr>
 								<% if(pedido.productos.length > 0) { %>
 									<% pedido.productos.forEach(producto => { %>
-										<tr><%= producto.nombre %></tr><td><%= producto.precio %></td>
+										<tr>
+											<td><%= producto.Titulo %></td>
+											<td><%= producto.Formato %></td>
+											<td><%= producto.Cantidad %></td>
+											<td><%= producto.Submonto %></td>
+										</tr>
 									<% }) %>
 								<% } %>
 								<tr>
 									<th scope="row">Importe total</th>
-									<td><%= pedido.total %></td>
+									<td><% pedido.Monto %></td>
 								</tr>
 							</tbody>
 						</table>
