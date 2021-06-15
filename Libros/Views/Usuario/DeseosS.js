@@ -14,7 +14,7 @@ import {
 	Right,
 	Title, Card, CardItem,
 	Thumbnail,
-  Toast
+	Toast
 } from "native-base";
 
 import IP_DB from "../../ip_address";
@@ -25,53 +25,53 @@ const io = require('socket.io-client');
 
 
 const LibroItem = ({ id, id_u, id_d, props }) => {
-  const [libro, setLibro] = useState({});
-  const [fetchData, setFetchData] = useState(true);
-  useEffect(() => {
-    async function fetchLibro() {
-      if (fetchData) {
-        await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
-          .then((res) => res.json())
-          .then((res) => res.data)
-          .then((res) => {
-            setLibro(Object.assign({}, res));
-          });
-        await setFetchData(false);
-      }
-    }
+	const [libro, setLibro] = useState({});
+	const [fetchData, setFetchData] = useState(true);
+	useEffect(() => {
+		async function fetchLibro() {
+			if (fetchData) {
+				await fetch(`http://${IP_DB}:3000/Libro/Ver/${id}`)
+					.then((res) => res.json())
+					.then((res) => res.data)
+					.then((res) => {
+						setLibro(Object.assign({}, res));
+					});
+				await setFetchData(false);
+			}
+		}
 
-    fetchLibro();
-    return () => {};
-  }, []);
-  return (
-    <ListItem thumbnail>
-      <Left>
-        <Thumbnail
-          square
-          source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }}
-        />
-      </Left>
-      <Body>
-        <Text>{libro.Titulo}</Text>
-        <Text note>{libro.Autor}</Text>
-      </Body>
-      <Right>
-        <Button transparent
-          style={styles.Button}
-          onPress={() => {
-            fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`);
-            Toast.show({
-              text: "Producto eliminado de la WishList",
-              buttonText: "Okay",
-              type: "warning",
-            });
-          }}
-        >
-          <Icon name="trash" size={30} />
-        </Button>
-      </Right>
-    </ListItem>
-  );
+		fetchLibro();
+		return () => { };
+	}, []);
+	return (
+		<ListItem thumbnail>
+			<Left>
+				<Thumbnail
+					square
+					source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.Imagen}` }}
+				/>
+			</Left>
+			<Body>
+				<Text>{libro.Titulo}</Text>
+				<Text note>{libro.Autor}</Text>
+			</Body>
+			<Right>
+				<Button transparent
+					style={styles.Button}
+					onPress={() => {
+						fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`);
+						Toast.show({
+							text: "Producto eliminado de la WishList",
+							buttonText: "Okay",
+							type: "warning",
+						});
+					}}
+				>
+					<Icon name="trash" size={30} />
+				</Button>
+			</Right>
+		</ListItem>
+	);
 };
 
 const windowWidth = Dimensions.get('window').width;
@@ -98,7 +98,7 @@ class DeseosScreen extends Component {
 			//console.log("Se ha ingresado");
 		});
 		socket.on(`update:wish:${this.state.id_us}`, (data) => {
-			this.setState({deseos: [...data.deseos]});
+			this.setState({ deseos: [...data.deseos] });
 		})
 	}
 
@@ -137,7 +137,7 @@ class DeseosScreen extends Component {
 			})
 			.catch((error) => console.log(error));
 	}
-  
+
 
 	goDirecciones = () => {
 		this.props.navigation.navigate("Direcciones", { id: this.state.id_us });
@@ -152,11 +152,11 @@ class DeseosScreen extends Component {
 		this.props.navigation.navigate("Deseos", { id: this.state.id_us });
 	}
 
-  //Ir a lista de generos
-  goGeneros = () => {
-    this.props.navigation.navigate("Generos", {userId: this.state.id_us});
-  }
-  
+	//Ir a lista de generos
+	goGeneros = () => {
+		this.props.navigation.navigate("Generos", { userId: this.state.id_us });
+	}
+
 	render() {
 		return (
 			<Container>
@@ -165,23 +165,36 @@ class DeseosScreen extends Component {
 					androidStatusBarColor="#C0FFC0"
 					style={styles.Header}>
 					<Left>
-					<Ionicons name="heart" size={30} />
+						<Ionicons name="heart" size={30} />
 					</Left>
-					
+
 					<Body>
 						<Title style={styles.Header}> Deseos </Title>
 					</Body>
 					<Right>
-            
-          </Right>
+
+					</Right>
 				</Header>
-				<List           //Lista de los libros agregados al array state.products (donde deben vasearse los datos de la BD)
-					dataArray={this.state.deseos}
-					keyExtractor={(item) => item._id}
-					renderRow={(item) => (
-						<LibroItem id={item.Libro} id_u={this.state.id_us} id_d={item._id} props={this.props}/>
-					)}
-				/>
+				{ (this.state.deseos.length > 0) &&
+					(<List           //Lista de los libros agregados al array state.products (donde deben vasearse los datos de la BD)
+						dataArray={this.state.deseos}
+						keyExtractor={(item) => item._id}
+						renderRow={(item) => (
+							<LibroItem id={item.Libro} id_u={this.state.id_us} id_d={item._id} props={this.props} />
+						)}
+					/>)
+				}
+
+				{ (this.state.deseos.length <= 0) && (
+					<Content>
+						<Body>
+							<Text style={styles.TextEmpty}>La lista esta vacía</Text>
+						</Body>
+					</Content>
+				)
+
+				}
+
 				<Footer>
 					<FooterTab style={{ backgroundColor: "#FFF" }}>
 						<Button style={styles.Button} onPress={() => {
@@ -228,7 +241,6 @@ const styles = StyleSheet.create({
 		color: "black",
 		fontFamily: "Dosis",
 	},
-
 	Text2: {
 		display: 'flex',
 		flexDirection: 'column',
@@ -246,7 +258,12 @@ const styles = StyleSheet.create({
 		color: "black",
 		fontFamily: "Dosis",
 	},
-
+	TextEmpty: {
+		fontFamily: "Dosis",
+		fontSize: 20,
+		textAlign: "center",
+		margin: 20
+	},
 	Button1: {
 		padding: 10,
 		backgroundColor: "#BB8FCE",
