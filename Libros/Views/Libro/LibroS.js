@@ -81,7 +81,6 @@ export default class LibroDetailsScreen extends React.Component {
 	Check() {
 		let msg = "";
 		let error = false;
-		console.log('entro');
 		if (this.state.selectedFormat === "") {
 			msg = "Debes seleccionar un formato primero";
 			error = true;
@@ -138,7 +137,7 @@ export default class LibroDetailsScreen extends React.Component {
 				Toast.show({ text: 'Producto agregado al carrito', buttonText: 'Entendido', type: "success" });
 			})
 			.finally(() => {
-				this.props.navigation.navigate('Home', { id: this.state.userId });
+				this.props.navigation.navigate('Carrito', { id: this.state.userId });
 			})
 			.catch((error) => {
 				Toast.show({ text: "Hubo un error agregando su producto al carrito", type: 'danger' });
@@ -172,12 +171,15 @@ export default class LibroDetailsScreen extends React.Component {
 				</Header>
 				<Content style={{ paddingLeft: 20, paddingRight: 20, marginBottom: 30 }}>
 					<Image style={{ alignSelf: 'center', width: 200, height: 300 }} source={{ uri: `http://${IP_DB}:3000/Libro/Imagen/${libro.imagen}` }} />
-					<Button transparent block style={styles.Button}
+					<Button  rounded bordered style={styles.Button}
 						onPress={() => {
 							this.agregarDeseados();
 						}}
 					>
-						<Icon name="heart" size={30} />
+						<Icon name="heart" style={{ color: '#ED4A6A' }} size={30} />
+						<Text>Agregar a favoritos</Text>
+						
+
 					</Button>
 
 					<Item style={styles.Item} floatingLabel disabled>
@@ -332,6 +334,11 @@ const styles = StyleSheet.create({
 	Button: {
 		alignSelf: "center",
 		marginTop: 40,
+		padding:10,
+		borderColor: "#9BFFA3",
+	},
+	ButtonHeader: {
+		alignSelf: "center",
 		borderColor: "#9BFFA3",
 	},
 	Item: {
