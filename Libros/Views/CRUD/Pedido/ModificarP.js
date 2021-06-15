@@ -63,6 +63,7 @@ export default function MPedidosScreen({ route, navigation }) {
 					estado: est,
 					rastreo: nome,
 					fechal: fechal.toISOString(),
+					des:data.Destino
 				}),
 			})
 				.then((res) => res.json())

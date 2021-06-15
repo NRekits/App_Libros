@@ -193,6 +193,7 @@ router.put("/Modificar/:id_ped", (req, res) => {
   const est = req.body.estado;
   const num = req.body.rastreo;
   const fechal = req.body.fechal;
+  const des = req.body.des;
 
   pedido
     .findByIdAndUpdate(
@@ -202,6 +203,7 @@ router.put("/Modificar/:id_ped", (req, res) => {
           Estado: est,
           No_rastreo: num,
           Fecha_llegada: fechal,
+          Destino: des
         },
       }
     )
