@@ -5,6 +5,7 @@ const Detalle = new Schema({
   Libro: { type: Schema.Types.ObjectId, ref: "Libro", default: undefined },
   Cantidad: { type: Number, default: 1 },
   Formato: { type: String },
+  Submonto:{ type: Number, default: 1 }
 });
 
 const Direccion = new Schema({

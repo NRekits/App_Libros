@@ -44,7 +44,7 @@ export default function AEditorialScreen({ route, navigation }) {
       msg = "No se permiten espacios en Telefono";
       error = true;
     } else if (tel.length != 9) {
-      msg = "El teléfono debe ser de 5 digitos";
+      msg = "El teléfono debe ser de 9 digitos";
       error = true;
     }
 
