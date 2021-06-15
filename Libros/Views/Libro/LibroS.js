@@ -137,7 +137,8 @@ export default class LibroDetailsScreen extends React.Component {
 				body: JSON.stringify({
 					idLib: this.state.libro.id,
 					cant: 1,
-					format: this.state.selectedFormat
+					format: this.state.selectedFormat,
+					submonto: this.state.libro.precio
 				})
 			})
 			.then((res) => res.json())

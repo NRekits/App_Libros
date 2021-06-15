@@ -18,7 +18,7 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const io = require("socket.io-client");
 
-const LibroItem = ({ id, cant, car, user }) => {
+const LibroItem = ({ id, cant, car, user, monto }) => {
   const [libro, setLibro] = useState({});
   const [cantidad, setCantidad] = useState(cant);
   const [fetchData, setFetchData] = useState(true);
@@ -31,7 +31,6 @@ const LibroItem = ({ id, cant, car, user }) => {
           if (fetchData) {
             setLibro(Object.assign({}, res));
           }
-          console.log(res);
         });
     }
     fetchLibro();
@@ -50,15 +49,16 @@ const LibroItem = ({ id, cant, car, user }) => {
       </Left>
       <Body style={{ paddingLeft: 0, paddingStart: 0 }}>
         <Text>{libro.Titulo}</Text>
-        <Text>${libro.Precio}</Text>
+        <Text>${monto}</Text>
       </Body>
       <Right>
         <Item>
           <Button
             transparent
             onPress={async () => {
-              if (cantidad > 1) {
-                await setCantidad({ cantidad: cantidad - 1 });
+              if (cantidad  > 1) {
+				const cant = cantidad - 1;
+                await setCantidad(cantidad - 1);
                 return await fetch(
                   `http://${IP_DB}:3000/Usuario/ModificarCarrito/${user}/${car}`,
                   {
@@ -67,8 +67,9 @@ const LibroItem = ({ id, cant, car, user }) => {
                       "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                      cant: cantidad,
-                      libro: id,
+                      cant: cant,
+                      idLib: libro._id,
+					  monto: (cant*libro.Precio)
                     }),
                   }
                 )
@@ -76,7 +77,7 @@ const LibroItem = ({ id, cant, car, user }) => {
                   .catch((error) => {
                     console.error(error);
                   });
-              } else if (cantidad == 1) {
+              } else if (cantidad  <= 1) {
                 return await fetch(
                   `http://${IP_DB}:3000/Usuario/EliminarCarrito/${user}/${car}`
                 )
@@ -95,8 +96,9 @@ const LibroItem = ({ id, cant, car, user }) => {
             onPress={async () => {
               console.log(cantidad);
               if (cantidad < Number(libro.Cantidad_dis)) {
-                await setCantidad({ cantidad: cantidad + 1 });
-                return await fetch(
+				const cant = cantidad + 1;
+                await setCantidad(cantidad + 1);
+                await fetch(
                   `http://${IP_DB}:3000/Usuario/ModificarCarrito/${user}/${car}`,
                   {
                     method: "PUT",
@@ -104,8 +106,9 @@ const LibroItem = ({ id, cant, car, user }) => {
                       "Content-Type": "application/json",
                     },
                     body: JSON.stringify({
-                      cant: cantidad,
-                      libro: id,
+                      cant: cant,
+                      idLib: id,
+					  monto: (cant*libro.Precio)
                     }),
                   }
                 )
@@ -152,6 +155,7 @@ class CarritoScreen extends Component {
     this.state = {
       id_us: "",
       productos: [],
+	  total: 0,
     };
     this._Mounted = true;
   }
@@ -167,8 +171,14 @@ class CarritoScreen extends Component {
     socket.on("joined", (res) => {
       console.log("Se ha ingresado");
     });
-    socket.on(`update:shop:${this.state.id_us}`, (data) => {
-      if (this._Mounted) this.setState({ productos: [...data.productos] });
+    socket.on(`update:shop:${this.state.id_us}`, async (data) => {
+      if (this._Mounted){
+		  let total = 0;
+		  data.productos.forEach((value) => {
+			  total += value.Submonto
+		  })
+		  await this.setState({ productos: [...data.productos], total: total });
+	  }
     });
   }
 
@@ -189,8 +199,13 @@ class CarritoScreen extends Component {
       .then((res) => res.json())
       .then(async (data) => {
         if (this._Mounted) {
+		let total = 0;
+		data.Carrito.forEach((value) => {
+			total += value.Submonto;
+		})
           await this.setState({
             productos: [...data.Carrito],
+			total: total,
           });
         }
       })
@@ -237,6 +252,8 @@ class CarritoScreen extends Component {
               car={item._id}
               user={this.state.id_us}
               cant={item.Cantidad}
+			  monto={item.Submonto}
+			  formato={item.Formato}
             />
           )}
         />
@@ -247,7 +264,8 @@ class CarritoScreen extends Component {
               style={styles.Button1}
               onPress={() => {
                 this.props.navigation.navigate("APedido", {
-                  id: this.state.id_us, car: this.state.productos
+                  id: this.state.id_us, car: this.state.productos,
+				  monto: this.state.total
                 });
               }}
             >
