@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, Alert, Image,View, StyleSheet } from "react-native";
+import { Dimensions, Alert, Image, View, StyleSheet } from "react-native";
 import {
   Container,
   Header,
@@ -11,7 +11,7 @@ import {
   Body,
   Footer,
   FooterTab,
-  Text
+  Text,
 } from "native-base";
 
 import { LineChart, BarChart } from "react-native-chart-kit";
@@ -19,9 +19,10 @@ import { LineChart, BarChart } from "react-native-chart-kit";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Icon from "react-native-vector-icons/FontAwesome5";
 import IP_DB from "../../ip_address";
-const io = require('socket.io-client');
+const io = require("socket.io-client");
 
 const screenWidth = Dimensions.get("window").width;
+const screenHeight = Dimensions.get("window").height;
 
 const data = {
   labels: ["January", "February", "March", "April", "May", "June"],
@@ -37,10 +38,10 @@ const chartConfig = {
   backgroundGradientTo: "#08130D",
   color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
   propsForVerticalLabels: {
-	fontSize: 10,
-	height: 300,
-	width: screenWidth
-  }
+    fontSize: 10,
+    height: 200,
+    width: 50,
+  },
 };
 export default class HomeAdmiScreen extends React.Component {
   //Constructor
@@ -49,61 +50,69 @@ export default class HomeAdmiScreen extends React.Component {
     this.state = {
       id: "",
       libros: {
-		  labels: ["January", "February", "March", "April", "May", "June"],
-		  datasets: [{data:[20, 45, 28, 80, 99, 43]}]
-	  },
-	  ventas: {
-		  labels: [],
-		  datasets: [{data:[]}]
-	  }
+        labels: ["January", "February", "March", "April", "May", "June"],
+        datasets: [{ data: [20, 45, 28, 80, 99, 43] }],
+      },
+      ventas: {
+        labels: [],
+        datasets: [{ data: [] }],
+      },
     };
-	this._IsMounted = true;
+    this._IsMounted = true;
   }
   fetchLibrosVendidos = async () => {
-	await fetch(`http://${IP_DB}:3000/Libro/VerMasVendidos`)
-	.then(res => res.json())
-	.then(res => res.lib)
-	.then(data => {
-		data.splice(5);
-		let titulos = [];
-		let ventas = [];
-		data.forEach((value) => {
-			titulos.push(value.Titulo);
-			ventas.push(value.Vendidos);
-		});
-		if(this._IsMounted){
-			this.setState({libros: {
-				labels: [...titulos],
-				datasets: [{
-					data: [...ventas]
-				}]
-			}});
-		}
-	});
-  }
+    await fetch(`http://${IP_DB}:3000/Libro/VerMasVendidos`)
+      .then((res) => res.json())
+      .then((res) => res.lib)
+      .then((data) => {
+        data.splice(5);
+        let titulos = [];
+        let ventas = [];
+        data.forEach((value) => {
+          titulos.push(value.Titulo);
+          ventas.push(value.Vendidos);
+        });
+        if (this._IsMounted) {
+          this.setState({
+            libros: {
+              labels: [...titulos],
+              datasets: [
+                {
+                  data: [...ventas],
+                },
+              ],
+            },
+          });
+        }
+      });
+  };
   //Montar
   componentDidMount() {
     console.log(this.state.id);
-	const socket = io.connect(`http://${IP_DB}:3001`);
-	socket.emit('create', 'admin');
-	socket.on('admin:update:most', data => {
-		const vendidos = [...data.vendidos];
-		let titulos = [];
-		let ventas = [];
-		vendidos.forEach((value) => {
-			titulos.push(value.Titulo);
-			ventas.push(value.Vendidos);
-		});
-		if(this._IsMounted){
-			this.setState({libros: {
-				labels: [...titulos],
-				datasets: [{
-					data: [...ventas]
-				}]
-			}});
-		}
-	})
-	this.fetchLibrosVendidos();
+    const socket = io.connect(`http://${IP_DB}:3001`);
+    socket.emit("create", "admin");
+    socket.on("admin:update:most", (data) => {
+      const vendidos = [...data.vendidos];
+      let titulos = [];
+      let ventas = [];
+      vendidos.forEach((value) => {
+        titulos.push(value.Titulo);
+        ventas.push(value.Vendidos);
+      });
+      if (this._IsMounted) {
+        this.setState({
+          libros: {
+            labels: [...titulos],
+            datasets: [
+              {
+                data: [...ventas],
+              },
+            ],
+          },
+        });
+      }
+    });
+    this.fetchLibrosVendidos();
   }
 
   render() {
@@ -131,24 +140,14 @@ export default class HomeAdmiScreen extends React.Component {
           </Right>
         </Header>
         <Content>
-        <Text style={styles.Text3}>Pedidos por día</Text>
-        <LineChart
-            data={data}
-            width={screenWidth}
-            height={300}
-            chartConfig={chartConfig}
-            bezier
-            style={{
-              marginVertical: 8,
-              borderRadius: 16,
-            }}
-          />
-            <LineChart
-			withVerticalLabels={true}
-			verticalLabelRotation={90}
+          <Text style={styles.Text3}>Ventas por libro</Text>
+
+          <LineChart
+            withVerticalLabels={true}
+            verticalLabelRotation={70}
             data={this.state.libros}
             width={screenWidth}
-            height={220}
+            height={500}
             chartConfig={chartConfig}
             bezier
             style={{
@@ -215,8 +214,8 @@ const styles = StyleSheet.create({
   },
   Text3: {
     marginTop: 10,
-    fontSize: 15,
-    color: "#C4EFFF",
+    fontSize: 30,
+    color: "#08130D",
     marginLeft: 5,
     fontFamily: "Dosis",
   },
