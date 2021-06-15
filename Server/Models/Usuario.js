@@ -14,7 +14,6 @@ const Carrito = new Schema({
   Libro: { type: Schema.Types.ObjectId, ref: "Libro", default: undefined },
   Cantidad: { type: Number, default: 1 },
   Formato: { type: String },
-  Subtotal: {type: Number}
 });
 const Deseos = new Schema({
   Libro: {

@@ -130,8 +130,7 @@ export default class LibroDetailsScreen extends React.Component {
 				body: JSON.stringify({
 					idLib: this.state.libro.id,
 					cant: 1,
-					format: this.state.selectedFormat,
-					precio: this.state.libro.precio
+					format: this.state.selectedFormat
 				})
 			})
 			.then((res) => res.json())
@@ -305,7 +304,7 @@ export default class LibroDetailsScreen extends React.Component {
 						)
 					}
 
-					<Button disabled={libro.cantidad <= 0}  rounded success block style={styles.Button} onPress={() => {
+					<Button disabled={libro.cantidad <= 0} rounded success block style={styles.Button} onPress={() => {
 						this.Check();
 					}}>
 						<Text>Añadir al carro</Text>
