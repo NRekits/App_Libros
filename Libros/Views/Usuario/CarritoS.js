@@ -109,7 +109,6 @@ const LibroItem = ({ id, cant, car, user, monto, formato }) => {
 										body: JSON.stringify({
 											cant: cant,
 											idLib: id,
-                      // enviar tambien el formato del libro format:libro.Formato,
 											monto: (cant * libro.Precio),
 											format: formato
 										}),

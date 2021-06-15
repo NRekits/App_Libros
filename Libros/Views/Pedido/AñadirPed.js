@@ -102,7 +102,7 @@ export default class APedidoScreen extends React.Component {
 			Toast.show({ text: msg, buttonText: "Okay", type: "warning" });
 		} else {
 
-      this.agregarPedido
+      this.agregarPedido()
     }
 
   }

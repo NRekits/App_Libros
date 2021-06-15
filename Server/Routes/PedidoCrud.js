@@ -66,14 +66,16 @@ router.put("/Insertar/:id_us", async (req, res) => {
 
     const savedPed = ped.save();
     console.log(savedPed);
-    /* para borrar el carrito
-    usuario.findByIdAndUpdate(
-      { _id: idus },
-      {
-        $set: { },
-      }
-    )
-  */
+
+    // para borrar el carrito
+
+	usuario.updateOne({_id: idus}, {
+		$pull: {Carrito: {}}
+	}).then(async (doc) => {
+		const user = await usuario.findById({_id: idus});
+		req.io.to(`shop:${idus}`).emit(`update:shop:${idus}`, {productos: user.Carrito})
+	});
+
 
     res.json({
       error: null,
