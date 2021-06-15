@@ -1,7 +1,7 @@
 /*Detalles del pedido, dando la opcion de cancelar*/
 /*No se puede modificar un pedido como tal, solo es para cancelar*/
 import React, { useEffect, useState } from "react";
-import { Text, Dimensions, StyleSheet, Alert } from "react-native";
+import { Text, Dimensions, StyleSheet, Alert, PermissionsAndroid } from "react-native";
 import {
   Container,
   Header,
@@ -22,10 +22,10 @@ import {
 } from "native-base";
 import Icon from "react-native-vector-icons/FontAwesome";
 import IP_DB from "../../ip_address";
-import download from 'downloadjs';
-
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
+
+import * as WebBrowser from 'expo-web-browser';
 
 const LibroItem = ({ id, Cantidad, Formato, id_u, id_d, props }) => {
   const [libro, setLibro] = useState({});
@@ -80,19 +80,8 @@ export default class PedidoScreen extends React.Component {
     });
   }
 
-  obtenerPDF = () => {
-	  fetch(`http://${IP_DB}:3000/Pedido/TicketPDF/${this.state.pedId}`, {
-		  method: 'GET',
-
-	  }).then((result) => {
-		  if(result.ok){
-			  console.log("Ok");
-			  return result.blob()
-		  }
-	  })
-	  .then((result) => {
-		  download(result, 'file.pdf', 'application/pdf');
-	  })
+  obtenerPDF = async () => {
+	  WebBrowser.openBrowserAsync(`http://${IP_DB}:3000/Pedido/TicketPDF/${this.state.pedId}`)
   }
 
   cancelarPedido= (est) => {
@@ -195,7 +184,7 @@ export default class PedidoScreen extends React.Component {
             <Row style={{ margin: 5 }}>
               <Col>
                 <Button primary block rounded onPress={() => {
-					this.obtenerPDF();				
+					this.obtenerPDF()
 				}}>
                   <Text>Ver ticket</Text>
                 </Button>
