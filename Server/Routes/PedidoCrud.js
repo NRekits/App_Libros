@@ -129,10 +129,10 @@ router.get("/VerEstado/:id_us/:est", async (req, res) => {
 });
 
 //Cancelar pedido
-router.put("/Estado/:id_us/:id_ped/:est", (req, res) => {
+router.put("/Estado/:id_us/:id_ped", (req, res) => {
   const idus = req.params.id_us;
   const idped = req.params.id_ped;
-  const est = req.params.est;
+  const est = req.body.est;
   const num = 0;
   //pendiente hacerla null
   const fechal = req.body.fechal;

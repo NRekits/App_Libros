@@ -67,7 +67,7 @@ export default class LoginScreen extends React.Component {
                   SecureStore.setItemAsync("token", data.token);
                   if (this.state.Admi == false) {
                     this.props.navigation.navigate("Home", { id: this.state.id });
-                  } else if (Admi == true) {
+                  } else if (this.state.Admi == true) {
                     this.props.navigation.navigate("HomeAdmi");
                   }
                 } else if (data.error != null) {

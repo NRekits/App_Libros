@@ -79,21 +79,17 @@ export default class PedidoScreen extends React.Component {
     });
   }
 
-  cancelarPedido= (Est)=> {
+  cancelarPedido= (est) => {
  
     fetch(
-      `http://${IP_DB}:3000/Pedido/Estado/${this.props.route.params.id}/${this.state.pedId}/${this.state.est}`,
+      `http://${IP_DB}:3000/Pedido/Estado/${this.props.route.params.id}/${this.state.pedId}`,
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          Nombre: nombre,
-          Apellido: apellido,
-          email: email.toLowerCase().trimEnd(),
-          contra: contra,
-          admi: admi,
+          est:est
         }),
       }
     )
@@ -192,7 +188,7 @@ export default class PedidoScreen extends React.Component {
                 this.state.pedido.Estado != "Enviado" ? (
                   <Button danger block rounded   onPress={()=>{
                     this.setState({est:'Cancelado'})
-                    this.cancelarPedido}}>
+                    this.cancelarPedido()}}>
                     <Text>Cancelar</Text>
                   </Button>
                 ) : (
