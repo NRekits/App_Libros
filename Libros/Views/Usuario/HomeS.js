@@ -7,6 +7,7 @@ import {
   SafeAreaView,
   View,
   FlatList,
+  TouchableOpacity
 } from "react-native";
 import {
   Container,
@@ -28,7 +29,7 @@ import {
   CardItem,
   Thumbnail,
   Footer,
-  FooterTab,
+  FooterTab
 } from "native-base";
 import Carousel, {
   Pagination,
@@ -44,7 +45,7 @@ const windowHeight = Dimensions.get("window").height;
 const SLIDER_WIDTH = Dimensions.get("window").width + 80;
 const ITEM_WIDTH = Math.round(SLIDER_WIDTH * 0.7);
 
-ListaTop=(props)=>{
+const ListaTop = (props)=>{
   const renderItem = ({ item }) => {
     let { Titulo, Autor } = item;
     return (
