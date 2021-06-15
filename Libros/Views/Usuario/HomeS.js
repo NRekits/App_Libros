@@ -55,7 +55,6 @@ export default class HomeScreen extends React.Component {
       novedades: [],
       top: [],
       cargar: false,
-      slider1ActiveSlide: 1,
     };
 
     this.goGeneros = this.goGeneros.bind(this);
