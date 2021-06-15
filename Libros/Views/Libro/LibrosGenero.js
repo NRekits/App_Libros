@@ -95,7 +95,7 @@ export default class LibroGenero extends React.Component {
 					<Left>
 						<Button
 							transparent
-							style={styles.Button}
+							style={styles.ButtonHeader}
 							onPress={() => {
 								this.props.navigation.goBack();
 							}}
@@ -223,6 +223,10 @@ const styles = StyleSheet.create({
 		fontFamily: "Dosis",
 		fontSize: 20,
 		fontWeight: "600"
+	},
+	ButtonHeader: {
+		alignSelf: "center",
+		borderColor: "#9BFFA3",
 	},
 	Underline: {
 		backgroundColor: '#0D7C0D'
