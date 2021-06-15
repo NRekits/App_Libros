@@ -26,16 +26,16 @@ export default class VPedidoScreen extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      Libro: {},
+      pedido: {},
       cargar: false,
-      libId:"",
+      pedId:"",
     };
   }
   //Montar
   componentDidMount() {
   
-    this.setState({Libro: this.props.route.params.lib, 
-      cargar:true, libId : this.props.route.params.libId});
+    this.setState({pedido: this.props.route.params.ped, 
+      cargar:true, pedId : this.props.route.params.pedId});
 
   }
 

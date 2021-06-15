@@ -85,8 +85,8 @@ router.put("/Insertar/:id_us", async (req, res) => {
   }
 });
 
-//Ver pedido
-router.get("/Ver/:id_us/id_ped", async (req, res) => {
+//Ver pedido de unusuario
+router.get("/VerPed/:id_us/id_ped", async (req, res) => {
   const idus = req.params.id_us;
   const idped = req.params.id_ped;
 
@@ -103,6 +103,7 @@ router.get("/Ver/:id_us", async (req, res) => {
   });
 });
 
+//Ver los pedidos por estado de un usuario
 router.get("/VerEstado/:id_us/:est", async (req, res) => {
   const idus = req.params.id_us;
   const est = req.params.est;
@@ -110,7 +111,6 @@ router.get("/VerEstado/:id_us/:est", async (req, res) => {
     res.json({ ped: doc, error: null });
   });
 });
-
 
 //Cancelar pedido
 router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
@@ -142,6 +142,7 @@ router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
 
 //Devolver pedido
 router.put("/Devolver/:id_us/:id_ped", (req, res) => {
+  console.log('hola')
   const idus = req.params.id_us;
   const idped = req.params.id_ped;
   const est = "Devuelto";
@@ -179,7 +180,7 @@ router.get("/VerPedido/:idped", async (req, res) => {
   });
 });
 
-//Ver uno de los pedidos
+//Ver  todos de los pedidos
 router.get("/VerPedidoTodos", async (req, res) => {
   pedido.find({}).then((doc) => {
     res.json({ ped: doc, error: null });

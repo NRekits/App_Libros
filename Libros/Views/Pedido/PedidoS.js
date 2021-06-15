@@ -67,8 +67,9 @@ export default class PedidoScreen extends React.Component {
     };
   }
   // Montar
-  componentDidMount() {
-    this.setState({
+  async componentDidMount() {
+    
+    await this.setState({
       cargar: true,
       pedido: this.props.route.params.pedd,
       id: this.props.route.params.id,
@@ -98,7 +99,8 @@ export default class PedidoScreen extends React.Component {
       }
     );
   };
-  cancelarPedido = () => {
+  cancelarPedido() {
+ 
     fetch(
       `http://${IP_DB}:3000/Pedido/Cancelar/${this.props.route.params.id}/${this.state.pedId}`,
       {
@@ -144,8 +146,8 @@ export default class PedidoScreen extends React.Component {
   };
 
   devolverPedido = () => {
-    console.log("devol");
-    fetch(`http://${IP_DB}:3000/Pedido/Devolver/${this.props.route.params.id}/${this.state.pedId}`,
+    console.log(this.state.id);
+    fetch(`http://${IP_DB}:3000/Pedido/Devolver/${this.state.id}/${this.state.pedId}`,
       {
         method: "PUT",
         headers: {
@@ -156,7 +158,7 @@ export default class PedidoScreen extends React.Component {
       .then((res) => res.json())
       .then((data) => {
         Toast.show({
-          text: "Pedido devuelto",
+          text: "Pedido en devolución",
           buttonText: "Okay",
           type: "danger",
         });

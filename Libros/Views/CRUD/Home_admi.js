@@ -113,7 +113,7 @@ export default class HomeAdmiScreen extends React.Component {
             <Button
               style={styles.Button}
               onPress={() => {
-                this.props.navigation.navigate("Carrito");
+                this.props.navigation.navigate("ListPedido");
               }}
             >
               <Icon name="boxes" size={30} />
