@@ -35,7 +35,8 @@ export default class AddLibro extends React.Component {
 				formato: ''
 			},
 			imageFile: null,
-			editoriales: []
+			editoriales: [],
+			show: false
 		}
 
 	}

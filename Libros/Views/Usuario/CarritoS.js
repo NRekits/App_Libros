@@ -95,7 +95,6 @@ const LibroItem = ({ id, cant, car, user, monto }) => {
 					<Button
 						transparent
 						onPress={async () => {
-							console.log(cantidad);
 							if (cantidad < Number(libro.Cantidad_dis)) {
 								const cant = cantidad + 1;
 								await setCantidad(cantidad + 1);

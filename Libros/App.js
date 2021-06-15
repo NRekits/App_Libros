@@ -91,7 +91,7 @@ class App extends React.Component {
               screenOptions={{
                 headerShown: false,
               }}
-              initialRouteName="Login"
+              initialRouteName="HomeAdmi"
             >
               <Stack.Screen name="Login" component={LoginScreen} />
               <Stack.Screen name="Registro" component={RegisterScreen} />
