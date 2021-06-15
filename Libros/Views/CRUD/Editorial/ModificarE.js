@@ -1,4 +1,3 @@
-/* El usuario aqui agrega una direccion */
 import React, { useState } from "react";
 import { Text, Dimensions, StyleSheet } from "react-native";
 import {

@@ -222,9 +222,9 @@ export default class VPedidoScreen extends React.Component {
                   rounded
                   style={styles.ButtonB}
                   onPress={() => {
-                    this.props.navigation.navigate("ModLibro", {
-                      libId: this.state.libId,
-                      lib: this.state.Libro,
+                    this.props.navigation.navigate("ModPedido", {
+                      pedId: this.state.pedId,
+                      ped: this.state.pedido,
                     });
                   }}
                 >
