@@ -65,7 +65,7 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
         <Text note>{libro.Autor}</Text>
       </Body>
       <Right>
-        <Button
+        <Button transparent
           style={styles.Button}
           onPress={() => {
             console.log("entro aqui");
@@ -174,9 +174,12 @@ class DeseosScreen extends Component {
 					transparent
 					androidStatusBarColor="#C0FFC0"
 					style={styles.Header}>
-					<Left></Left>
+					<Left>
+					<Ionicons name="heart" size={30} />
+					</Left>
+					
 					<Body>
-						<Title style={styles.Header}> WIHSLIST </Title>
+						<Title style={styles.Header}> Deseos </Title>
 					</Body>
 					<Right>
             

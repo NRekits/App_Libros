@@ -348,9 +348,14 @@ router.get("/EliminarCarrito/:id_us/:id_car", (req, res) => {
 });
 
 //Añadir producto a wish list
-router.put("/InsertarDeseo/:id", (req, res) => {
+router.put("/InsertarDeseo/:id", async (req, res) => {
   const id = req.params.id;
   const libro = req.body.idLib;
+  const isLibroExist = await Usuario.findOne({ _id: id, "Deseos.Libro": libro });
+
+  if (isLibroExist) {
+	  return res.status(400).json({ error: "Libro ya esta en la lista" });
+  }
 
   Usuario.findByIdAndUpdate(
     { _id: id },
