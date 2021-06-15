@@ -350,7 +350,7 @@ router.get("/EliminarCarrito/:id_us/:id_car", (req, res) => {
 //Añadir producto a wish list
 router.put("/InsertarDeseo/:id", async (req, res) => {
   const id = req.params.id;
-  const libro = req.body.idLib;
+  const libro = mongoose.Types.ObjectId(req.body.idLib);
   const isLibroExist = await Usuario.findOne({ _id: id, "Deseos.Libro": libro });
 
   if (isLibroExist) {

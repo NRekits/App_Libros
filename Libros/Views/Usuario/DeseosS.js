@@ -23,15 +23,6 @@ import Icon from "react-native-vector-icons/FontAwesome";
 
 const io = require('socket.io-client');
 
-import * as SecureStore from "expo-secure-store";
-import { LinearGradient } from 'expo-linear-gradient';
-
-// const productos = [{
-//   id: Number,
-//   title: String, 
-//   price: Number
-//   }
-// ];
 
 const LibroItem = ({ id, id_u, id_d, props }) => {
   const [libro, setLibro] = useState({});
@@ -68,7 +59,6 @@ const LibroItem = ({ id, id_u, id_d, props }) => {
         <Button transparent
           style={styles.Button}
           onPress={() => {
-            console.log("entro aqui");
             fetch(`http://${IP_DB}:3000/Usuario/EliminarDeseo/${id_u}/${id_d}`);
             Toast.show({
               text: "Producto eliminado de la WishList",
