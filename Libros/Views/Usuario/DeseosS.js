@@ -95,7 +95,7 @@ class DeseosScreen extends Component {
 		const socket = io.connect(`http://${IP_DB}:3001`)
 		socket.emit('create', `wish:${this.state.id_us}`);
 		socket.on('joined', (res) => {
-			console.log("Se ha ingresado");
+			//console.log("Se ha ingresado");
 		});
 		socket.on(`update:wish:${this.state.id_us}`, (data) => {
 			this.setState({deseos: [...data.deseos]});
