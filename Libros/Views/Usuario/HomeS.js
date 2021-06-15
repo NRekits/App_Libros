@@ -95,7 +95,6 @@ export default class HomeScreen extends React.Component {
   _renderItem = ({ item, index }) => {
     return (
       <View style={styles.slide}>
-<<<<<<< HEAD
         <TouchableOpacity
           onPress={() => {
             this.props.navigation.navigate("LibroS", {
@@ -120,23 +119,10 @@ export default class HomeScreen extends React.Component {
                 </CardItem>
           </Card>
         </TouchableOpacity>
-=======
-        <Card style={{ elevation: 3 }} key={index}>
-          <CardItem cardBody>
-            <Image
-              style={{ height: 300, width: 100, flex: 1 }}
-              source={{
-                uri: `http://${IP_DB}:3000/Libro/Imagen/${item.Imagen}`,
-              }}
-            />
-          </CardItem>
-        </Card>
->>>>>>> parent of b5a6381 (Merge branch 'main' of https://github.com/NRekits/App_Libros into main)
       </View>
     );
   };
 
-<<<<<<< HEAD
   renderItem = ({ item, index }) => {
     return (
       <View>
@@ -166,8 +152,6 @@ export default class HomeScreen extends React.Component {
       </View>
     );
   };
-=======
->>>>>>> parent of b5a6381 (Merge branch 'main' of https://github.com/NRekits/App_Libros into main)
   //Montar
   goLista() {
     this.props.navigation.navigate("Buscar", {userId: this.state.id});
@@ -343,15 +327,12 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     fontFamily: "Dosis",
   },
-<<<<<<< HEAD
   Text: {
     marginTop: 10,
     fontSize: 20,
     marginLeft: 5,
     fontFamily: "Dosis",
   },
-=======
->>>>>>> parent of b5a6381 (Merge branch 'main' of https://github.com/NRekits/App_Libros into main)
   Button: {
     alignSelf: "center",
     backgroundColor: "#BB8FCE",
@@ -381,13 +362,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     alignSelf: "center",
   },
-<<<<<<< HEAD
 	ButtonHeader: {
 		alignSelf: "center",
 	},
-=======
-  scrollview: {
-    flex: 1,
-  },
->>>>>>> parent of b5a6381 (Merge branch 'main' of https://github.com/NRekits/App_Libros into main)
 });
