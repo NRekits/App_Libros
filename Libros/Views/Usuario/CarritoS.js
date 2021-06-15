@@ -268,7 +268,7 @@ class CarritoScreen extends Component {
 							if (this.state.productos.length > 0) {
                 console.log(this.state.productos)
 								this.props.navigation.navigate("APedido", {
-									id: this.state.id_us, car: this.state.productos,
+									id: this.state.id_us, car: [...this.state.productos],
 									monto: this.state.total
 								});
 							}else{

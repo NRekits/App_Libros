@@ -65,8 +65,21 @@ router.put("/Insertar/:id_us", async (req, res) => {
 
     });
 
+	
+
     const savedPed = ped.save();
     console.log(savedPed);
+
+	const carr = [...req.body.carrito];
+	carr.forEach((value) => {
+		libro.updateOne({_id: value.Libro},
+			{$inc:
+				{Vendidos: value.Cantidad,
+				Cantidad_dis: -(value.Cantidad)}})
+		.then((doc) => {
+
+		})
+	})
 
     // para borrar el carrito
 
