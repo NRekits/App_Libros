@@ -187,8 +187,7 @@ export default class PedidoScreen extends React.Component {
                 this.state.pedido.Estado != "Devuelto" &&
                 this.state.pedido.Estado != "Enviado" ? (
                   <Button danger block rounded   onPress={()=>{
-                    this.setState({est:'Cancelado'})
-                    this.cancelarPedido()}}>
+                    this.cancelarPedido('Cancelado')}}>
                     <Text>Cancelar</Text>
                   </Button>
                 ) : (
@@ -208,8 +207,7 @@ export default class PedidoScreen extends React.Component {
                     block
                     rounded
                     onPress={()=>{
-                      this.setState({est:'Devuelto'})
-                      this.cancelarPedido()}}
+                      this.cancelarPedido('Devuelto')}}
                   >
                     <Text>Devolver</Text>
                   </Button>
