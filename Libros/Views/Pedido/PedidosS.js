@@ -57,7 +57,7 @@ export default function PedidosScreen ({route, navigation}) {
   }
 
   useEffect(() => {
-	async function fetchPediodos(){
+	async function fetchPedidos(){
 		if(fetching){
 			await fetch();
 			await setFetching(false);

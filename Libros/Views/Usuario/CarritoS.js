@@ -4,36 +4,17 @@
 import React, { Component, useState, useEffect } from "react";
 import ReactDom from "react-dom";
 import {
-	Text,
-	Dimensions,
-	Alert,
-	Image,
-	StyleSheet,
-	SafeAreaView,
+  Text, Dimensions,
+  Alert,Image,
+  StyleSheet, SafeAreaView,
 } from "react-native";
 import {
-	Container,
-	Header,
-	Content,
-	Footer,
-	FooterTab,
-	Form,
-	Item,
-	Input,
-	Label,
-	Button,
-	H1,
-	View,
-	List,
-	ListItem,
-	Left,
-	Right,
-	Body,
-	Card,
-	CardItem,
-	Title,
-	Thumbnail,
-	Toast,
+  Container, Header,
+  Content, Footer, FooterTab, Form,
+  Item, Input, Label, Button,
+  H1, View, List, ListItem,
+  Left, Right, Body, Card,
+  CardItem, Title, Thumbnail, Toast,
 } from "native-base";
 import IP_DB from "../../ip_address";
 import Ionicons from "react-native-vector-icons/Ionicons";

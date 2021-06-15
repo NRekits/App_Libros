@@ -1,6 +1,7 @@
 const router = require("express").Router();
 const puppeteer = require("puppeteer");
 const pedido = require("../Models/Pedido");
+const usuario = require("../Models/Usuario");
 const ejs = require("ejs");
 const path = require("path");
 
@@ -44,127 +45,166 @@ router.get("/GenerarPaginaTicket", async (req, res) => {
   });
 });
 
-
-//Añadir usuario por admi
+//Añadir pedido
 router.put("/Insertar/:id_us", async (req, res) => {
-	try {
-	
-	  const isEmailExist = await Usuario.findOne({ Email: req.body.email });
-  
-	  if (isEmailExist) {
-		return res.status(400).json({ error: "Email ya registrado" });
-	  }
-  
-	  const user = new usuario({
-		Nombre: req.body.Nombre,
-		Apellido: req.body.Apellido,
-		Contrasena: req.body.contra,
-		Email: req.body.email,
-		Admi: req.body.admi,
-	  });
-  
-	  const savedUser = user.save();
-	  console.log(savedUser);
-	  res.json({
-		error: null,
-		response: "Añadido",
-		data: savedUser,
-	  });
-
-	} catch (error) {
-	  res.status(400).json({ error });
-	}
-  });
-  
-
-//Ver pedido
-router.get("/Ver/:id_us/id_ped", async (req, res) => {
-  const id = req.params.id;
-  const user = await Usuario.findById({ _id: id });
-
+  const idus = req.params.id_us;
   try {
-    // create token
+    const ped = new pedido({
+      Id_usuario: idus,
+      Fecha_pedido: req.body.fechap,
+      Fecha_llegada: req.body.fechal,
+      Estado: req.body.estado,
+      Pago: req.body.pago,
+      Lista_lib: req.body.carrito,
+      Monto: req.body.monto,
+      Detalle_entrega: req.body.det,
+    });
+
+    const savedPed = ped.save();
+    console.log(savedPed);
+    /* para borrar el carrito
+    usuario.findByIdAndUpdate(
+      { _id: idus },
+      {
+        $set: { },
+      }
+    )
+  */
 
     res.json({
       error: null,
-      Id: user._id,
-      Nombre: user.Nombre,
-      Apellido: user.Apellido,
-      Contrasena: user.Contrasena,
-      Email: user.Email,
-      Deseos: user.Deseos,
-      Carrito: user.Carrito,
-      Direccion: user.Direccion,
+      response: "Añadido",
+      data: savedUser,
     });
-  } catch (e) {
-    return status(400).json({
-      error: "Hubo un error, por favor intenta de nuevo",
-    });
+  } catch (error) {
+    res.status(400).json({ error });
   }
 });
 
-//Modificar pedido
-router.put("/Modificar/:id_us/:id_ped", (req, res) => {
-  const id = req.params.id;
-  const Nom = req.body.Nombre;
-  const ape = req.body.Apellido;
-  const Contra = req.body.contra;
-  const Ema = req.body.email;
-  const ad = req.body.admi;
+//Ver pedido
+router.get("/Ver/:id_us/id_ped", async (req, res) => {
+  const idus = req.params.id_us;
+  const idped = req.params.id_ped;
 
-  Usuario.findByIdAndUpdate(
-    { _id: id },
-    {
-      $set: {
-        Nombre: Nom,
-        Apellido: ape,
-        Contrasena: Contra,
-        Email: Ema,
-        Admi: ad,
-      },
-    }
-  )
+  pedido.findOne({ _id: idped, Id_usuario: idus }).then((doc) => {
+    res.json({ ped: doc, error: null });
+  });
+});
+
+
+//Ver todos los pedidos de un usuario
+router.get("/Ver/:id_us", async (req, res) => {
+  const idus = req.params.id_us;
+  pedido.find({ Id_usuario: idus }).then((doc) => {
+    res.json({ ped: doc, error: null });
+  });
+});
+
+//Cancelar pedido
+router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
+  const idus = req.params.id_us;
+  const idped = req.params.id_ped;
+  const est = "Cancelado";
+  const num = 0;
+  //pendiente hacerla null
+  const fechal = req.body.fechal;
+
+  pedido
+    .findByIdAndUpdate(
+      { _id: idped, Id_usuario: idus },
+      {
+        $set: {
+          Estado: est,
+          No_rastreo: num,
+          Fecha_llegada: fechal,
+        },
+      }
+    )
     .then((doc) => {
-      res.json({ response: "Usuario Modificado" });
+      res.json({ response: "pedido Modificado" });
     })
     .catch((err) => {
       console.log("error al cambiar", err.message);
     });
 });
 
-//Cancelar pedido
-router.put("/Cancelar/:id_us/:id_ped", (req, res) => {
-	const id = req.params.id;
-	const Nom = req.body.Nombre;
-	const ape = req.body.Apellido;
-	const Contra = req.body.contra;
-	const Ema = req.body.email;
-	const ad = req.body.admi;
+//Devolver pedido
+router.put("/Devolver/:id_us/:id_ped", (req, res) => {
+  const idus = req.params.id_us;
+  const idped = req.params.id_ped;
+  const est = "Devolucion";
+  const num = 0;
+  //pendiente hacerla null
+  const fechal = req.body.fechal;
+
+  pedido.findOneAndUpdate(
+      { _id: idped, Id_usuario: idus },
+      {
+        $set: {
+          Estado: est,
+          No_rastreo: num,
+          Fecha_llegada: fechal,
+        },
+      }
+    )
+    .then((doc) => {
+      res.json({ response: "pedido Modificado" });
+    })
+    .catch((err) => {
+      console.log("error al cambiar", err.message);
+    });
+});
+
+//Admi crud
+
+//Ver un pedido
+router.get("/VerPedido/:idped", async (req, res) => {
   
-	Usuario.findByIdAndUpdate(
-	  { _id: id },
-	  {
-		$set: {
-		  Nombre: Nom,
-		  Apellido: ape,
-		  Contrasena: Contra,
-		  Email: Ema,
-		  Admi: ad,
-		},
-	  }
-	)
-	  .then((doc) => {
-		res.json({ response: "Usuario Modificado" });
-	  })
-	  .catch((err) => {
-		console.log("error al cambiar", err.message);
-	  });
+  const idped = req.params.id_ped;
+
+  pedido.findById({_id: idped}).then((doc) => {
+    res.json({ ped: doc, error: null });
   });
+});
+
+//Ver uno de los pedidos
+router.get("/VerPedidoTodos", async (req, res) => {
+  pedido.find({}).then((doc) => {
+    res.json({ ped: doc, error: null });
+  });
+});
+
+//Modificar pedido
+router.put("/Modificar/:id_ped", (req, res) => {
+
+  const idped = req.params.id_ped;
+  const est = req.body.estado;
+  const num = req.body.rastreo;
+  const fechal = req.body.fechal;
+
+  pedido
+    .findByIdAndUpdate(
+      { _id: idped},
+      {
+        $set: {
+          Estado: est,
+          No_rastreo: num,
+          Fecha_llegada: fechal,
+        },
+      }
+    )
+    .then((doc) => {
+      res.json({ response: "pedido Modificado" });
+    })
+    .catch((err) => {
+      console.log("error al cambiar", err.message);
+    });
+});
 
 //Eliminar pedido
-router.get("/Eliminar/:id_us/:id_ped", (req, res) => {
-  const id = req.params.id;
-  Usuario.findByIdAndDelete({ _id: id })
+router.get("/Eliminar/:id_ped", (req, res) => {
+  const idped = req.params.id_ped;
+  pedido.findByIdAndDelete({ _id: idped })
     .then((doc) => {
       res.json({ response: "Eliminado" });
     })
